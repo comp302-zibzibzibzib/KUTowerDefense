@@ -20,9 +20,6 @@ public abstract class Enemy {
 	protected void hitPlayer(Player player) {//ALL TEMP MIGHT CHANGE
 		player.setHealth(player.getHealth()-1);
 	}
-	
-	protected void findPath(List<List<Tile>> tileMap) { //stub from UML Diagram will be implemented/changed or removed
-	}
 
 	public float getHitPoints() {
 		return hitPoints;
