@@ -1,22 +1,23 @@
 package domain.map;
 
-public class Tile {
+import java.io.Serializable;
+
+public class Tile implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	public TileType type;
-	public Boolean isWalkable;
 	public Location location;
 	
 	public Tile() {
 		this.type = TileType.GRASS;
-		this.isWalkable = false;
 	}
 	
-	public Tile(TileType type) {
-		this.type = TileType.INVALID;
+	public Tile(TileType tileType) {
+		this.type = tileType;
 	}
 	
-	public Tile(TileType type, Boolean isWalkable, Location location) {
+	public Tile(TileType type, Location location) {
 		this.type = type;
-		this.isWalkable = isWalkable;
 		this.location = location;
 		
 	}
@@ -25,12 +26,6 @@ public class Tile {
 	}
 	public void setType(TileType type) {
 		this.type = type;
-	}
-	public Boolean getIsWalkable() {
-		return isWalkable;
-	}
-	public void setIsWalkable(Boolean isWalkable) {
-		this.isWalkable = isWalkable;
 	}
 	public Location getLocation() {
 		return location;
