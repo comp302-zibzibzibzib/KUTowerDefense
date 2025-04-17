@@ -178,8 +178,6 @@ class UtilTest {
 	}
 	
 	private static void testPathFinding() {
-		System.out.println("TEST 2");
-
 		Location l1 = new Location(3,4);
 		Location l2 = new Location(1,0);
 		PathTile start = new PathTile(l1);
