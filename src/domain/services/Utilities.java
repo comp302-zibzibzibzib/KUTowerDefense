@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.PriorityQueue;
@@ -18,10 +20,12 @@ import domain.map.PathTile;
 import domain.map.Tile;
 import domain.map.TileType;
 
-// I will add comments later
 public final class Utilities {
 	private static final String MAP_FILE_PATH = "Data/Maps/";
 	
+	/**
+	 * Comparator for the priority queue used in findPath
+	 */
 	static class AStarComparator implements Comparator<SimpleEntry<PathTile, Double>> {
 		
 		@Override
@@ -32,43 +36,57 @@ public final class Utilities {
 		}
 	}
 	
-	// I'D RATHER DIE THAN COMMENT THIS GO LOOK UP A* OR SMTH
-	// Returns the PathTiles in an arraylist sorted from start to finish
-	public static ArrayList<PathTile> findPath(Map map) {
+	/**
+	 * 
+	 * @param map
+	 * @return Returns a List of PathTile objects sorted from starting tile to ending tile of given map 
+	 */
+	public static List<PathTile> findPath(Map map) {
 		PathTile start = map.startingTile;
 		PathTile end = map.endingTile;
 		
+		// Gets all PathTile objects from map.tileMap
 		ArrayList<PathTile> pathTileArray = new ArrayList<PathTile>();
 		for(Tile[] row : map.tileMap)
 			for(Tile tile : row)
 				if (tile.getType() == TileType.PATH) pathTileArray.add((PathTile)tile);
 		
+		// Chose to use euclidean distance for the heuristic medium of A* algorithm
+		// Create a map of PathTiles as keys with their euclidean distance to the ending tile as values
 		HashMap<PathTile, Double> heuristicMap = new HashMap<PathTile, Double>();
 		for(PathTile tile : pathTileArray) {
 			double distance = euclideanDistance(tile.location, end.location);
 			heuristicMap.put(tile, distance);
 		}
 		
+		// Create a map of path tiles and direct distance covered so far up to the path tile
+		// Same logic as Dijstra's search algorithm
 		HashMap<PathTile, Double> dMap = new HashMap<PathTile, Double>();
 		for(PathTile tile : pathTileArray)
-			dMap.put(tile, Double.MAX_VALUE);
+			dMap.put(tile, Double.MAX_VALUE);		// Initialize distances to infinity for a start and update them later on
 		dMap.put(start, 0.0);
 		
+		// A map of heuristic + direct distance
 		HashMap<PathTile, Double> fMap = new HashMap<PathTile, Double>();
 		for(PathTile tile : pathTileArray)
-			fMap.put(tile, Double.MAX_VALUE);
+			fMap.put(tile, Double.MAX_VALUE);		// Initialize distances to infinity for a start and update them later on
 		fMap.put(start, 0 + heuristicMap.get(start));
 		
+		// Comparator for priority queue
 		AStarComparator comp = new AStarComparator();
+		
+		// A priority queue sorted with the Double value and provides PathTiles in order, stored in key of SimpleEntry.
+		// The ones with lowest distance are prioritised
 		PriorityQueue<SimpleEntry<PathTile, Double>> open = new PriorityQueue<SimpleEntry<PathTile, Double>>(comp);
 		SimpleEntry<PathTile, Double> startEntry = new SimpleEntry<PathTile, Double>(start, fMap.get(start));
-		open.add(startEntry);
+		open.add(startEntry); 		// Add start to queue
 		
 		HashMap<PathTile, PathTile> invPathMap = new HashMap<PathTile, PathTile>();
-		while(!open.isEmpty()) {
+		while(!open.isEmpty()) { 	// Until the queue is empty
 			PathTile currentTile = open.poll().getKey();
-			if (currentTile == end) break;
+			if (currentTile == end) break;	// Stop if end is reached
 			
+			// Get all possible neighbours of currentTile
 			ArrayList<PathTile> children = new ArrayList<PathTile>();
 			if (currentTile.getUp() != null) children.add(currentTile.getUp());
 			if (currentTile.getDown() != null) children.add(currentTile.getDown());
@@ -79,35 +97,39 @@ public final class Utilities {
 				double dScore = dMap.get(currentTile) + 1;
 				double fScore = dScore + heuristicMap.get(childTile);
 				
+				// If total distance is less than the stored value -> update
 				if (fScore < fMap.get(childTile)) {
 					dMap.put(childTile, dScore);
 					fMap.put(childTile, fScore);
 					SimpleEntry<PathTile, Double> childEntry = new SimpleEntry<PathTile, Double>(childTile, fScore);
-					open.add(childEntry);
-					invPathMap.put(childTile, currentTile);
+					open.add(childEntry);	// Add child to priority queue so that the algorithm can continue search from there
+					invPathMap.put(childTile, currentTile);	// A map where a child points to their parent forming a path from end to start	
 				}
 			}
 		}
 		
-		HashMap<PathTile, PathTile> pathMap = new HashMap<PathTile, PathTile>();
-		PathTile tile = end;
-		while (tile != start) {
-			pathMap.put(invPathMap.get(tile), tile);
-			tile = invPathMap.get(tile);
-		}
-		
+		// We want path from start to end
+		// So we turn it into a list and reverse
 		ArrayList<PathTile> pathArray = new ArrayList<PathTile>();
-		tile = start;
-		pathArray.add(start);
+		PathTile tile = end;
+		pathArray.add(end);
 		
-		while (tile != end) {
-			tile = pathMap.get(tile);
+		while (tile != start) {
+			tile = invPathMap.get(tile);
 			pathArray.add(tile);
 		}
+		
+		Collections.reverse(pathArray);
 		
 		return pathArray;
 	}
 	
+	/**
+	 * 
+	 * @param location1
+	 * @param location2
+	 * @return Returns Euclidean distance between two location objects
+	 */
 	public static double euclideanDistance(Location location1, Location location2) {
 		double distanceX = location1.xCoord - location2.xCoord;
 		double distanceY = location1.yCoord - location2.yCoord;
@@ -115,6 +137,11 @@ public final class Utilities {
 		return Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 	}
 	
+	/**
+	 * 
+	 * @param map
+	 * Writes map to disk to save it for later, files are sent to Data/Maps/
+	 */
 	public static void writeMap(Map map) {
 		try {
 			FileOutputStream fileOut = new FileOutputStream(MAP_FILE_PATH + map.mapName + ".ser");
@@ -130,6 +157,11 @@ public final class Utilities {
 		} 
 	}
 	
+	/**
+	 * 
+	 * @param fileName
+	 * @return Returns a map object read from disk with the given fileName
+	 */
 	public static Map readMap(String fileName) {
 		Map map = null;
 		try {
@@ -146,106 +178,5 @@ public final class Utilities {
 		}
 		
 		return map;
-	}
-}
-
-class UtilTest {
-	
-	private static void mapReadWriteTest() {
-		System.out.println("-----Map Read/Write Test-----");
-		
-		String map1Name = "map1";
-		int height1 = 30, width1 = 20;
-		Map map1 = new Map(map1Name, height1, width1);
-		
-		Utilities.writeMap(map1);
-		Map map1Test = Utilities.readMap(map1Name);
-		
-		if (map1Test.height == map1.height && map1Test.width == map1.width && map1Test.mapName.equals(map1.mapName)) {
-			System.out.println("Test 1 - PASSED");
-		} else { System.out.println("Test 1 - FAILED"); } 
-		
-		String map2Name = "map2";
-		int height2 = 69, width2 = 420;
-		Map map2 = new Map(map2Name, height2, width2);
-		
-		Utilities.writeMap(map2);
-		Map map2Test = Utilities.readMap(map2Name);
-		
-		if (map2Test.height == map2.height && map2Test.width == map2.width && map2Test.mapName.equals(map2.mapName)) {
-			System.out.println("Test 2 - PASSED");
-		} else { System.out.println("Test 2 - FAILED"); } 
-	}
-	
-	private static void testPathFinding() {
-		Location l1 = new Location(3,4);
-		Location l2 = new Location(1,0);
-		PathTile start = new PathTile(l1);
-		PathTile end = new PathTile(l2);
-		Map map1 = new Map("map1", start, end , 5, 5);
-		
-		Tile[][] tileMap = map1.tileMap;
-		Location l3 = new Location(3,3);
-		PathTile p33 = new PathTile(l3);
-		
-		Location l4 = new Location(4,3);
-		PathTile p34 = new PathTile(l4);
-		
-		Location l5 = new Location(4,2);
-		PathTile p24 = new PathTile(l5);
-		
-		Location l6 = new Location(2,3);
-		PathTile p32 = new PathTile(l6);
-		
-		Location l7 = new Location(2,2);
-		PathTile p22 = new PathTile(l7);
-		
-		Location l8 = new Location(1,2);
-		PathTile p21 = new PathTile(l8);
-		
-		Location l9 = new Location(1,1);
-		PathTile p11 = new PathTile(l9);
-		
-		start.setUp(p33);
-		
-		p33.setRight(p34);
-		p33.setLeft(p32);
-		p33.setDown(start);
-		
-		p34.setUp(p24);
-		p34.setLeft(p33);
-		
-		p24.setDown(p34);
-		
-		p32.setRight(p33);
-		p32.setUp(p22);
-		
-		p22.setDown(p32);
-		p22.setLeft(p21);
-		
-		p21.setRight(p22);
-		p21.setUp(p11);
-		
-		p11.setDown(p21);
-		p11.setUp(end);
-		
-		end.setDown(p11);
-		
-		tileMap[3][3] = p33;
-		tileMap[3][4] = p34;
-		tileMap[2][4] = p24;
-		tileMap[3][2] = p32;
-		tileMap[2][1] = p21;
-		tileMap[2][2] = p22;
-		tileMap[1][1] = p11;
-		
-		ArrayList<PathTile> path = Utilities.findPath(map1);
-		// Trust me it works I have proof
-	}
-	
-	
-	public static void main(String[] args) {
-		mapReadWriteTest();
-		testPathFinding();
 	}
 }

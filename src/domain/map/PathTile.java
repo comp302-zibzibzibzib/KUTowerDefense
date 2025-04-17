@@ -1,15 +1,16 @@
 package domain.map;
 
-// Node object which has a Location, used to implement path finding logic
+// Node/tile object which has a Location, used to implement path finding logic
 public class PathTile extends Tile {
 	private static final long serialVersionUID = 1L;
 	
+	// All neighbours of pathtile
 	private PathTile up;
 	private PathTile down;
 	private PathTile right;
 	private PathTile left;
 	
-	private PathType pathType;
+	private PathType pathType;		// The type of path tile
 	
 	public PathTile(Location location, PathTile up, PathTile down, PathTile right, PathTile left) {
 		super(TileType.PATH, location);
