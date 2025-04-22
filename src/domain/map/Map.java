@@ -43,14 +43,25 @@ public class Map implements Serializable {
 	 * Initializes map to empty grass tile map
 	 */
 	private void initializeTileMap() {
+		double y = 0;
+		double x = 0;
 		this.tileMap = new Tile[height][width];
 		for (int i = 0; i < height; i++) {
+			y += Tile.tileLength * 0.5;
+			
 			for (int j = 0; j < width; j++) {
 				if(tileMap[i][j] == null) {
-					Tile tile = new Tile();
+					x += Tile.tileLength * 0.5;
+					Location location = new Location(x, y);
+					
+					Tile tile = new Tile(location);
 					tileMap[i][j] = tile;
+					
+					x += Tile.tileLength * 0.5;
 				}
 			}
+			
+			y += Tile.tileLength * 0.5;
 		}	
 	}
 	public PathTile getStartingTile() {
