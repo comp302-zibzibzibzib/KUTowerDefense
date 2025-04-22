@@ -17,11 +17,15 @@ public abstract class Tower {
 
     public abstract Projectile createProjectile();
 
-    public void targetEnemy(List<Enemy> enemies) {
-        for (Enemy e : enemies) {
-            if (Utilities.euclideanDistance(this.location, e.getLocation()) <= this.range) {
-                this.target = e;
-                break;
+    public void targetEnemy() {
+    	int currentpathIndex;
+    	int nextpathIndex;
+    	
+        for (Enemy e : Enemy.getAllEnemies()) {
+        	currentpathIndex = e.getPathIndex();
+        	nextpathIndex = currentpathIndex +1;
+            if () {
+               
             }
         }
     }

@@ -1,14 +1,15 @@
 package domain.entities;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import domain.kutowerdefense.Player;
 import domain.map.Location;
-import domain.map.Tile;
 
 public abstract class Enemy {
-	protected float hitPoints;
-	protected float speed;
+	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	
+	protected double hitPoints;
+	protected double speed;
 	protected Location location;
 	
 	/**
@@ -17,23 +18,24 @@ public abstract class Enemy {
 	 * decreases lives of player, currently hard coded to be 1
 	 */
 	
-	protected void hitPlayer(Player player) {//ALL TEMP MIGHT CHANGE
-		player.setHealth(player.getHealth()-1);
+	protected void hitPlayer(Player player) {
+		//player.setHealth(player.getHealth()-1);
+		enemies.remove(this);
 	}
 
-	public float getHitPoints() {
+	public double getHitPoints() {
 		return hitPoints;
 	}
 
-	public void setHitPoints(float hitPoints) {
+	public void setHitPoints(double hitPoints) {
 		this.hitPoints = hitPoints;
 	}
 
-	public float getSpeed() {
+	public double getSpeed() {
 		return speed;
 	}
 
-	public void setSpeed(float speed) {
+	public void setSpeed(double speed) {
 		this.speed = speed;
 	}
 
@@ -45,6 +47,11 @@ public abstract class Enemy {
 		this.location = location;
 	}
 	
+	public static ArrayList<Enemy> getAllEnemies(){
+		return enemies;
+	}
 	
-
+	public void hitEnemy(double  damage) {
+		hitPoints -= damage;
+	}
 }

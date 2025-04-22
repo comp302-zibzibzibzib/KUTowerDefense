@@ -4,20 +4,21 @@ import domain.map.Location;
 
 public class Goblin extends Enemy {
 	
-	private float spellDamageReduction;
+	private double spellDamageReduction;
 	
-	public Goblin(float hitPoints, float speed, Location location, float spellDamageReduction) { //var can be set/changed thus needs a parameter
+	public Goblin(double hitPoints, double speed, Location location, double spellDamageReduction) { //var can be set/changed thus needs a parameter
 		this.hitPoints = hitPoints;
 		this.speed = speed;
 		this.location = location;
 		this.spellDamageReduction = spellDamageReduction;
+		enemies.add(this);
 	}
 
-	public float getSpellDamageReduction() {
+	public double getSpellDamageReduction() {
 		return spellDamageReduction;
 	}
 
-	public void setSpellDamageReduction(float spellDamageReduction) {
+	public void setSpellDamageReduction(double spellDamageReduction) {
 		this.spellDamageReduction = spellDamageReduction;
 	}
 	

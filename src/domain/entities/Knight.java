@@ -4,13 +4,14 @@ import domain.map.Location;
 
 public class Knight extends Enemy {
 	
-	float arrowDamageReduction;
+	double arrowDamageReduction;
 	
-	public Knight(float hitPoints, float speed, Location location, float arrowDamageReduction) {//var can be changed
+	public Knight(double hitPoints, double speed, Location location, double arrowDamageReduction) {//var can be changed
 		this.hitPoints = hitPoints;
 		this.speed = speed;
 		this.location = location;
 		this.arrowDamageReduction = arrowDamageReduction;
+		enemies.add(this);
 	}
 
 }

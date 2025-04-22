@@ -179,4 +179,11 @@ public final class Utilities {
 		
 		return map;
 	}
+	
+	public static double manhattanDistance(Location location1, Location location2) {
+		double distanceX = location1.getXCoord() - location2.getXCoord();
+		double distanceY = location1.getYCoord() - location2.getYCoord();
+		
+		return Math.abs(distanceX) +Math.abs(distanceY);
+	}
 }

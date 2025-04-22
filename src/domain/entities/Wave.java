@@ -5,9 +5,9 @@ import java.util.List;
 public class Wave {
 	private int numberofGroups;
 	private List<Group> groups;
-	private List<Float> groupSpawnDelays;
+	private List<Double> groupSpawnDelays;
 	
-	public Wave(int numberofGroups, List<Group> groups, List<Float> groupSpawnDelays) {
+	public Wave(int numberofGroups, List<Group> groups, List<Double> groupSpawnDelays) {
 		this.numberofGroups = numberofGroups;
 		this.groups = groups;
 		this.groupSpawnDelays = groupSpawnDelays;
@@ -33,11 +33,11 @@ public class Wave {
 		this.groups = groups;
 	}
 
-	public List<Float> getGroupSpawnDelays() {
+	public List<Double> getGroupSpawnDelays() {
 		return groupSpawnDelays;
 	}
 
-	public void setGroupSpawnDelays(List<Float> groupSpawnDelays) {
+	public void setGroupSpawnDelays(List<Double> groupSpawnDelays) {
 		this.groupSpawnDelays = groupSpawnDelays;
 	}
 	

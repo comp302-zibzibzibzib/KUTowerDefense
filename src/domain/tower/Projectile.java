@@ -19,7 +19,7 @@ public class Projectile {
 	}
 
 	public void hitTarget() {
-		target.setHitpoints(target.getHitpoints()-damage);
+		target.hitEnemy(damage);
 	}
 	
 	public void followTarget() {
