@@ -24,6 +24,9 @@ public abstract class Tower {
     	int nextpathIndex;
     	double distanceToNext;
     	double progressInTile;
+    	double totalProgress = 0.0;
+    	double bestProgress = 0.0;
+    	Enemy lastTarget = null;
     	List<PathTile> path;
     	
         for (Enemy e : Enemy.getAllEnemies()) {
@@ -31,13 +34,20 @@ public abstract class Tower {
         		currentpathIndex = e.getPathIndex();
             	nextpathIndex = currentpathIndex +1;
             	
-            	double distanceToNext = Utilities.manhattanDistance(e.getLocation(), );
-            	double progressInTile = Tile.tileLength - distanceToNext;
+            	distanceToNext = Utilities.manhattanDistance(e.getLocation(), Enemy.path.get(nextpathIndex).getLocation());
+            	progressInTile = Tile.tileLength - distanceToNext;
             	progressInTile = Math.max(0, Math.min(progressInTile, Tile.tileLength));
+            	totalProgress = currentpathIndex * Tile.tileLength + progressInTile;
+            	
+            	if(totalProgress > bestProgress) {
+            		bestProgress = totalProgress;
+            		lastTarget = target;
+            	}
             	
         	}
-               
+        	
         }
+        target = lastTarget;
     }
 }
 

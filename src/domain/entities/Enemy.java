@@ -3,6 +3,7 @@ package domain.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.map.Location;
 import domain.map.PathTile;
@@ -10,6 +11,8 @@ import domain.services.Utilities;
 
 public abstract class Enemy {
 	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	public static List<PathTile> path = new ArrayList<PathTile>();
+	public PlayModeManager mpath;
 	protected double hitPoints;
 	protected double speed;
 	protected Location location;
@@ -60,5 +63,11 @@ public abstract class Enemy {
 	public int getPathIndex() {
 		return pathIndex;
 	}
+	
+	public void setPath() {
+		path = Utilities.findPath(mpath.getCurrentMap());
+	}
+	
+	
 	
 }

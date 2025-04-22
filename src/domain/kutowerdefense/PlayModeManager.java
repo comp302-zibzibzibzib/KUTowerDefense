@@ -3,17 +3,18 @@ package domain.kutowerdefense;
 import java.util.List;
 
 import domain.entities.Wave;
+import domain.map.Map;
 
 public class PlayModeManager {
 	private static PlayModeManager instance;
-	
+	private Map currentMap;
 	private int currentWaveIndex;
 	private double previousGameSpeed = 1.0;
 	private double gameSpeed = 1.0;
 	
 	private List<Wave> waves;
 	
-	private PlayModeManager() {
+	public PlayModeManager() {
 		this.currentWaveIndex = 0; this.gameSpeed = 1.0; this.previousGameSpeed = 1.0;
 	}
 	
@@ -65,5 +66,13 @@ public class PlayModeManager {
 		if (instance == null) instance = new PlayModeManager();
 		/*GameOptions.getInstance();
 		Will create waves of groups, IMPLEMENT GAME OPTIONS FOR WAVE INITIALIZATION PARAMETERS*/
+	}
+	
+	public void setCurrentMap(Map map) {
+	    this.currentMap = map;
+	}
+
+	public Map getCurrentMap() {
+	    return currentMap;
 	}
 }
