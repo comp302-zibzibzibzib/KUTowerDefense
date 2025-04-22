@@ -1,16 +1,19 @@
 package domain.entities;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import domain.kutowerdefense.Player;
 import domain.map.Location;
+import domain.map.PathTile;
+import domain.services.Utilities;
 
 public abstract class Enemy {
 	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-	
 	protected double hitPoints;
 	protected double speed;
 	protected Location location;
+	protected int pathIndex;
 	
 	/**
 	 * 
@@ -54,4 +57,8 @@ public abstract class Enemy {
 	public void hitEnemy(double  damage) {
 		hitPoints -= damage;
 	}
+	public int getPathIndex() {
+		return pathIndex;
+	}
+	
 }
