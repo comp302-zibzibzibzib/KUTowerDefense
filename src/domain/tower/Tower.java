@@ -27,7 +27,6 @@ public abstract class Tower {
     	double totalProgress = 0.0;
     	double bestProgress = 0.0;
     	Enemy lastTarget = null;
-    	List<PathTile> path;
     	
         for (Enemy e : Enemy.getAllEnemies()) {
         	if(Utilities.manhattanDistance(location, e.getLocation()) <= range) {

@@ -186,4 +186,5 @@ public final class Utilities {
 		
 		return Math.abs(distanceX) +Math.abs(distanceY);
 	}
+	
 }
