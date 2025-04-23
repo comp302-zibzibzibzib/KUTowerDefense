@@ -12,7 +12,6 @@ import domain.services.Utilities;
 public abstract class Enemy {
 	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	public static List<PathTile> path = new ArrayList<PathTile>();
-	public PlayModeManager mpath;
 	protected double hitPoints;
 	protected double speed;
 	protected Location location;
@@ -24,8 +23,8 @@ public abstract class Enemy {
 	 * decreases lives of player, currently hard coded to be 1
 	 */
 	
-	protected void hitPlayer(Player player) {
-		//player.setHealth(player.getHealth()-1);
+	protected void hitPlayer() {
+		Player.getInstance().takeDamage();
 		enemies.remove(this);
 	}
 
@@ -57,15 +56,20 @@ public abstract class Enemy {
 		return enemies;
 	}
 	
-	public void hitEnemy(double  damage) {
+	public void hitEnemy(double damage) {
 		hitPoints -= damage;
 	}
+	
+	public void setPathIndex(int pathIndex) {
+		this.pathIndex = pathIndex;
+	}
+	
 	public int getPathIndex() {
 		return pathIndex;
 	}
 	
-	public void setPath() {
-		path = Utilities.findPath(mpath.getCurrentMap());
+	public static void setPath() {
+		path = Utilities.findPath(PlayModeManager.getInstance().getCurrentMap());
 	}
 	
 	

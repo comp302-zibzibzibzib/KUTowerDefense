@@ -4,13 +4,13 @@ import domain.map.Location;
 
 public class MageTower extends Tower {
 
-	public MageTower(int upgradeCost, int level, double range, double fireRate, AttackType attackType, Location location) {
+	public MageTower(int upgradeCost, int level, double range, double fireRate, AttackType attackType) {
 		super();
 		this.upgradeCost = upgradeCost;
 		this.level = level;
 		this.attackType = AttackType.SPELL;
 		this.target = null;
-		this.location = location;
+		this.range = range;
 	}
 
 	@Override

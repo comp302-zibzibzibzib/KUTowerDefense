@@ -14,7 +14,7 @@ public class PlayModeManager {
 	
 	private List<Wave> waves;
 	
-	public PlayModeManager() {
+	private PlayModeManager() {
 		this.currentWaveIndex = 0; this.gameSpeed = 1.0; this.previousGameSpeed = 1.0;
 	}
 	
@@ -29,41 +29,37 @@ public class PlayModeManager {
 		instance.gameSpeed = 1.0;
 		instance.previousGameSpeed = 1.0;
 		instance.waves = null;
+		instance.currentMap = null;
 	}
 	
-	public static void accelerateGame() {
-		if (instance == null) instance = new PlayModeManager();
-		instance.gameSpeed = 2.0;
+	public void accelerateGame() {
+		this.gameSpeed = 2.0;
 	}
 	
-	public static void decelerateGame() {
-		if (instance == null) instance = new PlayModeManager();
-		instance.gameSpeed = 1.0;
+	public void decelerateGame() {
+		this.gameSpeed = 1.0;
 	}
 	
-	public static void pauseGame() {
-		if (instance == null) instance = new PlayModeManager();
-		instance.previousGameSpeed = instance.gameSpeed;
-		instance.gameSpeed = 0;
+	public void pauseGame() {
+		this.previousGameSpeed = this.gameSpeed;
+		this.gameSpeed = 0;
 	}
 	
-	public static void resumeGame() {
-		if (instance == null) instance = new PlayModeManager();
-		if (instance.gameSpeed == 0) {
-			instance.gameSpeed = instance.previousGameSpeed;
+	public void resumeGame() {
+		if (this.gameSpeed == 0) {
+			this.gameSpeed = this.previousGameSpeed;
 		}
 	}
 	
-	public static void returnToMainMenu() {
-		
+	public void returnToMainMenu() {
+		resetManager();
 	}
 	
-	public static void quitGame() {
+	public void quitGame() {
 		System.exit(0);
 	}
 	
-	public static void initializeWaves() {
-		if (instance == null) instance = new PlayModeManager();
+	public void initializeWaves() {
 		/*GameOptions.getInstance();
 		Will create waves of groups, IMPLEMENT GAME OPTIONS FOR WAVE INITIALIZATION PARAMETERS*/
 	}
