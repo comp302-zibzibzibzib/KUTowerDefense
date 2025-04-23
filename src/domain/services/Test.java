@@ -127,6 +127,8 @@ public final class Test {
 			tileMap[2][2] = p22;
 			tileMap[1][1] = p11;
 			
+			Map.printMap(map1);
+			
 			List<PathTile> path = Utilities.findPath(map1);
 			ArrayList<Location> testPathLocation = new ArrayList<Location>();
 			testPathLocation.add(new Location(3,4));
@@ -136,6 +138,7 @@ public final class Test {
 			testPathLocation.add(new Location(1,2));
 			testPathLocation.add(new Location(1,1));
 			testPathLocation.add(new Location(1,0));
+			
 			
 			if (path.size() != testPathLocation.size()) {
 				System.out.println("PathFinding Test - FAILED");
