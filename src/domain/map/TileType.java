@@ -1,9 +1,7 @@
 package domain.map;
 
 public enum TileType {
-	GRASS(" G "), PATH(" P "), OBSTACLES(" O "), STRAIGHT(" S "),
-	UPWARDS(" U "), RIGHT(" R "), LEFT(" L "), TOP(" T "), BOTTOM(" B "), 
-	BOTTOMRIGHT("BR "),BOTTOMLEFT("BL "), TOPLEFT("TL "), TOPRIGHT("TR "), INVALID(" ? ");
+	GRASS(" G "), PATH(" P "), OBSTACLES(" O "), TOWER(" T ");
 	
 	public String str;
 	

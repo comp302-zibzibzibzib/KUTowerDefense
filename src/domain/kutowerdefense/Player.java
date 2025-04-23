@@ -17,11 +17,11 @@ public class Player {
 		this.gold = STARTING_GOLD; this.lives = STARTING_LIVES; this.waveNumber = 0;
 	}
 	
-	public static void constructTower(Lot lot, AttackType attackType) {
+	public void constructTower(Lot lot, AttackType attackType) {
 		
 	}
 	
-	public static void sellTower(Lot lot) {
+	public void sellTower(Lot lot) {
 		
 	}
 	
@@ -37,8 +37,7 @@ public class Player {
 		instance.waveNumber = 0;
 	}
 	
-	public static void takeDamage() {
-		if (instance == null) instance = new Player();
-		instance.lives -= 1;
+	public void takeDamage() {
+		this.lives -= 1;
 	}
 }

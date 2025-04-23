@@ -26,8 +26,10 @@ public class Map implements Serializable {
 	
 	//Starting tile must be somewhere at the bottom end ending tile must be somewhere on the top
 	//Types of these tiles are PATH, isWalkable = 1
+	// DEPRICATED CONSTRUCTOR!!!
 	public Map(String mapName, PathTile startingTile, PathTile endingTile, int height, int width) {
 		this(mapName, height, width); // Default constructor
+		if (true) return; // DEPRICATED BELOW!!!
 		
 		//Ensure that both starting and ending tiles are of type PATH
 		if (startingTile.getType() != TileType.PATH || endingTile.getType() != TileType.PATH) return; // Raise an invalid argument exception?
@@ -49,6 +51,7 @@ public class Map implements Serializable {
 		for (int i = 0; i < height; i++) {
 			y += Tile.tileLength * 0.5;
 			
+			x = 0;
 			for (int j = 0; j < width; j++) {
 				if(tileMap[i][j] == null) {
 					x += Tile.tileLength * 0.5;
@@ -69,7 +72,11 @@ public class Map implements Serializable {
 	}
 
 	public void setStartingTile(PathTile startingTile) {
+		int[] d = locationToTileMap(startingTile.getLocation());
+		if (d[0] != height - 1) return;
+		
 		this.startingTile = startingTile;
+		tileMap[d[0]][d[1]] = startingTile;
 	}
 
 	public PathTile getEndingTile() {
@@ -77,7 +84,11 @@ public class Map implements Serializable {
 	}
 
 	public void setEndingTile(PathTile endingTile) {
+		int[] d = locationToTileMap(endingTile.getLocation());
+		if (d[0] != 0) return;
+		
 		this.endingTile = endingTile;
+		tileMap[d[0]][d[1]] = endingTile;
 	}
 	
 	public static void printMap(Map map) {
@@ -87,6 +98,16 @@ public class Map implements Serializable {
 			}
 			System.out.print("\n");
 		}
+	}
+	
+	public static int[] locationToTileMap(Location location) {
+		int x;
+		int y;
+		
+		x = (int) ((location.getXCoord() - Tile.tileLength * 0.5) / Tile.tileLength);
+		y = (int) ((location.getYCoord() - Tile.tileLength * 0.5) / Tile.tileLength);
+		
+		return new int[]{y, x};
 	}
 }
 

@@ -2,15 +2,16 @@ package domain.kutowerdefense;
 
 import domain.map.Map;
 import domain.map.MapEditor;
+import domain.services.Utilities;
 
 public class KUTowerDefense {
-	private Map currentMap;
-	public static PlayModeManager playModeManager = new PlayModeManager() ;
+	private static PlayModeManager playModeManager = PlayModeManager.getInstance();
 
 	
 	private KUTowerDefense() {} // Can't create instance of KUTowerDefense
 	
-	public static void newGame(Map map) {
+	public static void newGame(String mapName) {
+		Map map = Utilities.readMap(mapName);
 		playModeManager.setCurrentMap(map);
 	}
 	
@@ -25,8 +26,4 @@ public class KUTowerDefense {
 	public static void quitGame() {
 		System.exit(0);
 	}
-	public void setCurrentMap(Map map) {
-	    this.currentMap = map;
-	}
-
 }

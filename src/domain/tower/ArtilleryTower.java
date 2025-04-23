@@ -4,13 +4,13 @@ import domain.map.Location;
 
 public class ArtilleryTower extends Tower {
 
-	public ArtilleryTower(int upgradeCost, int level, double range, double fireRate, Location location) {
+	public ArtilleryTower(int upgradeCost, int level, double range, double fireRate) {
 		super();
 		this.upgradeCost = upgradeCost;
 		this.attackType = AttackType.ARTILLERY;
 		this.level = level;
 		this.target = null;
-		this.location = location;
+		this.range = range;
 	}
 
 	@Override
