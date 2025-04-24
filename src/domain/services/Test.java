@@ -51,7 +51,10 @@ public final class Test {
 			me1.placeTile(TileType.PATH,PathType.VERTICAL_MIDDLE, 4,5);
 			me1.placeTile(TileType.TOWER, 4,4);
 			me1.placeTile(TileType.CASTLE,0,0);
+			me1.removeTile(1,0);
+			me1.placeTile(TileType.DECORATIVES, 1, 1);
 			me1.placeTile(TileType.DECORATIVES,2,2);
+			me1.removeTile(4,4);
 			me1.removeTile(4,4);
 			System.out.println(map1.tileMap[4][4].getClass().toString());
 			
@@ -123,7 +126,7 @@ public final class Test {
 			me3.placeTile(TileType.PATH, PathType.BOTTOMRIGHT, 3, 2);
 			me3.placeTile(TileType.PATH, PathType.TOPRIGHT, 2, 2);
 			me3.placeTile(TileType.PATH, PathType.BOTTOMLEFT, 2, 1);
-			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 1, 1);
+			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 1, 0);
 			
 			List<PathTile> path = Utilities.findPath(map1);
 			ArrayList<Location> testPathLocation = new ArrayList<Location>();

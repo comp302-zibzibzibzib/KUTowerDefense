@@ -7,6 +7,7 @@ public class Lot {
 	private Tile tile;
 	private boolean isEmpty;
 	
+
 	public Lot(Tile tile) {
 		this.tile = tile;
 		this.isEmpty = true;

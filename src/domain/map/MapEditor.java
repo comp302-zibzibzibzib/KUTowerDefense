@@ -28,7 +28,7 @@ public class MapEditor implements Serializable{
 	        int y = height;
 	        
 	        Tile existingTile = map.tileMap[y][x];
-	        //Check wheter a tile is already placed at that position
+	        //Check whether a tile is already placed at that position
 	        if (existingTile != null && existingTile.getType() != TileType.GRASS) {
 	            System.out.println("Error: Cannot place tile on top of another tile. Remove it first.");
 	            return; // Cancel placement
@@ -69,7 +69,7 @@ public class MapEditor implements Serializable{
 	        Tile tileToPlace;
 	        //Set neighbours (bidirectional) of path tiles 
 	        if (type.equals(TileType.PATH) && ptype != null) {
-	            PathTile newPathTile = new PathTile(ptype, newTileLocation, null, null, null, null);
+	            PathTile newPathTile = new PathTile(ptype, newTileLocation);
 	            tileToPlace = newPathTile;
 
 	            if (!isStartingTilePlaced && y == map.height - 1) { 
@@ -215,6 +215,7 @@ public class MapEditor implements Serializable{
 	public void saveMap(Map map) {
 		//Write map if it is a valid map
 		if(isValidMap(map)) {
+			map.setPath(Utilities.findPath(map));
 			Utilities.writeMap(map);
 		}
 	}

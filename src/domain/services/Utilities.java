@@ -42,6 +42,7 @@ public final class Utilities {
 	 * @return Returns a List of PathTile objects sorted from starting tile to ending tile of given map 
 	 */
 	public static List<PathTile> findPath(Map map) {
+		// MAL BEDO YANLIŞ YAPMIŞ VİSİT İŞARETLE
 		PathTile start = map.startingTile;
 		PathTile end = map.endingTile;
 		

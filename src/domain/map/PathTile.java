@@ -12,11 +12,6 @@ public class PathTile extends Tile {
 	
 	private PathType pathType;		// The type of path tile
 	
-	public PathTile(PathType pathType, Location location, PathTile up, PathTile down, PathTile right, PathTile left) {
-		super(TileType.PATH, location);
-		this.pathType = pathType; this.up = up; this.down = down; this.right = right; this.left = left;
-	}
-	
 	public PathType getPathType() {
 		return pathType;
 	}

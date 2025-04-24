@@ -1,6 +1,7 @@
 package domain.map;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Map implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -13,6 +14,15 @@ public class Map implements Serializable {
 	public int height;
 	public int width;
 	
+	private List<PathTile> path;
+	
+	public List<PathTile> getPath() {
+		return path;
+	}
+
+	public void setPath(List<PathTile> path) {
+		this.path = path;
+	}
 	public Tile[][] tileMap;
 	
 	//Default map with all grass tiles
