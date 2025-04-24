@@ -31,6 +31,8 @@ public class Map implements Serializable {
 		this(mapName, height, width); // Default constructor
 		if (true) return; // DEPRICATED BELOW!!!
 		
+		Tile prevStart = tileMap[(int)startingTile.location.yCoord][(int)startingTile.location.xCoord];
+		Tile prevEnd = tileMap[(int)endingTile.location.yCoord][(int)endingTile.location.xCoord];
 		//Ensure that both starting and ending tiles are of type PATH
 		if (startingTile.getType() != TileType.PATH || endingTile.getType() != TileType.PATH) return; // Raise an invalid argument exception?
 		
@@ -39,6 +41,9 @@ public class Map implements Serializable {
 		
 		tileMap[(int)startingTile.location.yCoord][(int)startingTile.location.xCoord] = this.startingTile;
 		tileMap[(int)endingTile.location.yCoord][(int)endingTile.location.xCoord] = this.endingTile;
+		
+		startingTile.setLocation(prevStart.location);
+		endingTile.setLocation(prevEnd.location);
 	}
 	
 	/**
@@ -50,7 +55,6 @@ public class Map implements Serializable {
 		this.tileMap = new Tile[height][width];
 		for (int i = 0; i < height; i++) {
 			y += Tile.tileLength * 0.5;
-			
 			x = 0;
 			for (int j = 0; j < width; j++) {
 				if(tileMap[i][j] == null) {
@@ -99,7 +103,6 @@ public class Map implements Serializable {
 			System.out.print("\n");
 		}
 	}
-	
 	public static int[] locationToTileMap(Location location) {
 		int x;
 		int y;
