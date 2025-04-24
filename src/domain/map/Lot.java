@@ -1,44 +1,37 @@
 package domain.map;
 
+import java.io.Serializable;
+
 import domain.tower.Tower;
 
-public class Lot {
-	private Tower tower;
-	private Tile tile;
-	private boolean isEmpty;
+public class Lot extends Tile implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
+	public boolean isEmpty = true;
+	public Tower tower;
 
-	public Lot(Tile tile) {
-		this.tile = tile;
-		this.isEmpty = true;
+	public Lot(Location location) {
+		super(TileType.LOT, location);
 	}
-	
-	public Lot(Tile tile, Tower tower) {
-		this.tile = tile;
-		this.tower = tower;
-		this.isEmpty = false;
-	}
-	
+
 	public void placeTower(Tower tower) {
-		if (this.tower != null) return;
-		this.tower = tower;
-		this.isEmpty = false;
-		tower.setLocation(tile.getLocation());
-	}
-	
-	public void removeTower() {
-		this.tower.setLocation(null);
-		this.tower = null;
-		this.isEmpty = true;
-	}
-	
-	public Tile getTile() {
-		return tile;
-	}
-	
-	public void setTile(Tile tile) {
-		this.tile = tile;
-	}
-}
+        if (!isEmpty) {
+            System.out.println("Lot is not empty!");
+            return;
+        }
+        this.setType(TileType.TOWER);
+        this.tower = tower;
+        isEmpty = false;
+    }
 
+    public void removeTower() {
+        if (isEmpty) {
+            System.out.println("No tower to remove!");
+            return;
+        }
+        this.setType(TileType.LOT);
+        this.tower = null;
+        isEmpty = true;
+    }
+}
 	

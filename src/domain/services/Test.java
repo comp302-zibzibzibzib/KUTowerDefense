@@ -114,8 +114,62 @@ public final class Test {
 			} else { System.out.println("MapReadWrite Test 2 - FAILED"); } 
 		}
 		
-		private static List<PathTile> testPathFinding() {
+		private static void testPathFinding() {
 			System.out.println("-----Path Finding Test-----");
+			Map map1 = new Map("map1", 5, 5);
+			MapEditor me3 = new MapEditor(map1);
+			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE,4,3);
+			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 0,1);
+			me3.placeTile(TileType.PATH, PathType.TOPRIGHT, 3, 3);
+			me3.placeTile(TileType.PATH, PathType.BOTTOMRIGHT, 3, 4);
+			me3.placeTile(TileType.PATH, PathType.VERTICAL_END_TOP, 2, 4);
+			me3.placeTile(TileType.PATH, PathType.BOTTOMLEFT, 3, 2);
+			me3.placeTile(TileType.PATH, PathType.TOPRIGHT, 2, 2);
+			me3.placeTile(TileType.PATH, PathType.BOTTOMLEFT, 2, 1);
+			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 1, 1);
+			
+			List<PathTile> path = Utilities.findPath(map1);
+			
+			ArrayList<Location> testPathLocation = new ArrayList<Location>();
+			testPathLocation.add(new Location(17.5,22.5));
+			testPathLocation.add(new Location(17.5,17.5));
+			testPathLocation.add(new Location(12.5,17.5));
+			testPathLocation.add(new Location(12.5,12.5));
+			testPathLocation.add(new Location(7.5,12.5));
+			testPathLocation.add(new Location(7.5,7.5));
+			testPathLocation.add(new Location(7.5,2.5));
+			
+			if (path.size() != testPathLocation.size()) {
+				System.out.println("PathFinding Test - FAILED");
+				return;
+			}
+			
+			for (int i = 0; i < testPathLocation.size(); i++) {
+				Location tileLocation = path.get(i).location;
+				Location testLocation = testPathLocation.get(i);
+				if (tileLocation.xCoord != testLocation.xCoord || tileLocation.yCoord != testLocation.yCoord) {
+					System.out.println("PathFinding Test - FAILED");
+					return;
+				}
+			}
+			
+			System.out.println("PathFinding Test - PASSED");
+			MapTest.printMap(map1);
+			for(PathTile p : path) {
+				System.out.println(p.getPathType());
+			}
+			return;
+		}
+		           
+		
+		public static void main(String[] args) {
+			mapReadWriteTest();
+			testPathFinding();
+		}
+	}
+	
+	static class TowerTest {
+		private static void testTargetEnemy() {
 			Map map1 = new Map("map1", 5, 5);
 			MapEditor me3 = new MapEditor(map1);
 			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE,4,3);
@@ -128,113 +182,11 @@ public final class Test {
 			me3.placeTile(TileType.PATH, PathType.BOTTOMLEFT, 2, 1);
 			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 1, 0);
 			
-			List<PathTile> path = Utilities.findPath(map1);
-			ArrayList<Location> testPathLocation = new ArrayList<Location>();
-			testPathLocation.add(new Location(17.5,22.5));
-			testPathLocation.add(new Location(17.5,17.5));
-			testPathLocation.add(new Location(12.5,17.5));
-			testPathLocation.add(new Location(12.5,12.5));
-			testPathLocation.add(new Location(7.5,12.5));
-			testPathLocation.add(new Location(7.5,7.5));
-			testPathLocation.add(new Location(7.5,2.5));
-			
-			if (path.size() != testPathLocation.size()) {
-				System.out.println("PathFinding Test - FAILED");
-				return null;
-			}
-			
-			for (int i = 0; i < testPathLocation.size(); i++) {
-				Location tileLocation = path.get(i).location;
-				Location testLocation = testPathLocation.get(i);
-				if (tileLocation.xCoord != testLocation.xCoord || tileLocation.yCoord != testLocation.yCoord) {
-					System.out.println("PathFinding Test - FAILED");
-					return null;
-				}
-			}
-			
-			System.out.println("PathFinding Test - PASSED");
-			MapTest.printMap(map1);
-			for(PathTile p : path) {
-				System.out.println(p.getPathType());
-			}
-			return path;
-		}
-		           
 		
-		public static void main(String[] args) {
-			mapReadWriteTest();
-			testPathFinding();
-		}
-	}
-	
-	static class TowerTest {
-		private static void testTargetEnemy() {
-			Location l1 = new Location(17.5,22.5);
-			Location l2 = new Location(7.5,2.5);
-			PathTile start = new PathTile(l1);
-			PathTile end = new PathTile(l2);
-			Map map1 = new Map("map1", 5, 5);
-			map1.setStartingTile(start);
-			map1.setEndingTile(end);
 			
-			Tile[][] tileMap = map1.tileMap;
-			Location l3 = new Location(17.5,17.5);
-			PathTile p33 = new PathTile(l3);
-			
-			Location l4 = new Location(22.5,17.5);
-			PathTile p34 = new PathTile(l4);
-			
-			Location l5 = new Location(22.5,12.5);
-			PathTile p24 = new PathTile(l5);
-			
-			Location l6 = new Location(12.5,17.5);
-			PathTile p32 = new PathTile(l6);
-			
-			Location l7 = new Location(12.5,12.5);
-			PathTile p22 = new PathTile(l7);
-			
-			Location l8 = new Location(7.5,12.5);
-			PathTile p21 = new PathTile(l8);
-			
-			Location l9 = new Location(7.5,7.5);
-			PathTile p11 = new PathTile(l9);
-			
-			start.setUp(p33);
-			
-			p33.setRight(p34);
-			p33.setLeft(p32);
-			p33.setDown(start);
-			
-			p34.setUp(p24);
-			p34.setLeft(p33);
-			
-			p24.setDown(p34);
-			
-			p32.setRight(p33);
-			p32.setUp(p22);
-			
-			p22.setDown(p32);
-			p22.setLeft(p21);
-			
-			p21.setRight(p22);
-			p21.setUp(p11);
-			
-			p11.setDown(p21);
-			p11.setUp(end);
-			
-			end.setDown(p11);
-			
-			tileMap[3][3] = p33;
-			tileMap[3][4] = p34;
-			tileMap[2][4] = p24;
-			tileMap[3][2] = p32;
-			tileMap[2][1] = p21;
-			tileMap[2][2] = p22;
-			tileMap[1][1] = p11;
-			
-			Tile towerTile = tileMap[2][3];
+			Tile towerTile = map1.tileMap[2][3];
 			towerTile.setType(TileType.TOWER);
-			Lot lot = new Lot(towerTile);
+			Lot lot = new Lot(towerTile.getLocation());
 			Tower archerTower = new ArcherTower(200, 1, 7.5, 2);
 			lot.placeTower(archerTower);
 			

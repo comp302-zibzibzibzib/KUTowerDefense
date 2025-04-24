@@ -81,27 +81,34 @@ public class MapEditor implements Serializable{
 	                isEndingTilePlaced = true;
 	            }
 	            
-	            if (y > 0 && map.tileMap[y - 1][x] instanceof PathTile) {
+	            if (ptype.neighbourExists(0) && y > 0 && map.tileMap[y - 1][x] instanceof PathTile) {
 	                PathTile up = (PathTile) map.tileMap[y - 1][x];
-	                newPathTile.setUp(up);
-	                up.setDown(newPathTile);
+	                if (up.getPathType().neighbourExists(1)) {
+	                	newPathTile.setUp(up);
+		                up.setDown(newPathTile);
+	                }
 	            }
-	            if (y < map.height - 1 && map.tileMap[y + 1][x] instanceof PathTile) {
+	            if (ptype.neighbourExists(1) && y < map.height - 1 && map.tileMap[y + 1][x] instanceof PathTile) {
 	                PathTile down = (PathTile) map.tileMap[y + 1][x];
-	                newPathTile.setDown(down);
-	                down.setUp(newPathTile);
+	                if (down.getPathType().neighbourExists(0)) {
+	                	newPathTile.setDown(down);
+		                down.setUp(newPathTile);
+	                }
 	            }
-	            if (x > 0 && map.tileMap[y][x - 1] instanceof PathTile) {
+	            if (ptype.neighbourExists(2) && x > 0 && map.tileMap[y][x - 1] instanceof PathTile) {
 	                PathTile left = (PathTile) map.tileMap[y][x - 1];
-	                newPathTile.setLeft(left);
-	                left.setRight(newPathTile);
+	                if (left.getPathType().neighbourExists(3)) {
+	                	newPathTile.setLeft(left);
+	 	                left.setRight(newPathTile);
+	                }
 	            }
-	            if (x < map.width - 1 && map.tileMap[y][x + 1] instanceof PathTile) {
+	            if (ptype.neighbourExists(3) && x < map.width - 1 && map.tileMap[y][x + 1] instanceof PathTile) {
 	                PathTile right = (PathTile) map.tileMap[y][x + 1];
-	                newPathTile.setRight(right);
-	                right.setLeft(newPathTile);
+	                if (right.getPathType().neighbourExists(2)) {
+	                	newPathTile.setRight(right);
+		                right.setLeft(newPathTile);
+	                }
 	            }
-
 	        }
 	        else {		
 	            tileToPlace = new Tile(type, newTileLocation);

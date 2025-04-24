@@ -50,7 +50,9 @@ public final class Utilities {
 		ArrayList<PathTile> pathTileArray = new ArrayList<PathTile>();
 		for(Tile[] row : map.tileMap)
 			for(Tile tile : row)
-				if (tile.getType() == TileType.PATH) pathTileArray.add((PathTile)tile);
+				if (tile.getType() == TileType.PATH) {
+					pathTileArray.add((PathTile)tile);
+				}
 		
 		// Chose to use euclidean distance for the heuristic medium of A* algorithm
 		// Create a map of PathTiles as keys with their euclidean distance to the ending tile as values
@@ -115,12 +117,13 @@ public final class Utilities {
 		PathTile tile = end;
 		pathArray.add(end);
 		
-		while (tile != start) {
+		while (tile != start && tile != null) {
 			tile = invPathMap.get(tile);
 			pathArray.add(tile);
 		}
 		
 		Collections.reverse(pathArray);
+		if (pathArray.getFirst() != start || pathArray.getLast() != end) return null;
 		
 		return pathArray;
 	}
