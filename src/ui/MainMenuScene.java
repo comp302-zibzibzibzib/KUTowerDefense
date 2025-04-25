@@ -1,5 +1,6 @@
 package ui;
 
+import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,6 +11,8 @@ import javafx.stage.Stage;
 
 public class MainMenuScene {
 	private KuTowerDefenseA app;
+    private Button newGameButton = new Button();
+
 	public MainMenuScene(KuTowerDefenseA app) {
 		// TODO Auto-generated constructor stub
 		this.app = app;
@@ -22,16 +25,24 @@ public class MainMenuScene {
 		mv.fitWidthProperty().bind(root.widthProperty());
         mv.fitHeightProperty().bind(root.heightProperty());
         
-        Button button = new Button();
+        newGameButton.setText("New Game");
+        newGameButton.setBackground(null);
+        newGameButton.setOnAction(this::processButtonEvents);
+        
 		
 		root.getChildren().addAll(mv);
+		root.getChildren().add(newGameButton);
 		Scene scene = new Scene(root);
 
-
-		
-		
 		return scene;
 		
+	}
+	
+	private void processButtonEvents(ActionEvent event) {
+		if(event.getSource() == newGameButton) {
+			System.out.println("damn");
+			
+		}
 	}
 
 }
