@@ -67,13 +67,19 @@ public class PlayModeManager {
 		
 		///Delays new wave for 4 seconds than starts them in another thread (Can be put somewhere else)
 		if(Enemy.enemies.isEmpty()) {//if condition can be put somewhere else
+			int delay = 4;
+			
+			if(this.gameSpeed == 2.0) {
+				delay = 2;
+			}
+			
 			ScheduledExecutorService newWaveScheduler = Executors.newSingleThreadScheduledExecutor();
 			newWaveScheduler.schedule(() -> {
 				Wave currentWave = waves.get(currentWaveIndex);
 				currentWave.spawnGroups();
 				currentWaveIndex++;
 				
-			}, 4, TimeUnit.SECONDS);
+			}, delay, TimeUnit.SECONDS);
 			
 			
 		}
