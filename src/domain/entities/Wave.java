@@ -2,27 +2,59 @@ package domain.entities;
 
 import java.util.List;
 
-public class Wave {
-	private int numberofGroups;
+class GroupSpawner implements Runnable { 
+	//NOT THREAD SAFE, MIGHT NEED TO CHANGE EVERY LIST IN ENTITIES TO THREAD SAFE VERS.
+	//MIGHT NEED TO ADD VOLATILE KEYWORD TO VARIABLES IN GROUP AND ENEMY
+	private int numberOfGroups;
 	private List<Group> groups;
 	private List<Double> groupSpawnDelays;
 	
-	public Wave(int numberofGroups, List<Group> groups, List<Double> groupSpawnDelays) {
-		this.numberofGroups = numberofGroups;
+	protected GroupSpawner(int numberOfGroups, List<Group> groups, List<Double> groupSpawnDelays) {
+		this.numberOfGroups = numberOfGroups;
+		this.groupSpawnDelays = groupSpawnDelays;
+		this.groups = groups;
+	}
+
+	@Override
+	public void run() {
+		for(int i = 0; i < numberOfGroups; i++) {
+			groups.get(i).initializeEnemies();
+			
+			try {
+				Thread.sleep((long) (groupSpawnDelays.get(i)*1000)); //does not really like casting Double to long
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+	}
+	
+}
+
+
+public class Wave {
+	private int numberOfGroups;
+	private List<Group> groups;
+	private List<Double> groupSpawnDelays;
+	
+	public Wave(int numberOfGroups, List<Group> groups, List<Double> groupSpawnDelays) {
+		this.numberOfGroups = numberOfGroups;
 		this.groups = groups;
 		this.groupSpawnDelays = groupSpawnDelays;
 	}
 	
-	public void spawnGroups() {//stub
-		
+	public void spawnGroups() {//might not work
+		GroupSpawner spawner = new GroupSpawner(numberOfGroups, groups, groupSpawnDelays);
+		spawner.run();
 	}
 
 	public int getNumberofGroups() {
-		return numberofGroups;
+		return numberOfGroups;
 	}
 
 	public void setNumberofGroups(int numberofGroups) {
-		this.numberofGroups = numberofGroups;
+		this.numberOfGroups = numberofGroups;
 	}
 
 	public List<Group> getGroups() {
