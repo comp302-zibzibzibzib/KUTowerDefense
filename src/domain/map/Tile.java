@@ -1,4 +1,4 @@
-package domain.map;
+	package domain.map;
 
 import java.io.Serializable;
 

@@ -69,7 +69,7 @@ public abstract class Enemy {
 	}
 	
 	public static void setPath() {
-		path = Utilities.findPath(PlayModeManager.getInstance().getCurrentMap());
+		path = PlayModeManager.getInstance().getCurrentMap().getPath();
 	}
 	
 	
