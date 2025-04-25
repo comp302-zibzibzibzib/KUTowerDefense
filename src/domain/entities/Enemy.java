@@ -27,6 +27,20 @@ public abstract class Enemy {
 		Player.getInstance().takeDamage();
 		enemies.remove(this);
 	}
+	
+	public void killEnemy() { //VALUE IS RANDOM FOR NOW, MUST BE ABLE TO CHANGE IN OPTIONS
+		enemies.remove(this);
+		Player.getInstance().gold += 25;
+	}
+	
+	public void moveEnemy() { // stub, is it still required?
+		
+	}
+	
+	public void moveTowards(PathTile pathTile) { //stub, is it still required?
+		
+	}
+
 
 	public double getHitPoints() {
 		return hitPoints;
