@@ -141,7 +141,7 @@ public final class Test {
 			
 			if (path.size() != testPathLocation.size()) {
 				System.out.println("PathFinding Test - FAILED");
-				return;
+				return null;
 			}
 			
 			for (int i = 0; i < testPathLocation.size(); i++) {
@@ -149,7 +149,7 @@ public final class Test {
 				Location testLocation = testPathLocation.get(i);
 				if (tileLocation.xCoord != testLocation.xCoord || tileLocation.yCoord != testLocation.yCoord) {
 					System.out.println("PathFinding Test - FAILED");
-					return;
+					return null;
 				}
 			}
 			

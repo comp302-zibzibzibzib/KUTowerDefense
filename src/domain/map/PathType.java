@@ -12,6 +12,7 @@ public enum PathType {
 	
 	private String str;
 	private boolean[] neighbourBool; // {up, down, left, right}
+
 	
 	@Override
 	public String toString() { return this.str; }

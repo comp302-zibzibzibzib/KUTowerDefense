@@ -25,7 +25,7 @@ public class Lot extends Tile implements Serializable {
     }
 
     public void removeTower() {
-        if (isEmpty) {
+        if (this.getType() != TileType.TOWER) {
             System.out.println("No tower to remove!");
             return;
         }
@@ -34,4 +34,5 @@ public class Lot extends Tile implements Serializable {
         isEmpty = true;
     }
 }
+
 	

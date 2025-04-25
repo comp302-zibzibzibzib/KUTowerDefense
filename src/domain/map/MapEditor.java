@@ -28,6 +28,7 @@ public class MapEditor implements Serializable{
 	        int y = height;
 	        
 	        Tile existingTile = map.tileMap[y][x];
+	        
 	        //Check whether a tile is already placed at that position
 	        if (existingTile != null && existingTile.getType() != TileType.GRASS) {
 	            System.out.println("Error: Cannot place tile on top of another tile. Remove it first.");
