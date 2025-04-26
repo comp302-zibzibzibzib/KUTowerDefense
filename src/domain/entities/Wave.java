@@ -5,6 +5,7 @@ import java.util.List;
 class GroupSpawner implements Runnable { 
 	//NOT THREAD SAFE, MIGHT NEED TO CHANGE EVERY LIST IN ENTITIES TO THREAD SAFE VERS.
 	//MIGHT NEED TO ADD VOLATILE KEYWORD TO VARIABLES IN GROUP AND ENEMY
+	//WHEN GAME IS PAUSED MUST PAUSE THIS TOO
 	private int numberOfGroups;
 	private List<Group> groups;
 	private List<Double> groupSpawnDelays;
@@ -44,9 +45,10 @@ public class Wave {
 		this.groupSpawnDelays = groupSpawnDelays;
 	}
 	
-	public void spawnGroups() {//might not work
+	public void spawnGroups() {//MIGHT NOT WORK
 		GroupSpawner spawner = new GroupSpawner(numberOfGroups, groups, groupSpawnDelays);
-		spawner.run();
+		Thread GroupSpawnerThread = new Thread(spawner);
+		GroupSpawnerThread.start();
 	}
 
 	public int getNumberofGroups() {

@@ -93,4 +93,8 @@ public class PlayModeManager {
 	public Map getCurrentMap() {
 	    return currentMap;
 	}
+	
+	public double getGameSpeed() {
+		return this.gameSpeed;
+	}
 }
