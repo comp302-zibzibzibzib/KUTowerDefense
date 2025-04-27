@@ -1,7 +1,5 @@
 package domain.tower;
 
-import domain.map.Location;
-
 public class ArtilleryTower extends Tower {
 
 	public ArtilleryTower(int upgradeCost, int level, double range, double fireRate) {
