@@ -111,7 +111,15 @@ public final class Test {
 			
 			if (map2Test.height == map2.height && map2Test.width == map2.width && map2Test.mapName.equals(map2.mapName)) {
 				System.out.println("MapReadWrite Test 2 - PASSED");
-			} else { System.out.println("MapReadWrite Test 2 - FAILED"); } 
+			} else { System.out.println("MapReadWrite Test 2 - FAILED"); }
+			
+			Map map3 = new Map("map3", 9, 16);
+			Utilities.writeMap(map3);
+			Map map3Test = Utilities.readMap("map3");
+			if (map3Test.height == map3.height && map3Test.width == map3.width && map3Test.mapName.equals(map3.mapName)) {
+				System.out.println("MapReadWrite Test 2 - PASSED");
+			} else { System.out.println("MapReadWrite Test 2 - FAILED"); }
+			
 		}
 		
 		private static void testPathFinding() {
@@ -141,7 +149,7 @@ public final class Test {
 			
 			if (path.size() != testPathLocation.size()) {
 				System.out.println("PathFinding Test - FAILED");
-				return null;
+				return;
 			}
 			
 			for (int i = 0; i < testPathLocation.size(); i++) {
@@ -149,7 +157,7 @@ public final class Test {
 				Location testLocation = testPathLocation.get(i);
 				if (tileLocation.xCoord != testLocation.xCoord || tileLocation.yCoord != testLocation.yCoord) {
 					System.out.println("PathFinding Test - FAILED");
-					return null;
+					return;
 				}
 			}
 			

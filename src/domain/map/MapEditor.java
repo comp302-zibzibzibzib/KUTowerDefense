@@ -209,7 +209,7 @@ public class MapEditor implements Serializable{
 		if(isStartingTilePlaced && isEndingTilePlaced && map.getStartingTile() != null && map.getEndingTile() != null) { 
 			List<PathTile> reachablePath = Utilities.findPath(map);
 			//Ensure that there is a connected path and, first tile and last tiles are starting and ending tiles respectively. (Should work if A* is implemented correctly)
-			if(reachablePath.getFirst().equals(map.getStartingTile()) && reachablePath.get(reachablePath.size()-1).equals(map.getEndingTile())) {
+			if(reachablePath.get(0).equals(map.getStartingTile()) && reachablePath.get(reachablePath.size()-1).equals(map.getEndingTile())) {
 				//Ensure that there are at least four tiles with empty lots
 				if(lotCount >= 4) {
 					return true;
