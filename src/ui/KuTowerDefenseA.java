@@ -1,12 +1,6 @@
 package ui;
-import domain.map.Map;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -40,8 +34,8 @@ public class KuTowerDefenseA  extends Application{
     	primaryStage.setResizable(false);
     	
     }
-    public void startGame(Map readMap) {
-    	PlayModeScene playableGame = new PlayModeScene(this,readMap);
+    public void startGame() {
+    	PlayModeScene playableGame = new PlayModeScene(this);
     	Scene game = playableGame.getScene();
     	primaryStage.setScene(game);
     	primaryStage.setResizable(false);
