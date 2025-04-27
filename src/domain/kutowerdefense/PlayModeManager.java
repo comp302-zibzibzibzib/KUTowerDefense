@@ -1,7 +1,9 @@
 package domain.kutowerdefense;
 
 import java.util.List;
+import java.util.concurrent.*;
 
+import domain.entities.Enemy;
 import domain.entities.Wave;
 import domain.map.Map;
 
@@ -62,6 +64,22 @@ public class PlayModeManager {
 	public void initializeWaves() {
 		/*GameOptions.getInstance();
 		Will create waves of groups, IMPLEMENT GAME OPTIONS FOR WAVE INITIALIZATION PARAMETERS*/
+		
+		///Delays new wave for 4 seconds than starts them in another thread (Can be put somewhere else)
+		if(Enemy.enemies.isEmpty()) {//if condition can be put somewhere else
+			long delay = 4000;
+			
+			ScheduledExecutorService newWaveScheduler = Executors.newSingleThreadScheduledExecutor();
+			newWaveScheduler.schedule(() -> {
+				Wave currentWave = waves.get(currentWaveIndex);
+				currentWave.spawnGroups();
+				currentWaveIndex++;
+				
+			}, (long) (delay*(this.gameSpeed*10)), TimeUnit.MILLISECONDS);
+			
+			
+		}
+		
 	}
 	
 	public void setCurrentMap(Map map) {
@@ -70,5 +88,9 @@ public class PlayModeManager {
 
 	public Map getCurrentMap() {
 	    return currentMap;
+	}
+	
+	public double getGameSpeed() {
+		return this.gameSpeed;
 	}
 }
