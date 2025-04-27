@@ -15,7 +15,6 @@ public class MapEditorScene {
 	
 	
 	public MapEditorScene(KuTowerDefenseA app) {
-		// TODO Auto-generated constructor stub
 		this.app = app;
 	}
 	

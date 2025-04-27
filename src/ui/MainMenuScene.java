@@ -1,5 +1,6 @@
 package ui;
 
+import domain.controller.MainMenuController;
 import domain.map.Map;
 import domain.services.Utilities;
 import javafx.event.ActionEvent;
@@ -16,7 +17,6 @@ public class MainMenuScene {
     private Button newGameButton = new Button();
 
 	public MainMenuScene(KuTowerDefenseA app) {
-		// TODO Auto-generated constructor stub
 		this.app = app;
 	}
 	public Scene getScene(StackPane root) {
@@ -42,8 +42,8 @@ public class MainMenuScene {
 	
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
-			Map map = Utilities.readMap("Pre-Built Map");
-			app.startGame(map);
+			MainMenuController.startNewGame("Pre-Built Map");
+			app.startGame();
 			
 		}
 	}
