@@ -3,6 +3,8 @@ package domain.map;
 import java.io.Serializable;
 import java.util.List;
 
+import domain.services.Utilities;
+
 public class Map implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -20,8 +22,8 @@ public class Map implements Serializable {
 		return path;
 	}
 
-	public void setPath(List<PathTile> path) {
-		this.path = path;
+	public void setPath() {
+		this.path = Utilities.findPath(this);
 	}
 	public Tile[][] tileMap;
 	
@@ -86,6 +88,10 @@ public class Map implements Serializable {
 	}
 
 	public void setStartingTile(PathTile startingTile) {
+		if(startingTile == null) {
+			this.startingTile = null;
+			return;
+		}
 		int[] d = locationToTileMap(startingTile.getLocation());
 		if (d[0] != height - 1) return;
 		
@@ -93,11 +99,31 @@ public class Map implements Serializable {
 		tileMap[d[0]][d[1]] = startingTile;
 	}
 
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
 	public PathTile getEndingTile() {
 		return endingTile;
 	}
 
 	public void setEndingTile(PathTile endingTile) {
+		if(endingTile == null) {
+			this.endingTile = null;
+			return;
+		}
 		int[] d = locationToTileMap(endingTile.getLocation());
 		if (d[0] != 0) return;
 		
