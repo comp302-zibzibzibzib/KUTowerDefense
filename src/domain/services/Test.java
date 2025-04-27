@@ -14,6 +14,7 @@ import domain.map.PathTile;
 import domain.map.PathType;
 import domain.map.Tile;
 import domain.map.TileType;
+import domain.map.TowerType;
 import domain.tower.ArcherTower;
 import domain.tower.Tower;
 
@@ -45,17 +46,50 @@ public final class Test {
 		
 		
 		public static void main(String[] args) {
+			System.out.println("Pre-Built Map");
+			Map map = new Map("Pre-Built Map", 9, 16);
+			MapEditor me = new MapEditor(map);
+			me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 0,4);
+			me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 1,4);
+			me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 2,4);
+			me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 3,4);
+			me.placeTile(TileType.PATH, PathType.BOTTOMLEFT, 4,4);
+			me.placeTile(TileType.PATH, PathType.TOPRIGHT, 4,5);
+			me.placeTile(TileType.PATH, PathType.BOTTOMRIGHT,5,5);
+			me.placeTile(TileType.PATH, PathType.TOPLEFT, 5,4);
+			me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE,6,4);
+			me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE,7,4);
+			me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 8,4);
+			me.placeTile(TileType.CASTLE, 0, 2);
+			me.placeTile(TileType.DECORATIVES, 0, 0);
+			me.placeTile(TileType.DECORATIVES, 0, 15);
+			me.placeTile(TileType.DECORATIVES, 8, 0);
+			me.placeTile(TileType.DECORATIVES, 8, 15);
+			me.placeTile(TileType.LOT, 3, 2);
+			me.placeTile(TileType.LOT, 5, 2);
+			me.placeTile(TileType.LOT, 3, 6);
+			me.placeTile(TileType.LOT, 8, 5);
+			me.placeTile(TileType.TOWER, TowerType.ARCHER, 0,5);
+			me.placeTile(TileType.TOWER, TowerType.MAGE, 8,3);
+			me.placeTile(TileType.OBSTACLES, 5, 14);
+			me.placeTile(TileType.OBSTACLES, 7, 13);
+			me.placeTile(TileType.OBSTACLES, 7, 10);
+			
+			me.saveMap();
+			Map loadedMap = Utilities.readMap("Pre-Built Map");
+			printMap(loadedMap);
+			
 			System.out.println("TEST 1");
 			Map map1 = new Map("map1", 5, 6);
 			MapEditor me1 = new MapEditor(map1);
 			me1.placeTile(TileType.PATH,PathType.VERTICAL_MIDDLE, 4,5);
-			me1.placeTile(TileType.TOWER, 4,4);
+			me1.placeTile(TileType.TOWER, TowerType.MAGE, 4,4);
+			me1.placeTile(TileType.TOWER, TowerType.ARCHER, 2,4);
+			me1.placeTile(TileType.LOT, 1, 0);
+			me1.removeTile(1, 0);
 			me1.placeTile(TileType.CASTLE,0,0);
-			me1.removeTile(1,0);
 			me1.placeTile(TileType.DECORATIVES, 1, 1);
 			me1.placeTile(TileType.DECORATIVES,2,2);
-			me1.removeTile(4,4);
-			me1.removeTile(4,4);
 			System.out.println(map1.tileMap[4][4].getClass().toString());
 			
 			printMap(map1);
@@ -66,7 +100,7 @@ public final class Test {
 			Location location2 = new Location(1,0);
 			PathTile s = new PathTile(PathType.VERTICAL_MIDDLE,location1);
 			PathTile e = new PathTile(PathType.BOTTOMRIGHT,location2);
-			Map map2 = new Map("map2", s, e ,9, 16); //Do an out of bounds check!!!
+			Map map2 = new Map("map2", s, e ,9, 16); 
 			printMap(map2);
 			
 			System.out.println("TEST 3");

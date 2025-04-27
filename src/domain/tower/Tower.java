@@ -9,9 +9,9 @@ import domain.map.PathTile;
 import domain.map.Tile;
 import domain.services.Utilities;
 
-public abstract class Tower implements Serializable{
+public abstract class Tower implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
 	protected int upgradeCost;
     protected int level;
     protected double range;

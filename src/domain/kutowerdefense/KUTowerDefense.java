@@ -16,7 +16,6 @@ public class KUTowerDefense {
 	}
 	
 	public static void enterMapEditor() {
-		MapEditor editor = new MapEditor(); // idk
 	}
 	
 	public static void openOptions() {

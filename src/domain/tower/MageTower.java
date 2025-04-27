@@ -1,7 +1,5 @@
 package domain.tower;
 
-import domain.map.Location;
-
 public class MageTower extends Tower {
 
 	public MageTower(int upgradeCost, int level, double range, double fireRate, AttackType attackType) {
