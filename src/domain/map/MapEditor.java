@@ -185,7 +185,7 @@ public class MapEditor implements Serializable {
 
 	        // Place the Tower inside the Lot
 	        Lot lot = new Lot(existingTile.getLocation());
-	        lot.placeTower(tower); 
+	        lot.placeTower(tower,tType); 
 	        lot.setType(TileType.TOWER); 
 
 	        map.tileMap[y][x] = lot;
@@ -194,6 +194,30 @@ public class MapEditor implements Serializable {
 	        System.out.println("Error: Array index out of bounds while placing tower!");
 	    }
 	}
+	public void placeTile(TileType type, DecorativeType decorativeType, int height, int width) {
+        try {
+            if (type != TileType.DECORATIVES) {
+                System.out.println("Error: Wrong method. Use the correct placeTile overload!");
+                return;
+            }
+
+            int x = width;
+            int y = height;
+
+            Tile existingTile = map.tileMap[y][x];
+
+            if (existingTile != null && existingTile.getType() != TileType.GRASS) {
+                System.out.println("Error: Cannot place tile on top of another tile. Remove it first.");
+                return;
+            }
+
+            Tile tile = new DecorativeTile(decorativeType, existingTile.getLocation());
+
+            map.tileMap[y][x] = tile;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Error: Array index out of bounds while placing tower!");
+        }
+    }
 
 	public void removeTile(int height, int width) {
 		try {

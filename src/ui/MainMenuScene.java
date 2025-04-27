@@ -42,9 +42,8 @@ public class MainMenuScene {
 	
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
-			//Map map = Utilities.readMap("map3");
-			//app.startGame(map);
-			app.showMapEditor();
+			Map map = Utilities.readMap("Pre-Built Map");
+			app.startGame(map);
 			
 		}
 	}
