@@ -123,7 +123,7 @@ public final class Utilities {
 		}
 		
 		Collections.reverse(pathArray);
-		if (pathArray.getFirst() != start || pathArray.getLast() != end) return null;
+		if (pathArray.get(0) != start || pathArray.get(pathArray.size()-1) != end) return null;
 		
 		return pathArray;
 	}
