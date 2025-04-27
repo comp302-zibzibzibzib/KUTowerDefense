@@ -1,4 +1,4 @@
-package domain.map;
+ package domain.map;
 
 // Enumeration to differentiate between different shapes of path tiles
 public enum PathType {

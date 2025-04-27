@@ -1,5 +1,7 @@
 package ui;
 
+import domain.map.Map;
+import domain.services.Utilities;
 import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -40,7 +42,9 @@ public class MainMenuScene {
 	
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
-			System.out.println("damn");
+			//Map map = Utilities.readMap("map3");
+			//app.startGame(map);
+			app.showMapEditor();
 			
 		}
 	}

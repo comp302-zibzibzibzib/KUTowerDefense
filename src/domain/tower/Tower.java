@@ -1,5 +1,6 @@
 package domain.tower;
 
+import java.io.Serializable;
 import java.util.List;
 
 import domain.entities.Enemy;
@@ -8,7 +9,9 @@ import domain.map.PathTile;
 import domain.map.Tile;
 import domain.services.Utilities;
 
-public abstract class Tower {
+public abstract class Tower implements Serializable{
+	private static final long serialVersionUID = 1L;
+
 	protected int upgradeCost;
     protected int level;
     protected double range;
