@@ -6,7 +6,7 @@ import domain.kutowerdefense.PlayModeManager;
 import domain.map.Location;
 import javafx.animation.AnimationTimer;
 
-class EnemyMover implements Runnable{ //deprecated class
+/*class EnemyMover implements Runnable{ //deprecated class
 	private Enemy enemy;
 	
 	protected EnemyMover(Enemy enemy) {
@@ -17,7 +17,7 @@ class EnemyMover implements Runnable{ //deprecated class
 		enemy.moveEnemy();
 	}
 	
-}
+}*/
 
 public class Group {
 	private int numberOfEnemies;
@@ -39,8 +39,6 @@ public class Group {
 
 			@Override
 			public void handle(long now) {
-				// TODO Auto-generated method stub
-				
 				if(lastUpdate > 0) { //skips first frame to not cause problems
 					
 					double deltaSecond = (now - lastUpdate)/1_000_000_000.0;// should be 1/60 of a second
@@ -51,7 +49,9 @@ public class Group {
 						Enemy enemy =  composition.get(index);
 						enemy.getLocation().xCoord = startLocation.xCoord;
 						enemy.getLocation().yCoord = startLocation.yCoord;
-						enemy.moveEnemy();
+						
+						//enemy.moveEnemy();
+						
 						timeAfterEnemySpawn = 0.0;
 						index++;
 						

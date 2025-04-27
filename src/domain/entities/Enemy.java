@@ -33,15 +33,35 @@ public abstract class Enemy {
 		Player.getInstance().gold += 25;
 	}
 	
-	public void moveEnemy() { // stub, is it still required?
+	public void moveEnemy(long deltaTime) {
+		double deltaSecond = deltaTime/1_000_000_000.0; //if causing problems can be removed
+		double displacement = (this.speed * PlayModeManager.getInstance().getGameSpeed())*deltaSecond; //get displacement
+		
+		Location nextTileLoc = path.get(pathIndex+1).getLocation(); //get the location of next tile's centre
+		double distance = Utilities.euclideanDistance(this.location, nextTileLoc); //get distance
+		
+		//get difference
+		double xDelta = nextTileLoc.xCoord - this.location.xCoord;
+		double yDelta = nextTileLoc.yCoord - this.location.yCoord;
+		//get Unit
+		double xUnit = xDelta / distance;
+		double yUnit = yDelta / distance;
+		//move the enemy
+		this.location.xCoord += xUnit * displacement;
+		this.location.yCoord += yUnit * displacement;
+		
+		//updates pathIndex if the current location of enemy is near the next tile centre (limit is arbitrary)
+		//can be put somewhere else
+		if(Utilities.euclideanDistance(this.location, nextTileLoc) < 0.01) {
+			this.pathIndex++;
+			if(this.pathIndex == path.size()-1) { //if arrived at ending tile hit the player
+				this.hitPlayer();
+			}
+		}
+		
 		
 	}
 	
-	public void moveTowards(PathTile pathTile) { //stub, is it still required?
-		
-	}
-
-
 	public double getHitPoints() {
 		return hitPoints;
 	}
@@ -72,6 +92,9 @@ public abstract class Enemy {
 	
 	public void hitEnemy(double damage) {
 		hitPoints -= damage;
+		if(hitPoints <= 0) {
+			this.killEnemy();
+		}
 	}
 	
 	public void setPathIndex(int pathIndex) {

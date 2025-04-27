@@ -4,7 +4,7 @@ import java.util.List;
 
 import javafx.animation.AnimationTimer;
 
-class GroupSpawner implements Runnable { //Deprecated Class, left just in case
+/*class GroupSpawner implements Runnable { //Deprecated Class, left just in case
 	//NOT THREAD SAFE, MIGHT NEED TO CHANGE EVERY LIST IN ENTITIES TO THREAD SAFE VERS.
 	//MIGHT NEED TO ADD VOLATILE KEYWORD TO VARIABLES IN GROUP AND ENEMY
 	//WHEN GAME IS PAUSED MUST PAUSE THIS TOO
@@ -33,7 +33,7 @@ class GroupSpawner implements Runnable { //Deprecated Class, left just in case
 		
 	}
 	
-}
+}*/
 
 
 public class Wave {
@@ -65,7 +65,8 @@ public class Wave {
 						groups.get(index).initializeEnemies();
 						timeAfterGroup = 0.0;//resets amount of time passed and increases index
 						index++;
-						if(index == numberOfGroups) {//idk if this stops all timers or this one or causes issues with move enemy
+						if(index == numberOfGroups) {
+							//idk if ending this timer causes issues with move enemy
 							//finished spawning every group
 							this.stop();
 						}
