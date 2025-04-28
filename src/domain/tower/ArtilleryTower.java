@@ -2,8 +2,9 @@ package domain.tower;
 
 public class ArtilleryTower extends Tower {
 
-	public ArtilleryTower(int upgradeCost, int level, double range, double fireRate) {
+	public ArtilleryTower(int cost, int upgradeCost, int level, double range, double fireRate) {
 		super();
+		this.cost = cost;
 		this.upgradeCost = upgradeCost;
 		this.attackType = AttackType.ARTILLERY;
 		this.level = level;

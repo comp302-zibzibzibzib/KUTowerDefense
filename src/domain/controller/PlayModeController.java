@@ -1,7 +1,6 @@
 package domain.controller;
 
 import domain.kutowerdefense.PlayModeManager;
-import domain.kutowerdefense.Player;
 import domain.map.DecorativeTile;
 import domain.map.Lot;
 import domain.map.Map;
@@ -87,6 +86,10 @@ public class PlayModeController {
 			System.out.println("Error: Wrong method. Use the correct placeTile overload!");
 		}
 		return name;
+	}
+	
+	public static double getGameSpeed() {
+		return playModeManager.getGameSpeed();
 	}
 	
 	public static void accelerateGame() {
