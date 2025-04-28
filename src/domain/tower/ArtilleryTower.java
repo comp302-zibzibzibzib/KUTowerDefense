@@ -13,7 +13,7 @@ public class ArtilleryTower extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		Projectile projectile = new Projectile(attackType, target, location);
+		Projectile projectile = ProjectileFactory.createArtilleryShell(target, location);
 		System.out.printf("%f",projectile.damage);
 		return projectile;
 	}

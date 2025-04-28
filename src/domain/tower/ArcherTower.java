@@ -13,7 +13,7 @@ public class ArcherTower extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		Projectile projectile = new Projectile(attackType, target, location);
+		Projectile projectile = ProjectileFactory.createArrow(target, location);
 		System.out.printf("%f",projectile.damage);
 		return projectile;
 	}
