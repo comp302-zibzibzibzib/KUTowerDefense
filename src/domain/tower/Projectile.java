@@ -10,11 +10,11 @@ public class Projectile {
 	protected Location location;
 	
 	
-	public Projectile(AttackType attacktype, Enemy enemy, Location location) {
+	public Projectile(AttackType attacktype, Enemy target, Location location) {
 		super();
 		this.damage = attacktype.getDamage();
 		this.attacktype = attacktype;
-		this.target = enemy;
+		this.target = target;
 		this.location = location;
 	}
 
