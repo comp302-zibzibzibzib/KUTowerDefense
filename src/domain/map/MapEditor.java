@@ -168,7 +168,7 @@ public class MapEditor implements Serializable {
 	        Tile existingTile = map.tileMap[y][x];
 
 	        // Check if trying to place a Tower on something other than a Lot
-	        if (existingTile != null && existingTile.getType() != TileType.LOT) {
+	        if (existingTile != null && (existingTile.getType() != TileType.LOT || existingTile.getType() != TileType.GRASS)) {
 				System.out.println("Error: Cannot place Tower on top of a tile other than lot.");
 				return; // Cancel placement
 			}
