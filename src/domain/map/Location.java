@@ -8,11 +8,17 @@ public class Location implements Serializable{
 	
 	public double xCoord;
 	public double yCoord;
+	
 	public Location(double xCoord, double yCoord) {
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
 	}
 	
+	public Location() {
+		this.xCoord = 0;
+		this.yCoord = 0;
+	}
+
 	public double getXCoord() {
 		return xCoord;
 	}
