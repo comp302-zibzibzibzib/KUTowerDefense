@@ -11,7 +11,6 @@ public class Goblin extends Enemy {
 		this.speed = speed;
 		this.location = location;
 		this.spellDamageReduction = spellDamageReduction;
-		enemies.add(this);
 	}
 
 	public double getSpellDamageReduction() {

@@ -11,7 +11,7 @@ public class Knight extends Enemy {
 		this.speed = speed;
 		this.location = location;
 		this.arrowDamageReduction = arrowDamageReduction;
-		enemies.add(this);
+		
 	}
 
 }

@@ -45,12 +45,12 @@ public class Group {
 					timeAfterEnemySpawn += deltaSecond * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 					
 					if(timeAfterEnemySpawn >= delay) { 
-						//set location of enemy at start and move
+						//set location of enemy at start and put them one enemies list
 						Enemy enemy =  composition.get(index);
 						enemy.getLocation().xCoord = startLocation.xCoord;
 						enemy.getLocation().yCoord = startLocation.yCoord;
+						Enemy.enemies.add(enemy);
 						
-						//enemy.moveEnemy();
 						
 						timeAfterEnemySpawn = 0.0;
 						index++;

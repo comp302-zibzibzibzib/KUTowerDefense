@@ -52,7 +52,7 @@ public abstract class Enemy {
 		
 		//updates pathIndex if the current location of enemy is near the next tile centre (limit is arbitrary)
 		//can be put somewhere else
-		if(Utilities.euclideanDistance(this.location, nextTileLoc) < 0.01) {
+		if(Utilities.euclideanDistance(this.location, nextTileLoc) < 0.2) {
 			this.pathIndex++;
 			if(this.pathIndex == path.size()-1) { //if arrived at ending tile hit the player
 				this.hitPlayer();
