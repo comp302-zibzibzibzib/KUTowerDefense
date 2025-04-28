@@ -17,6 +17,8 @@ public abstract class Enemy {
 	protected Location location;
 	protected int pathIndex;
 	
+	private boolean initialized = false;
+	
 	/**
 	 * 
 	 * @param player
@@ -83,7 +85,8 @@ public abstract class Enemy {
 	}
 
 	public void setLocation(Location location) {
-		this.location = location;
+		this.location.xCoord = location.xCoord;
+		this.location.yCoord = location.yCoord;
 	}
 	
 	public static ArrayList<Enemy> getAllEnemies(){
@@ -109,5 +112,12 @@ public abstract class Enemy {
 		path = PlayModeManager.getInstance().getCurrentMap().getPath();
 	}
 	
+	public void initialize(Location location) {
+		setLocation(location);
+		initialized = true;
+	}
 	
+	public boolean isInitalized() {
+		return initialized;
+	}
 }

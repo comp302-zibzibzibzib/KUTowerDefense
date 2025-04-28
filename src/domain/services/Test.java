@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import domain.controller.EntityController;
 import domain.entities.Enemy;
 import domain.entities.Goblin;
 import domain.entities.Knight;
@@ -25,7 +26,6 @@ import domain.map.TileType;
 import domain.map.TowerType;
 import domain.tower.ArcherTower;
 import domain.tower.Tower;
-import javafx.animation.AnimationTimer;
 
 // Test class to test various components in domain
 public final class Test {

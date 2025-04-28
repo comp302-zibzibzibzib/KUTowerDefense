@@ -9,7 +9,11 @@ public class Knight extends Enemy {
 	public Knight(double hitPoints, double speed, Location location, double arrowDamageReduction) {//var can be changed
 		this.hitPoints = hitPoints;
 		this.speed = speed;
-		this.location = location;
+		this.location = new Location();
+		if (location != null) {
+			this.location.xCoord = location.xCoord;
+			this.location.yCoord = location.yCoord;
+		}
 		this.arrowDamageReduction = arrowDamageReduction;
 		
 	}
