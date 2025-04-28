@@ -15,6 +15,8 @@ public class Goblin extends Enemy {
 			this.location.yCoord = location.yCoord;
 		}
 		this.spellDamageReduction = spellDamageReduction;
+		Enemy.enemies.add(this);
+		this.enemyID = getID();
 	}
 
 	public double getSpellDamageReduction() {

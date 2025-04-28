@@ -3,6 +3,7 @@ package domain.kutowerdefense;
 import java.util.ArrayList;
 import java.util.List;
 
+import domain.entities.Enemy;
 import domain.entities.Wave;
 import domain.entities.WaveFactory;
 import domain.map.Map;
@@ -22,6 +23,7 @@ public class PlayModeManager {
 	private PlayModeManager() {
 		this.currentWaveIndex = 0; this.gameSpeed = 1.0; this.previousGameSpeed = 1.0;
 		this.waves = new ArrayList<Wave>();
+		Enemy.enemies.clear();
 		for (int i = 0; i < 3; i++) waves.add(WaveFactory.createWave()); // Temporarily has 3 identical waves back to back
 	}
 	
@@ -36,6 +38,7 @@ public class PlayModeManager {
 		instance.gameSpeed = 1.0;
 		instance.previousGameSpeed = 1.0;
 		instance.waves = new ArrayList<Wave>();
+		Enemy.enemies.clear();
 		instance.currentMap = null;
 	}
 	
@@ -84,7 +87,7 @@ public class PlayModeManager {
 		
 		if (!currentWave.isSpawning() && !spawnedAllWaves()) {
 			currentWave.startSpawning();
-			System.out.printf("Initializing wave%o!%n", currentWaveIndex + 1);
+			//System.out.printf("Initializing wave%o!%n", currentWaveIndex + 1);
 		}
 	}
 	

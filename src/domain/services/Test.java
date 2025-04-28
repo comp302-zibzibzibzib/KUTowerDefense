@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import domain.controller.EntityController;
 import domain.entities.Enemy;
+import domain.entities.EnemyFactory;
 import domain.entities.Goblin;
 import domain.entities.Knight;
 import domain.kutowerdefense.PlayModeManager;
@@ -322,7 +323,7 @@ public final class Test {
 		map1.endingTile = path.get(path.size()-1);
 		map1.startingTile = path.get(0);
 		
-		Enemy e1 = new Goblin(1.0,1.0,null, 1.0);
+		Enemy e1 = EnemyFactory.createGoblin();
 		e1.setLocation(map1.startingTile.location);
 		e1.setPathIndex(0);
 		Enemy.path = path;

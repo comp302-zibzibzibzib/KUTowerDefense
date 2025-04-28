@@ -15,7 +15,8 @@ public class Knight extends Enemy {
 			this.location.yCoord = location.yCoord;
 		}
 		this.arrowDamageReduction = arrowDamageReduction;
-		
+		Enemy.enemies.add(this);
+		this.enemyID = getID();
 	}
 
 }

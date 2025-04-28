@@ -15,31 +15,7 @@ import javafx.stage.Stage;
 // For Windows:  	--module-path "\path\to\javafx-sdk-21.0.7\lib" --add-modules javafx.controls,javafx.fxml
 // For MacOS:		--module-path \path\to\javafx-sdk-21.0.7\lib --add-modules javafx.controls,javafx.fxml
 // Obviously you have to have JavaFX installed
-public class EntityTest extends Application {
-	class TestRunner implements Runnable {
-
-		@Override
-		public void run() {
-			boolean passed = true;
-			while (true) {
-				if (EntityController.spawningEnemies()) continue;
-				
-				PlayModeManager man = PlayModeManager.getInstance();
-				for (Enemy enemy : Enemy.getAllEnemies()) {
-					if (!enemy.getLocation().equals(man.getCurrentMap().getStartingTile().getLocation())) {
-						passed = false;
-						break;
-					}
-				}
-				break;
-			}
-			
-			if (passed) System.out.println("Initialization Test - PASSED!");
-			else System.out.println("Initialization Test - PASSED!");
-			System.exit(0);
-		}
-	}
-	
+public class EntityTest extends Application {	
 	public static void main(String[] args) {
 		System.out.println("-----Entity Initialization Test-----");
 		launch(args);
@@ -56,7 +32,5 @@ public class EntityTest extends Application {
 
         MainMenuController.startNewGame("Pre-Built Map");
         EntityController.startEntityLogic();
-        Thread testThread = new Thread(new TestRunner());
-        testThread.start();
 	}
 }

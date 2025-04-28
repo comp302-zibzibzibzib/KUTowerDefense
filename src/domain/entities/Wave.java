@@ -67,7 +67,7 @@ public class Wave {
 		if(!spawnedAllGroups() && !groups.get(index).isSpawning()
 				&& timeAfterGroup > groupSpawnDelays.get(index)) { //first delay should be 0
 			groups.get(index).startSpawning();
-			System.out.printf("Initializing group%o!%n", index + 1);
+			//System.out.printf("Initializing group%o!%n", index + 1);
 			timeAfterGroup = 0.0;//resets amount of time passed and increases index
 		}
 	}

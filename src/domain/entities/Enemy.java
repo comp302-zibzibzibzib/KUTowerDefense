@@ -12,12 +12,16 @@ import domain.services.Utilities;
 public abstract class Enemy {
 	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 	public static List<PathTile> path = new ArrayList<PathTile>();
+	private static int numberOfEnemies = 0; // Not active enemy number just the total amount created during runtime
 	protected double hitPoints;
 	protected double speed;
 	protected Location location;
 	protected int pathIndex;
+	protected int enemyID;
 	
 	private boolean initialized = false;
+	private int previousXSign;
+	private int previousYSign;
 	
 	/**
 	 * 
@@ -52,9 +56,17 @@ public abstract class Enemy {
 		this.location.xCoord += xUnit * displacement;
 		this.location.yCoord += yUnit * displacement;
 		
+		double distY = nextTileLoc.xCoord - location.xCoord;
+		double distX = nextTileLoc.yCoord - location.yCoord;
+		
+		boolean overshoot = Math.signum(distX) * previousXSign < 0 || Math.signum(distY) * previousYSign < 0;
+		
+		previousXSign = (int) Math.signum(distX);
+		previousYSign = (int) Math.signum(distY);
+		
 		//updates pathIndex if the current location of enemy is near the next tile centre (limit is arbitrary)
 		//can be put somewhere else
-		if(Utilities.euclideanDistance(this.location, nextTileLoc) < 0.025) {
+		if(Utilities.euclideanDistance(this.location, nextTileLoc) < 0.025 || overshoot) {
 			this.pathIndex++;
 			if(this.pathIndex == path.size()-1) { //if arrived at ending tile hit the player
 				this.hitPlayer();
@@ -115,9 +127,18 @@ public abstract class Enemy {
 	public void initialize(Location location) {
 		setLocation(location);
 		initialized = true;
+		setPath();
 	}
 	
 	public boolean isInitalized() {
 		return initialized;
+	}
+	
+	protected static int getID() {
+		return numberOfEnemies++;
+	}
+	
+	public int getEnemyID() {
+		return enemyID;
 	}
 }

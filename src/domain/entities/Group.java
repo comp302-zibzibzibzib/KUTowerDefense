@@ -32,7 +32,7 @@ public class Group {
 	public Group(int numberOfEnemies, List<Enemy> composition) {
 		this.numberOfEnemies = numberOfEnemies;
 		this.composition = composition;
-		this.groupSpawnDelay = 2;
+		this.groupSpawnDelay = 3;
 		index = 0;
 		timeAfterEnemySpawn = 0;
 		startSpawning = false;
@@ -42,7 +42,7 @@ public class Group {
 		if (!startSpawning || spawnedAllEnemies()) return;
 		
 		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
-		double delay = 0.4;
+		double delay = 0.5;
 		
 		timeAfterEnemySpawn += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 		
@@ -50,7 +50,7 @@ public class Group {
 			//set location of enemy at start and move
 			Enemy enemy = composition.get(index);
 			enemy.initialize(startLocation);
-			System.out.printf("Initializing enemy%o!%n", index + 1);
+			//System.out.printf("Initializing enemy%o!%n", index + 1);
 			
 			//enemy.moveEnemy();
 			

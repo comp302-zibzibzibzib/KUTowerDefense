@@ -1,5 +1,6 @@
 package domain.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import domain.entities.Enemy;
@@ -97,8 +98,42 @@ class SpawnerLoopTimer extends AnimationTimer {
     }
 }
 
+class MovementTimer extends AnimationTimer {
+	private long lastUpdate = 0;
+	private int s = 0;
+	private double totalTimeElapsed = 0;
+	
+	@Override
+	public void handle(long now) {
+		if (lastUpdate == 0) {
+			lastUpdate = now;
+			return;
+		}
+		
+		long deltaTime = (now - lastUpdate);
+		lastUpdate = now;
+		
+		List<Enemy> enemyList = new ArrayList(Enemy.getAllEnemies());
+		for (Enemy enemy : enemyList) {
+			if (!enemy.isInitalized()) continue;
+			
+			enemy.moveEnemy(deltaTime);
+			
+			if(enemy.getPathIndex() == Enemy.path.size()-1) {
+            	System.out.printf("Enemy %d: Reached End%n", enemy.getEnemyID());
+            }
+		}
+		
+		if (Enemy.getAllEnemies().isEmpty()) {
+			stop();
+			return;
+		}
+	}
+}
+
 public class EntityController {
     private static SpawnerLoopTimer gameLoop;
+    private static MovementTimer moveTimer;
 
     private EntityController() {} // private constructor
 
@@ -107,6 +142,8 @@ public class EntityController {
             gameLoop = new SpawnerLoopTimer();
         }
         gameLoop.start();
+        if (moveTimer == null) moveTimer = new MovementTimer();
+        moveTimer.start();
     }
     
     public static boolean spawningEnemies() {

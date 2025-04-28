@@ -4,8 +4,8 @@ public class EnemyFactory {
 	// idk about these values
 	private static final double GOBLIN_HIT_POINTS = 30;
 	private static final double KNIGHT_HIT_POINTS = 50;
-	private static final double GOBLIN_SPEED = 2;
-	private static final double KNIGHT_SPEED = 2;
+	private static final double GOBLIN_SPEED = 4;
+	private static final double KNIGHT_SPEED = 4;
 	private static final double GOBLIN_SPELL_REDUCTION = 10;
 	private static final double KNIGHT_ARROW_REDUCTION = 10;
 	

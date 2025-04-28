@@ -19,6 +19,7 @@ public class Map implements Serializable {
 	private List<PathTile> path;
 	
 	public List<PathTile> getPath() {
+		if (path == null) setPath();
 		return path;
 	}
 
