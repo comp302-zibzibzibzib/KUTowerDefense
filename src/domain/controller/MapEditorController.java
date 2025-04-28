@@ -9,7 +9,7 @@ import domain.map.TowerType;
 
 public class MapEditorController {
 	private static MapEditor mapEditor;
-	private static PlayModeManager playModeManager;
+	private static PlayModeManager playModeManager = PlayModeManager.getInstance();
 	private static MapEditorController instance;
 	
 	private MapEditorController() {
