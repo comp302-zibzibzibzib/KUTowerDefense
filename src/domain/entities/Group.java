@@ -42,9 +42,9 @@ public class Group {
 				if(lastUpdate > 0) { //skips first frame to not cause problems
 					
 					double deltaSecond = (now - lastUpdate)/1_000_000_000.0;// should be 1/60 of a second
-					timeAfterEnemySpawn += deltaSecond; //amount of time passed since first spawn
+					timeAfterEnemySpawn += deltaSecond * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 					
-					if(timeAfterEnemySpawn >= delay*PlayModeManager.getInstance().getGameSpeed()) { 
+					if(timeAfterEnemySpawn >= delay) { 
 						//set location of enemy at start and move
 						Enemy enemy =  composition.get(index);
 						enemy.getLocation().xCoord = startLocation.xCoord;

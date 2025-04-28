@@ -75,7 +75,8 @@ public class PlayModeManager {
 				currentWave.spawnGroups();
 				currentWaveIndex++;
 				
-			}, (long) (delay*(this.gameSpeed*10)), TimeUnit.MILLISECONDS);
+			}, (long) (delay / (this.gameSpeed*10)), TimeUnit.MILLISECONDS);
+			newWaveScheduler.shutdown(); //closes executor after everything submitted before is executed
 			
 			
 		}

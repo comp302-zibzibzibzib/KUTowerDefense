@@ -2,6 +2,7 @@ package domain.entities;
 
 import java.util.List;
 
+import domain.kutowerdefense.PlayModeManager;
 import javafx.animation.AnimationTimer;
 
 /*class GroupSpawner implements Runnable { //Deprecated Class, left just in case
@@ -59,7 +60,7 @@ public class Wave {
 				if(lastUpdate > 0) { //skips first frame to not cause problems
 					
 					double deltaSecond = (now - lastUpdate)/1_000_000_000.0;// should be 1/60 of a second
-					timeAfterGroup += deltaSecond; //amount of time passed since first spawn
+					timeAfterGroup += deltaSecond * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 					
 					if(timeAfterGroup > groupSpawnDelays.get(index)) { //first delay should be 0
 						groups.get(index).initializeEnemies();
