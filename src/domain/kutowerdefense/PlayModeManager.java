@@ -103,6 +103,14 @@ public class PlayModeManager {
 		return this.gameSpeed;
 	}
 	
+	public int getCurrentWaveIndex() {
+		return currentWaveIndex;
+	}
+	
+	public int getTotalNumberOfWaves() {
+		return waves.size();
+	}
+	
 	public boolean spawnedAllWaves() {
 		return currentWaveIndex == waves.size();
 	}

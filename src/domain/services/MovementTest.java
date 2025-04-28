@@ -101,5 +101,4 @@ public class MovementTest extends Application {
         timer = new MovementTimer();
         timer.start();
 	}
-
 }

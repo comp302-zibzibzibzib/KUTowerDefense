@@ -36,7 +36,7 @@ public abstract class Enemy {
 	
 	public void killEnemy() { //VALUE IS RANDOM FOR NOW, MUST BE ABLE TO CHANGE IN OPTIONS
 		enemies.remove(this);
-		Player.getInstance().gold += 25;
+		Player.getInstance().setGold(Player.getInstance().getGold() + 25);
 	}
 	
 	public void moveEnemy(long deltaTime) {

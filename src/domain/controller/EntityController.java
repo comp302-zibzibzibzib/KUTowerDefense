@@ -31,6 +31,8 @@ class SpawnerLoopTimer extends AnimationTimer {
 
     @Override
     public void handle(long now) {
+    	if (PlayModeManager.getInstance().getGameSpeed() == 0.0) return;
+    	
         if (lastUpdate == 0) {
             lastUpdate = now;
             return;
@@ -105,6 +107,8 @@ class MovementTimer extends AnimationTimer {
 	
 	@Override
 	public void handle(long now) {
+		if (PlayModeManager.getInstance().getGameSpeed() == 0.0) return;
+		
 		if (lastUpdate == 0) {
 			lastUpdate = now;
 			return;
@@ -148,5 +152,17 @@ public class EntityController {
     
     public static boolean spawningEnemies() {
     	return gameLoop.isRunning();
+    }
+    
+    public static double getEnemyXCoord(int i) {
+    	return Enemy.getAllEnemies().get(i).getLocation().getXCoord();
+    }
+    
+    public static double getEnemyYCoord(int i) {
+    	return Enemy.getAllEnemies().get(i).getLocation().getYCoord();
+    }
+    
+    public static boolean isEnemyInitialized(int i) {
+    	return Enemy.getAllEnemies().get(i).isInitalized();
     }
 }

@@ -88,6 +88,10 @@ public class PlayModeController {
 		return name;
 	}
 	
+	public static double getGameSpeed() {
+		return playModeManager.getGameSpeed();
+	}
+	
 	public static void accelerateGame() {
 		playModeManager.accelerateGame();
 	}
