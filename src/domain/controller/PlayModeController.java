@@ -107,4 +107,5 @@ public class PlayModeController {
 	public static void quitGame() {
 		playModeManager.quitGame();
 	}
+	
 }

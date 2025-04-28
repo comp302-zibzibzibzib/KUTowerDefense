@@ -1,13 +1,20 @@
 package ui;
 
 import domain.controller.PlayModeController;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 
 public class PlayModeScene {
 	private KuTowerDefenseA app;
+	private Group towerSelection = null;
+	private Circle rangeCircle = null;
+	private Group circle = null;
 
 	public PlayModeScene(KuTowerDefenseA app) {
 		this.app = app;
@@ -63,12 +70,6 @@ public class PlayModeScene {
 				double fit = PlayModeController.getTileLength() *renderScale;
 				double x = PlayModeController.getTileXCoord(j, i) * renderScale - (fit) / 2.0;
 				double y = PlayModeController.getTileYCoord(j, i) * renderScale - (fit) / 2.0;
-
-				Pane tilePane = new Pane();
-				tilePane.setPrefSize(fit, fit);
-				tilePane.setStyle("-fx-border-color: gray; -fx-border-width: 0.001;");
-				tilePane.setLayoutX(x);
-				tilePane.setLayoutY(y);
 				
 				if(assetName.equals("hugetower")) {
 					if(castleRender) {
@@ -87,8 +88,39 @@ public class PlayModeScene {
 				tileView.setLayoutX(x);
 				tileView.setLayoutY(y);
 				
+				if(assetName.equals("lot")) {
+					tileView.setOnMouseClicked(event ->{
+						showLotCircle(tileView);
+						System.out.println("damn");
+					});
+				}
+				else {
+					tileView.setOnMouseClicked(event->{
+						removeCircle();
+					});
+				}
+				if(assetName.equals("archertower")) {
+					tileView.setOnMouseEntered(event -> {
+						rangeRender(tileView);
+					});
+				}
+				else if(assetName.equals("magetower")) {
+					tileView.setOnMouseEntered(event -> {
+						rangeRender(tileView);
+					});
+				}
+				else if(assetName.equals("artillerytower")) {
+					tileView.setOnMouseEntered(event -> {
+						rangeRender(tileView);
+					});
+				}
+				else {
+					tileView.setOnMouseEntered(event -> {
+						removeRange();
+					});
+				}
+				
 				map.getChildren().addAll(tileView);
-				map.getChildren().addAll(tilePane);
 			}
 		}
 		return map;
@@ -116,15 +148,113 @@ public class PlayModeScene {
 			castleView.setLayoutX(x);
 			castleView.setLayoutY(y);
 			
-			Pane linePane = new Pane();
-			linePane.setPrefSize(80, 80);
-			linePane.setStyle("-fx-border-color: gray; -fx-border-width: 0.001;");
-			linePane.setLayoutX(x);
-			linePane.setLayoutY(y);
-			
 			pane.getChildren().addAll(castleView);
 			
-			pane.getChildren().addAll(linePane);
+			
 		}
+	}
+	
+	private void showLotCircle(ImageView lot) {
+		if (towerSelection != null) {
+		        ((Pane) towerSelection.getParent()).getChildren().remove(towerSelection);
+		}
+		double centerX = lot.getLayoutX() + lot.getFitWidth() / 2;
+	    double centerY = lot.getLayoutY() + lot.getFitHeight() / 2;
+	    
+	    Image archerButtonImage  = new Image(getClass().getResourceAsStream("/Images/archerbutton.png"));
+	    Image mageButtonImage = new Image(getClass().getResourceAsStream("/Images/magebutton.png"));
+	    Image artilleryButtonImage = new Image(getClass().getResourceAsStream("/Images/artillerybutton.png"));
+	    ImageView archerButtonView = new ImageView(archerButtonImage);
+	    ImageView mageButtonView = new ImageView(mageButtonImage);
+	    ImageView artilleryButtonView = new ImageView(artilleryButtonImage);
+	    archerButtonView.setFitWidth(40);
+	    archerButtonView.setFitHeight(40);
+	    mageButtonView.setFitWidth(40);
+	    mageButtonView.setFitHeight(40);
+	    artilleryButtonView.setFitWidth(40);
+	    artilleryButtonView.setFitHeight(40);
+
+
+	    Image circleImage = new Image(getClass().getResourceAsStream("/Images/circle.png"));
+	    ImageView circleView = new ImageView(circleImage);
+	    circleView.setFitWidth(100);
+	    circleView.setFitHeight(100);
+	    circleView.setLayoutX(centerX - 50);
+	    circleView.setLayoutY(centerY - 50);
+	    
+	    Button archerButton = new Button();
+	    archerButton.setGraphic(archerButtonView);
+	    archerButton.setBackground(null);
+	    archerButton.setPrefSize(40, 40);
+	    archerButton.setLayoutX(centerX- 25);
+	    archerButton.setLayoutY(centerY - 80);
+	    
+	    Button mageButton = new Button();
+	    mageButton.setGraphic(mageButtonView);
+	    mageButton.setBackground(null);
+	    mageButton.setPrefSize(40, 40);
+	    mageButton.setLayoutX(centerX- 80);
+	    mageButton.setLayoutY(centerY - 20);
+	    
+	    Button artilleryButton = new Button();
+	    artilleryButton.setBackground(null);
+	    artilleryButton.setGraphic(artilleryButtonView);
+	    artilleryButton.setPrefSize(40, 40);
+	    artilleryButton.setLayoutX(centerX + 20);
+	    artilleryButton.setLayoutY(centerY -20);
+	    
+	    archerButton.setOnMouseClicked(event ->{
+			buyTower(lot);
+			System.out.println("aaaa");
+
+		});
+	    mageButton.setOnMouseClicked(event -> {
+	    	buyTower(lot);
+			System.out.println("mmmmm");
+
+	    });
+	    artilleryButton.setOnMouseClicked(event->{
+	    	buyTower(lot);
+			System.out.println("arrrr");
+
+	    });
+	    
+	    towerSelection = new Group(circleView, archerButton,mageButton,artilleryButton);
+
+	    ((Pane) lot.getParent()).getChildren().add(towerSelection);
+	}
+	
+	private void removeCircle() {
+		if (towerSelection != null && towerSelection.getParent() != null) {
+	        ((Pane) towerSelection.getParent()).getChildren().remove(towerSelection);
+	        towerSelection = null;
+	    }	
+	}
+	
+	private void buyTower(ImageView lot) {
+	}
+	
+	private void rangeRender(ImageView tower) {
+	 if (circle != null && circle.getParent() != null) {
+	        ((Pane) circle.getParent()).getChildren().remove(circle);
+	    }
+		double centerX = tower.getLayoutX() + tower.getFitWidth() / 2;
+	    double centerY = tower.getLayoutY() + tower.getFitHeight() / 2;
+	    double range = 100;
+	    
+	    rangeCircle = new Circle(centerX,centerY,range);
+	    rangeCircle.setFill(null);
+	    rangeCircle.setStroke(Color.BLUE);
+	    
+	    circle = new Group(rangeCircle);
+	    
+	    ((Pane) tower.getParent()).getChildren().add(circle);
+	    
+	}
+	private void removeRange() {
+		if (circle != null && circle.getParent() != null) {
+	        ((Pane) circle.getParent()).getChildren().remove(circle);
+	        circle = null;
+	    }	
 	}
 }
