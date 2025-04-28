@@ -2,7 +2,7 @@ package domain.entities;
 
 import java.util.List;
 
-import javafx.animation.AnimationTimer;
+import domain.kutowerdefense.PlayModeManager;
 
 /*class GroupSpawner implements Runnable { //Deprecated Class, left just in case
 	//NOT THREAD SAFE, MIGHT NEED TO CHANGE EVERY LIST IN ENTITIES TO THREAD SAFE VERS.
@@ -37,7 +37,12 @@ import javafx.animation.AnimationTimer;
 
 
 public class Wave {
+	private int index;
 	private int numberOfGroups;
+	private double timeAfterGroup;
+	
+	private boolean startSpawning;
+	
 	private List<Group> groups;
 	private List<Double> groupSpawnDelays;
 	
@@ -45,46 +50,36 @@ public class Wave {
 		this.numberOfGroups = numberOfGroups;
 		this.groups = groups;
 		this.groupSpawnDelays = groupSpawnDelays;
+		index = 0;
+		timeAfterGroup = 0;
+		startSpawning = false;
 	}
 	
-	public void spawnGroups() {//MIGHT NOT WORK
+	public void spawnGroups(double deltaTime) {//MIGHT NOT WORK
+		if (!startSpawning || spawnedAllGroups()) return;
+		timeAfterGroup += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 		
-		AnimationTimer groupSpawnerTimer = new AnimationTimer() {
-			private long lastUpdate = 0; //last time handle was called
-			private double timeAfterGroup = 0.0;
-			int index = 0;
-
-			@Override
-			public void handle(long now) { //now is system time
-				if(lastUpdate > 0) { //skips first frame to not cause problems
-					
-					double deltaSecond = (now - lastUpdate)/1_000_000_000.0;// should be 1/60 of a second
-					timeAfterGroup += deltaSecond; //amount of time passed since first spawn
-					
-					if(timeAfterGroup > groupSpawnDelays.get(index)) { //first delay should be 0
-						groups.get(index).initializeEnemies();
-						timeAfterGroup = 0.0;//resets amount of time passed and increases index
-						index++;
-						if(index == numberOfGroups) {
-							//idk if ending this timer causes issues with move enemy
-							//finished spawning every group
-							this.stop();
-						}
-					}
-					
-				}
-				lastUpdate = now;
-			}
-			
-		};
-		groupSpawnerTimer.start();
+		if(groups.get(index).spawnedAllEnemies()) {
+			index++;
+			timeAfterGroup = 0;
+		}
 		
-		//deprecated code!
-		//GroupSpawner spawner = new GroupSpawner(numberOfGroups, groups, groupSpawnDelays);
-		//Thread GroupSpawnerThread = new Thread(spawner);
-		//GroupSpawnerThread.start();
+		if(!spawnedAllGroups() && !groups.get(index).isSpawning()
+				&& timeAfterGroup > groupSpawnDelays.get(index)) { //first delay should be 0
+			groups.get(index).startSpawning();
+			//System.out.printf("Initializing group%o!%n", index + 1);
+			timeAfterGroup = 0.0;//resets amount of time passed and increases index
+		}
 	}
 
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+	
 	public int getNumberofGroups() {
 		return numberOfGroups;
 	}
@@ -109,7 +104,15 @@ public class Wave {
 		this.groupSpawnDelays = groupSpawnDelays;
 	}
 	
+	public boolean spawnedAllGroups() {
+		return index == numberOfGroups;
+	}
 	
+	public void startSpawning() {
+		this.startSpawning = true;
+	}
 	
-	
+	public boolean isSpawning() {
+		return startSpawning;
+	}
 }

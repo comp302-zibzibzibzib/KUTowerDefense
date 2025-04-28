@@ -10,7 +10,6 @@ public class PlayModeScene {
 	private KuTowerDefenseA app;
 
 	public PlayModeScene(KuTowerDefenseA app) {
-		
 		this.app = app;
 	}
 	
@@ -67,7 +66,7 @@ public class PlayModeScene {
 
 				Pane tilePane = new Pane();
 				tilePane.setPrefSize(fit, fit);
-				tilePane.setStyle("-fx-border-color: gray; -fx-border-width: 0.3;");
+				tilePane.setStyle("-fx-border-color: gray; -fx-border-width: 0.001;");
 				tilePane.setLayoutX(x);
 				tilePane.setLayoutY(y);
 				
@@ -119,7 +118,7 @@ public class PlayModeScene {
 			
 			Pane linePane = new Pane();
 			linePane.setPrefSize(80, 80);
-			linePane.setStyle("-fx-border-color: gray; -fx-border-width: 0.3;");
+			linePane.setStyle("-fx-border-color: gray; -fx-border-width: 0.001;");
 			linePane.setLayoutX(x);
 			linePane.setLayoutY(y);
 			

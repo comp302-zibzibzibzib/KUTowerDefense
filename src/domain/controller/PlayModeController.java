@@ -10,12 +10,11 @@ import domain.map.TileType;
 
 public class PlayModeController {
 	private static Map currentMap;
-	private static PlayModeManager playModeManager;
+	private static PlayModeManager playModeManager = PlayModeManager.getInstance();
 	
 	private PlayModeController() {}
 	
 	public static void setCurrentMap() {
-		if (playModeManager == null) playModeManager = PlayModeManager.getInstance();
 		currentMap = playModeManager.getCurrentMap();
 	}
 	
@@ -31,12 +30,22 @@ public class PlayModeController {
 	
 	public static double getTileXCoord(int x, int y) {
 		if (currentMap == null) setCurrentMap();
-		return currentMap.tileMap[y][x].getLocation().getXCoord();
+		try {
+			return currentMap.tileMap[y][x].getLocation().getXCoord();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("Error: Wrong method. Use the correct placeTile overload!");
+		}
+		return -1;
 	}
 	
 	public static double getTileYCoord(int x, int y) {
 		if (currentMap == null) setCurrentMap();
-		return currentMap.tileMap[y][x].getLocation().getYCoord();
+		try {
+			return currentMap.tileMap[y][x].getLocation().getYCoord();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("Error: Wrong method. Use the correct placeTile overload!");
+		}
+		return -1;
 	}
 	
 	public static double getTileLength() {
@@ -45,34 +54,57 @@ public class PlayModeController {
 	
 	public static String getAssetName(int x, int y) {
 		String name = null;
-		Tile tile = currentMap.tileMap[y][x];
-		
-		if (tile.type.equals(TileType.GRASS)) {
-			name = "grass";
-		}
-		else if (tile.getType().equals(TileType.PATH)) {
-			PathTile path = (PathTile) tile;
-			name = path.getPathType().getAssetName();
+		try {
+			Tile tile = currentMap.tileMap[y][x];
 			
-		}
-		else if(tile.getType().equals(TileType.DECORATIVES)) {
-			DecorativeTile decorative = (DecorativeTile) tile;
-			name = decorative.getDecorativeType().getAssetName();
-		}
-		
-		else if(tile.getType().equals(TileType.CASTLE)) {
-			name ="hugetower";
-		}
-		
-		else if(tile.getType().equals(TileType.TOWER)) {
-			Lot tower = (Lot) tile;
-			name = tower.getTowerType().getAssetName();
+			if (tile.type.equals(TileType.GRASS)) {
+				name = "grass";
+			}
+			else if (tile.getType().equals(TileType.PATH)) {
+				PathTile path = (PathTile) tile;
+				name = path.getPathType().getAssetName();
+				
+			}
+			else if(tile.getType().equals(TileType.DECORATIVES)) {
+				DecorativeTile decorative = (DecorativeTile) tile;
+				name = decorative.getDecorativeType().getAssetName();
+			}
 			
-		}
-		else if(tile.getType().equals(TileType.LOT)) {
-			name = "lot";
+			else if(tile.getType().equals(TileType.CASTLE)) {
+				name ="hugetower";
+			}
+			
+			else if(tile.getType().equals(TileType.TOWER)) {
+				Lot tower = (Lot) tile;
+				name = tower.getTowerType().getAssetName();
+				
+			}
+			else if(tile.getType().equals(TileType.LOT)) {
+				name = "lot";
+			}
+		} catch (ArrayIndexOutOfBoundsException e) {
+			System.out.println("Error: Wrong method. Use the correct placeTile overload!");
 		}
 		return name;
-		
+	}
+	
+	public static void accelerateGame() {
+		playModeManager.accelerateGame();
+	}
+	
+	public static void decelerateGame() {
+		playModeManager.decelerateGame();
+	}
+	
+	public static void pauseGame() {
+		playModeManager.pauseGame();
+	}
+	
+	public static void resumeGame() {
+		playModeManager.resumeGame();
+	}
+	
+	public static void quitGame() {
+		playModeManager.quitGame();
 	}
 }
