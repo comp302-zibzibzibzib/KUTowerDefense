@@ -17,7 +17,6 @@ public class PlayModeScene {
 	private Group circle = null;
 
 	public PlayModeScene(KuTowerDefenseA app) {
-		
 		this.app = app;
 	}
 	
@@ -71,8 +70,6 @@ public class PlayModeScene {
 				double fit = PlayModeController.getTileLength() *renderScale;
 				double x = PlayModeController.getTileXCoord(j, i) * renderScale - (fit) / 2.0;
 				double y = PlayModeController.getTileYCoord(j, i) * renderScale - (fit) / 2.0;
-
-				
 				
 				if(assetName.equals("hugetower")) {
 					if(castleRender) {
@@ -150,12 +147,6 @@ public class PlayModeScene {
 			castleView.setFitHeight(80);
 			castleView.setLayoutX(x);
 			castleView.setLayoutY(y);
-			
-			Pane linePane = new Pane();
-			linePane.setPrefSize(80, 80);
-			linePane.setStyle("-fx-border-color: gray; -fx-border-width: 0.3;");
-			linePane.setLayoutX(x);
-			linePane.setLayoutY(y);
 			
 			pane.getChildren().addAll(castleView);
 			

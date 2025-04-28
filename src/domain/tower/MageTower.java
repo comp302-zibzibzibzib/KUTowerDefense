@@ -2,7 +2,7 @@ package domain.tower;
 
 public class MageTower extends Tower {
 
-	public MageTower(int upgradeCost, int level, double range, double fireRate, AttackType attackType) {
+	public MageTower(int upgradeCost, int level, double range, double fireRate) {
 		super();
 		this.upgradeCost = upgradeCost;
 		this.level = level;
@@ -13,7 +13,7 @@ public class MageTower extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		Projectile projectile = new Projectile(attackType, target, location);
+		Projectile projectile = ProjectileFactory.createSpell(target, location);
 		System.out.printf("%f",projectile.damage);
 		return projectile;
 	}

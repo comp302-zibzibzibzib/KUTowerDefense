@@ -21,53 +21,42 @@ import javafx.animation.AnimationTimer;
 
 public class Group {
 	private int numberOfEnemies;
+	private int index;
+	private double timeAfterEnemySpawn;
+	
+	private boolean startSpawning;
+	
 	private List<Enemy> composition;
+	private double groupSpawnDelay;
 	
 	public Group(int numberOfEnemies, List<Enemy> composition) {
 		this.numberOfEnemies = numberOfEnemies;
 		this.composition = composition;
+		this.groupSpawnDelay = 3;
+		index = 0;
+		timeAfterEnemySpawn = 0;
+		startSpawning = false;
 	}
 	
-	public void initializeEnemies() {//MIGHT NOT WORK
-		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
-		double delay = 0.4;
+	public void initializeEnemies(double deltaTime) {//MIGHT NOT WORK
+		if (!startSpawning || spawnedAllEnemies()) return;
 		
-		AnimationTimer enemyInitTimer = new AnimationTimer() {
-			private long lastUpdate = 0; //last time handle was called
-			private double timeAfterEnemySpawn = 0.0;
-			int index = 0;
-
-			@Override
-			public void handle(long now) {
-				if(lastUpdate > 0) { //skips first frame to not cause problems
-					
-					double deltaSecond = (now - lastUpdate)/1_000_000_000.0;// should be 1/60 of a second
-					timeAfterEnemySpawn += deltaSecond; //amount of time passed since first spawn
-					
-					if(timeAfterEnemySpawn >= delay*PlayModeManager.getInstance().getGameSpeed()) { 
-						//set location of enemy at start and move
-						Enemy enemy =  composition.get(index);
-						enemy.getLocation().xCoord = startLocation.xCoord;
-						enemy.getLocation().yCoord = startLocation.yCoord;
-						
-						//enemy.moveEnemy();
-						
-						timeAfterEnemySpawn = 0.0;
-						index++;
-						
-						if(index == numberOfEnemies) {
-							this.stop();
-						}
-					}
-					
-					
-				}
-				lastUpdate = now;
-				
-			}
+		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
+		double delay = 0.5;
+		
+		timeAfterEnemySpawn += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
+		
+		if(timeAfterEnemySpawn >= delay) {
+			//set location of enemy at start and move
+			Enemy enemy = composition.get(index);
+			enemy.initialize(startLocation);
+			//System.out.printf("Initializing enemy%o!%n", index + 1);
 			
-		};
-		enemyInitTimer.start();
+			//enemy.moveEnemy();
+			
+			timeAfterEnemySpawn = 0.0;
+			index++;
+		}
 		
 		//deprecated code
 		//for(int i = 0; i < numberOfEnemies; i++) {
@@ -87,6 +76,14 @@ public class Group {
 		
 	}
 
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
 	public int getNumberOfEnemies() {
 		return numberOfEnemies;
 	}
@@ -101,5 +98,21 @@ public class Group {
 
 	public void setComposition(List<Enemy> composition) {
 		this.composition = composition;
+	}
+	
+	public boolean spawnedAllEnemies() {
+		return index == numberOfEnemies;
+	}
+	
+	public void startSpawning() {
+		this.startSpawning = true;
+	}
+	
+	public boolean isSpawning() {
+		return startSpawning;
+	}
+	
+	public double getSpawnDelay() {
+		return groupSpawnDelay;
 	}
 }

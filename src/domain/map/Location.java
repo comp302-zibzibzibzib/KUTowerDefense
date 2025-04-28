@@ -13,6 +13,11 @@ public class Location implements Serializable{
 		this.xCoord = xCoord;
 		this.yCoord = yCoord;
 	}
+	
+	public Location() {
+		this.xCoord = 0;
+		this.yCoord = 0;
+	}
 
 	public double getXCoord() {
 		return xCoord;

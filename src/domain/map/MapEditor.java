@@ -9,6 +9,7 @@ import domain.tower.ArtilleryTower;
 import domain.tower.AttackType;
 import domain.tower.MageTower;
 import domain.tower.Tower;
+import domain.tower.TowerFactory;
 
 public class MapEditor implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -175,9 +176,9 @@ public class MapEditor implements Serializable {
 
 	        // Create the Tower based on TowerType
 	        Tower tower = switch (tType) {
-	            case ARCHER -> new ArcherTower(100, 1, 150, 1.0);
-	            case MAGE -> new MageTower(200, 1, 120, 0.8, AttackType.SPELL);
-	            case ARTILLERY -> new ArtilleryTower(300, 1, 180, 0.6);
+	            case ARCHER -> TowerFactory.createArcherTower();
+	            case MAGE -> TowerFactory.createMageTower();
+	            case ARTILLERY -> TowerFactory.createArtilleryTower();
 	        };
 
 	        // Set the location of the tower to match the Lot's location

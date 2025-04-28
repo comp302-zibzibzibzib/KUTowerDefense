@@ -1,13 +1,16 @@
 package domain.kutowerdefense;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
 
 import domain.entities.Enemy;
 import domain.entities.Wave;
+import domain.entities.WaveFactory;
 import domain.map.Map;
 
 public class PlayModeManager {
+	public static final double GRACE_PERIOD_SECONDS = 4;
+	
 	private static PlayModeManager instance;
 	private Map currentMap;
 	private int currentWaveIndex;
@@ -15,9 +18,13 @@ public class PlayModeManager {
 	private double gameSpeed = 1.0;
 	
 	private List<Wave> waves;
+	private double timeSinceLastWave = 0;
 	
 	private PlayModeManager() {
 		this.currentWaveIndex = 0; this.gameSpeed = 1.0; this.previousGameSpeed = 1.0;
+		this.waves = new ArrayList<Wave>();
+		Enemy.enemies.clear();
+		for (int i = 0; i < 3; i++) waves.add(WaveFactory.createWave()); // Temporarily has 3 identical waves back to back
 	}
 	
 	public static PlayModeManager getInstance() {
@@ -30,7 +37,8 @@ public class PlayModeManager {
 		instance.currentWaveIndex = 0;
 		instance.gameSpeed = 1.0;
 		instance.previousGameSpeed = 1.0;
-		instance.waves = null;
+		instance.waves = new ArrayList<Wave>();
+		Enemy.enemies.clear();
 		instance.currentMap = null;
 	}
 	
@@ -61,25 +69,26 @@ public class PlayModeManager {
 		System.exit(0);
 	}
 	
-	public void initializeWaves() {
-		/*GameOptions.getInstance();
-		Will create waves of groups, IMPLEMENT GAME OPTIONS FOR WAVE INITIALIZATION PARAMETERS*/
+	public void initializeWaves(double deltaTime) {
+		if (spawnedAllWaves()) return;
 		
-		///Delays new wave for 4 seconds than starts them in another thread (Can be put somewhere else)
-		if(Enemy.enemies.isEmpty()) {//if condition can be put somewhere else
-			long delay = 4000;
-			
-			ScheduledExecutorService newWaveScheduler = Executors.newSingleThreadScheduledExecutor();
-			newWaveScheduler.schedule(() -> {
-				Wave currentWave = waves.get(currentWaveIndex);
-				currentWave.spawnGroups();
-				currentWaveIndex++;
-				
-			}, (long) (delay*(this.gameSpeed*10)), TimeUnit.MILLISECONDS);
-			
-			
+		if (waves.isEmpty()) 
+			for (int i = 0; i < 3; i++) instance.waves.add(WaveFactory.createWave()); // Temporarily has 3 identical waves back to back
+		
+		timeSinceLastWave += deltaTime * gameSpeed;
+		if (currentWaveIndex > 0 && timeSinceLastWave < 10) return;
+		
+		Wave currentWave = waves.get(currentWaveIndex);
+		
+		if (currentWave.spawnedAllGroups()) {
+			currentWaveIndex++;
+			timeSinceLastWave = 0;
+		}	
+		
+		if (!currentWave.isSpawning() && !spawnedAllWaves()) {
+			currentWave.startSpawning();
+			//System.out.printf("Initializing wave%o!%n", currentWaveIndex + 1);
 		}
-		
 	}
 	
 	public void setCurrentMap(Map map) {
@@ -92,5 +101,13 @@ public class PlayModeManager {
 	
 	public double getGameSpeed() {
 		return this.gameSpeed;
+	}
+	
+	public boolean spawnedAllWaves() {
+		return currentWaveIndex == waves.size();
+	}
+	
+	public List<Wave> getWaves() {
+		return waves;
 	}
 }

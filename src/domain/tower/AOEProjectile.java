@@ -10,8 +10,8 @@ public class AOEProjectile extends Projectile {
 	private double splashRadius;
 	
 
-	public AOEProjectile(AttackType attacktype, Enemy enemy, Location location, double splashRadius) {
-		super(attacktype, enemy, location);
+	public AOEProjectile(Enemy target, Location location, double splashRadius) {
+		super(AttackType.ARTILLERY, target, location);
 		// TODO Auto-generated constructor stub
 		this.splashRadius = splashRadius;
 	}
