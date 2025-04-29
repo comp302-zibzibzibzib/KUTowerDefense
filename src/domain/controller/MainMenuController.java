@@ -12,7 +12,8 @@ public class MainMenuController {
 	
 	public static void startNewGame(String mapName) {
 		Enemy.enemies.clear();
-		GameOptions.initializeGameOptions();
+		GameOptionsController.initializeGameOptions();
+		MapEditorController.createStaticMap();
 		KUTowerDefense.newGame(mapName);
 	}
 	

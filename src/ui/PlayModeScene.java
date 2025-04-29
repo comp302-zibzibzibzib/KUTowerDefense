@@ -346,9 +346,12 @@ public class PlayModeScene {
 	    }
 		double centerX = tower.getLayoutX() + tower.getFitWidth() / 2;
 	    double centerY = tower.getLayoutY() + tower.getFitHeight() / 2;
-	    double range = 100;
+	    int x = (int)(tower.getLayoutX() / 80);
+	    int y = (int)(tower.getLayoutY() / 80);
+	    double range = PlayModeController.getTowerRange(x, y);
 	    
-	    rangeCircle = new Circle(centerX,centerY,range);
+	    double uiRange = range * 16;
+	    rangeCircle = new Circle(centerX,centerY, uiRange);
 	    rangeCircle.setFill(null);
 	    rangeCircle.setStroke(Color.BLUE);
 	    
@@ -365,13 +368,13 @@ public class PlayModeScene {
 	}
 	
 	private void playerStatsPutter() {
-		Image coinImage  = new Image(getClass().getResourceAsStream("/Images/coin.png"));
+		Image coinImage  = new Image(getClass().getResourceAsStream("/Images/HUD/coin.png"));
         ImageView coinView = new ImageView(coinImage);
-        Image heartImage  = new Image(getClass().getResourceAsStream("/Images/health.png"));
+        Image heartImage  = new Image(getClass().getResourceAsStream("/Images/HUD/health.png"));
         ImageView heartImageView = new ImageView(heartImage);
-        Image waveImage  = new Image(getClass().getResourceAsStream("/Images/wave.png"));
+        Image waveImage  = new Image(getClass().getResourceAsStream("/Images/HUD/wave.png"));
         ImageView waveView = new ImageView(waveImage);
-        Image infoImage  = new Image(getClass().getResourceAsStream("/Images/blueb.png"));
+        Image infoImage  = new Image(getClass().getResourceAsStream("/Images/HUD/blueb3.png"));
         ImageView infoView1 = new ImageView(infoImage);
         ImageView infoView2 = new ImageView(infoImage);
         ImageView infoView3 = new ImageView(infoImage);
@@ -415,9 +418,6 @@ public class PlayModeScene {
         infoView3.setLayoutY(100);
         Group statWave = playerStats(waveView, infoView3);
         rootPane.getChildren().addAll(statWave);
-
-
-        
 	}
 	
 	private Group playerStats(ImageView image, ImageView info) {

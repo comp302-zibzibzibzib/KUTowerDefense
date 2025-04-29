@@ -3,15 +3,15 @@ package domain.tower;
 public class TowerFactory {
 	public static final int costArcher = 50;
 	private static final int upgradeCostArcher = 50;
-	private static final double rangeArcher = 7.5;
+	private static final double rangeArcher = 15;
 	private static final double fireRateArcher = 6;
 	public static final int costArtillery = 50;
 	private static final int upgradeCostArtillery = 50;
-	private static final double rangeArtillery = 7.5;
+	private static final double rangeArtillery = 10;
 	private static final double fireRateArtillery = 2;
 	public static final int costMage = 50;
 	private static final int upgradeCostMage = 50;
-	private static final double rangeMage = 7.5;
+	private static final double rangeMage = 12;
 	private static final double fireRateMage = 4;
 	
 	public static ArcherTower createArcherTower() {

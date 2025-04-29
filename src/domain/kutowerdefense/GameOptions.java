@@ -1,10 +1,9 @@
 package domain.kutowerdefense;
 
+import java.io.FileNotFoundException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+
 import domain.services.Utilities;
-import domain.entities.Group;
 
 
 public class GameOptions implements Serializable {
@@ -12,7 +11,7 @@ public class GameOptions implements Serializable {
     private static GameOptions instance;
     
     private int startingPlayerLives = 20;
-    private int startingPlayerGold = 1000;
+    private int startingPlayerGold = 300;
     private int numberOfWaves = 10;
     private double enemySpeed = 4;
     
@@ -20,21 +19,37 @@ public class GameOptions implements Serializable {
     	return new GameOptions();
     }
     
+    public void resetOptions() {
+    	GameOptions defaultOptions = Utilities.readDefaultOptions();
+    	
+    	this.startingPlayerLives = defaultOptions.startingPlayerLives;
+    	this.startingPlayerGold = defaultOptions.startingPlayerGold;
+    	this.numberOfWaves = defaultOptions.numberOfWaves;
+    	this.enemySpeed = defaultOptions.enemySpeed;
+    }
+    
     public static void initializeGameOptions() {
-    	instance = getInstance();
+    	try {
+			instance = Utilities.readOptions();
+		} catch (Exception e) {
+			instance = Utilities.readDefaultOptions();
+		}
     }
     
     public static GameOptions getInstance() {
     	if (instance == null) {
-    		Utilities.writeDefaultOptions();
-			instance = Utilities.readDefaultOptions();
+    		try {
+    			instance = Utilities.readOptions();
+    		} catch (Exception e) {
+    			instance = Utilities.readDefaultOptions();
+    		}
     	}
     	return instance;
     }
     
-    public GameOptions() {
+    private GameOptions() {
     	startingPlayerLives = 20;
-    	startingPlayerGold = 1000;
+    	startingPlayerGold = 300;
     	numberOfWaves = 10;
     	enemySpeed = 4;
     }

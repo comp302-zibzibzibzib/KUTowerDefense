@@ -185,7 +185,8 @@ public final class Utilities {
 		return map;
 	}
 	
-	public static void writeOptions(GameOptions options) {
+	public static void writeOptions() {
+		GameOptions options = GameOptions.getInstance();
 		try {
 			FileOutputStream fileOut = new FileOutputStream(OPTIONS_FILE_PATH + "user_options.ser");
 			ObjectOutputStream objectOutput = new ObjectOutputStream(fileOut);
@@ -200,8 +201,8 @@ public final class Utilities {
 		} 
 	}
 	
-	public static void writeDefaultOptions() {
-		GameOptions options = new GameOptions();
+	private static void writeDefaultOptions() { // To be only used in readDefaultOptions
+		GameOptions options = GameOptions.getDefaultOptions();
 		try {
 			FileOutputStream fileOut = new FileOutputStream(OPTIONS_FILE_PATH + "default_options.ser");
 			ObjectOutputStream objectOutput = new ObjectOutputStream(fileOut);
@@ -216,25 +217,20 @@ public final class Utilities {
 		} 
 	}
 	
-	public static GameOptions readOptions() {
+	public static GameOptions readOptions() throws IOException, ClassNotFoundException {
 		GameOptions options = null;
-		try {
-			FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "user_options.ser");
-			ObjectInputStream objectInput = new ObjectInputStream(fileIn);
+		FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "user_options.ser");
+		ObjectInputStream objectInput = new ObjectInputStream(fileIn);
 			
-			options = (GameOptions)objectInput.readObject();
+		options = (GameOptions)objectInput.readObject();
 			
-			objectInput.close();
-			fileIn.close();
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-			System.out.println("Sorry couldn't read your options, better luck next time!");
-		}
+		objectInput.close();
 		
 		return options;
 	}
 	
 	public static GameOptions readDefaultOptions() {
+		Utilities.writeDefaultOptions();
 		GameOptions options = null;
 		try {
 			FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "default_options.ser");
