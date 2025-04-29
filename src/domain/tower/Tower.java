@@ -12,6 +12,7 @@ import domain.services.Utilities;
 public abstract class Tower implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	protected int cost;
 	protected int upgradeCost;
     protected int level;
     protected double range;
@@ -107,6 +108,8 @@ public abstract class Tower implements Serializable {
 		this.location = location;
 	}
     
-    
+    public int getCost() {
+    	return cost;
+    }
 }
 

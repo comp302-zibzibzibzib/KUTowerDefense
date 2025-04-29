@@ -19,6 +19,7 @@ public class Map implements Serializable {
 	private List<PathTile> path;
 	
 	public List<PathTile> getPath() {
+		if (path == null) setPath();
 		return path;
 	}
 
@@ -97,6 +98,22 @@ public class Map implements Serializable {
 		
 		this.startingTile = startingTile;
 		tileMap[d[0]][d[1]] = startingTile;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
 	}
 
 	public PathTile getEndingTile() {

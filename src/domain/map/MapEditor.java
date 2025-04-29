@@ -4,11 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import domain.services.Utilities;
-import domain.tower.ArcherTower;
-import domain.tower.ArtilleryTower;
-import domain.tower.AttackType;
-import domain.tower.MageTower;
 import domain.tower.Tower;
+import domain.tower.TowerFactory;
 
 public class MapEditor implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -175,9 +172,9 @@ public class MapEditor implements Serializable {
 
 	        // Create the Tower based on TowerType
 	        Tower tower = switch (tType) {
-	            case ARCHER -> new ArcherTower(100, 1, 150, 1.0);
-	            case MAGE -> new MageTower(200, 1, 120, 0.8, AttackType.SPELL);
-	            case ARTILLERY -> new ArtilleryTower(300, 1, 180, 0.6);
+	            case ARCHER -> TowerFactory.createArcherTower();
+	            case MAGE -> TowerFactory.createMageTower();
+	            case ARTILLERY -> TowerFactory.createArtilleryTower();
 	        };
 
 	        // Set the location of the tower to match the Lot's location
@@ -185,7 +182,7 @@ public class MapEditor implements Serializable {
 
 	        // Place the Tower inside the Lot
 	        Lot lot = new Lot(existingTile.getLocation());
-	        lot.placeTower(tower); 
+	        lot.placeTower(tower,tType); 
 	        lot.setType(TileType.TOWER); 
 
 	        map.tileMap[y][x] = lot;
@@ -194,6 +191,30 @@ public class MapEditor implements Serializable {
 	        System.out.println("Error: Array index out of bounds while placing tower!");
 	    }
 	}
+	public void placeTile(TileType type, DecorativeType decorativeType, int height, int width) {
+        try {
+            if (type != TileType.DECORATIVES) {
+                System.out.println("Error: Wrong method. Use the correct placeTile overload!");
+                return;
+            }
+
+            int x = width;
+            int y = height;
+
+            Tile existingTile = map.tileMap[y][x];
+
+            if (existingTile != null && existingTile.getType() != TileType.GRASS) {
+                System.out.println("Error: Cannot place tile on top of another tile. Remove it first.");
+                return;
+            }
+
+            Tile tile = new DecorativeTile(decorativeType, existingTile.getLocation());
+
+            map.tileMap[y][x] = tile;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Error: Array index out of bounds while placing tower!");
+        }
+    }
 
 	public void removeTile(int height, int width) {
 		try {

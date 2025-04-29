@@ -8,17 +8,19 @@ public class Lot extends Tile implements Serializable {
 
     private boolean isEmpty = true;
     private Tower tower;
+    private TowerType towerType;
 
     public Lot(Location location) {
         super(TileType.LOT, location);
     }
 
-    public void placeTower(Tower tower) {
+    public void placeTower(Tower tower,TowerType towerType) {
         if (!isEmpty) {
             System.out.println("Lot is not empty!");
             return;
         }
         this.setType(TileType.TOWER);
+        this.setTowerType(towerType);
         this.tower = tower;
         this.isEmpty = false;
     }
@@ -29,6 +31,7 @@ public class Lot extends Tile implements Serializable {
             return;
         }
         this.setType(TileType.LOT);
+        this.setTowerType(null);
         this.tower = null;
         this.isEmpty = true;
     }
@@ -44,4 +47,14 @@ public class Lot extends Tile implements Serializable {
     public boolean hasTower() {
         return !isEmpty && tower != null;
     }
+
+	public TowerType getTowerType() {
+		return towerType;
+	}
+
+	public void setTowerType(TowerType towerType) {
+		this.towerType = towerType;
+	}
+    
+    
 }

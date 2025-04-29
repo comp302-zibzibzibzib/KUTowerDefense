@@ -5,15 +5,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.PriorityQueue;
 
+import domain.kutowerdefense.GameOptions;
 import domain.map.Location;
 import domain.map.Map;
 import domain.map.PathTile;
@@ -22,6 +22,7 @@ import domain.map.TileType;
 
 public final class Utilities {
 	private static final String MAP_FILE_PATH = "Data/Maps/";
+	private static final String OPTIONS_FILE_PATH = "Data/Options/";
 	
 	/**
 	 * Comparator for the priority queue used in findPath
@@ -182,6 +183,69 @@ public final class Utilities {
 		}
 		
 		return map;
+	}
+	
+	public static void writeOptions() {
+		GameOptions options = GameOptions.getInstance();
+		try {
+			FileOutputStream fileOut = new FileOutputStream(OPTIONS_FILE_PATH + "user_options.ser");
+			ObjectOutputStream objectOutput = new ObjectOutputStream(fileOut);
+			
+			objectOutput.writeObject(options);
+			
+			objectOutput.close();
+			fileOut.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Oops something went wrong while writing options to disk :( ");
+		} 
+	}
+	
+	private static void writeDefaultOptions() { // To be only used in readDefaultOptions
+		GameOptions options = GameOptions.getDefaultOptions();
+		try {
+			FileOutputStream fileOut = new FileOutputStream(OPTIONS_FILE_PATH + "default_options.ser");
+			ObjectOutputStream objectOutput = new ObjectOutputStream(fileOut);
+			
+			objectOutput.writeObject(options);
+			
+			objectOutput.close();
+			fileOut.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("Oops something went wrong while writing options to disk :( ");
+		} 
+	}
+	
+	public static GameOptions readOptions() throws IOException, ClassNotFoundException {
+		GameOptions options = null;
+		FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "user_options.ser");
+		ObjectInputStream objectInput = new ObjectInputStream(fileIn);
+			
+		options = (GameOptions)objectInput.readObject();
+			
+		objectInput.close();
+		
+		return options;
+	}
+	
+	public static GameOptions readDefaultOptions() {
+		Utilities.writeDefaultOptions();
+		GameOptions options = null;
+		try {
+			FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "default_options.ser");
+			ObjectInputStream objectInput = new ObjectInputStream(fileIn);
+			
+			options = (GameOptions)objectInput.readObject();
+			
+			objectInput.close();
+			fileIn.close();
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("Sorry couldn't read your options, better luck next time!");
+		}
+		
+		return options;
 	}
 	
 	public static double manhattanDistance(Location location1, Location location2) {

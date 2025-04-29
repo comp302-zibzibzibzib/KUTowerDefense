@@ -1,12 +1,6 @@
 package ui;
-import domain.map.Map;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -25,13 +19,16 @@ public class KuTowerDefenseA  extends Application{
 		
 	}
 	public void showMainMenu(StackPane root) {
-        Scene mainMenuScene = new MainMenuScene(this).getScene(root);
+		MainMenuScene menuScene = new MainMenuScene(this, root);
+        Scene mainMenuScene = menuScene.getScene();
         primaryStage.setScene(mainMenuScene);
         primaryStage.setTitle("KU Tower Defense");
         primaryStage.show();
     }
-    public void showOptionsMenu() {
-    	
+    public void showOptionsMenu(StackPane root) {
+    	OptionScene options = new OptionScene(this, root);
+        primaryStage.setScene(options.getScene());
+        primaryStage.show();
     }
     public void showMapEditor() {
     	MapEditorScene mapEditor = new MapEditorScene(this);
@@ -40,15 +37,14 @@ public class KuTowerDefenseA  extends Application{
     	primaryStage.setResizable(false);
     	
     }
-    public void startGame(Map readMap) {
-    	PlayModeScene playableGame = new PlayModeScene(this,readMap);
+    public void startGame() {
+    	PlayModeScene playableGame = new PlayModeScene(this);
     	Scene game = playableGame.getScene();
     	primaryStage.setScene(game);
     	primaryStage.setResizable(false);
-    	
-    	
     }
-	
-	
-
+    
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
 }

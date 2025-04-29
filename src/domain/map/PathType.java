@@ -12,6 +12,7 @@ public enum PathType {
 	
 	private String str;
 	private boolean[] neighbourBool; // {up, down, left, right}
+	private String assetName;
 
 	
 	@Override
@@ -22,8 +23,13 @@ public enum PathType {
 		return neighbourBool[index];
 	}
 	
-	private PathType(String str, boolean[] neighbourBool) {
+	private PathType(String str, boolean[] neighbourBool, String assetName) {
 		this.str = str;
 		this.neighbourBool = neighbourBool;
+		this.assetName = assetName;
+	}
+	
+	public String getAssetName() {
+		return assetName;
 	}
 }
