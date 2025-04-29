@@ -8,16 +8,22 @@ import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 public class MainMenuScene {
+	private static final String SPRITE_PATH = "/Images/HUD/";
+	
+	private Image buttonHover3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb3.png"));
+	private Image buttonBlue3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb3.png"));
 	
 	private class MenuButton extends Button {
-		public MenuButton(String text, MainMenuScene scene) {
-			this.setText(text);
+		public MenuButton(MainMenuScene scene) {
 			this.setBackground(null);
 			this.setOnAction(scene::processButtonEvents);
 		}
@@ -27,13 +33,43 @@ public class MainMenuScene {
     private Button newGameButton;
     private Button optionsButton;
     private Scene scene;
+    
+    private StackPane createButtonStackPane(Image image, Image hoverImage, Image clickedImage, Label label, int fontSize, int width) {
+		ImageView view = new ImageView(image);
+		view.setFitHeight(50);
+	    view.setFitWidth(width);
+	    
+	    Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
+	    label.setFont(font);
+	    
+	    StackPane pane = new StackPane();
+	    pane.getChildren().addAll(view, label);
+	    
+	    label.setTranslateY(-5);
+	    
+	    pane.setOnMouseEntered(e -> { view.setImage(hoverImage); });
+	    pane.setOnMouseExited(e -> { view.setImage(image); });
+	    
+	    pane.setOnMousePressed(e -> { view.setImage(clickedImage); });
+	    pane.setOnMouseReleased(e -> { 
+	    	if (pane.isHover()) {
+	    		view.setImage(hoverImage); 
+	    	} else {
+	    		view.setImage(image); 
+	    	}
+	    });
+	    
+	    return pane;
+	}
 	
     
     public MainMenuScene(KuTowerDefenseA app, StackPane root) {
 		this.app = app;
-		newGameButton = new MenuButton("New Game", this);
-		optionsButton = new MenuButton("Options", this);
-		optionsButton.setTranslateY(40);
+		newGameButton = new MenuButton(this);
+		newGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("New Game"), 20, 150));
+		optionsButton = new MenuButton(this);
+		optionsButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Options"), 20, 150));
+		optionsButton.setTranslateY(70);
 		this.scene = initScene(root);
 	}
     
