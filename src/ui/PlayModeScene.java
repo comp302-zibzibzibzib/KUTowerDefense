@@ -184,7 +184,9 @@ public class PlayModeScene {
 	}
 	
 	private void showLotCircle(ImageView lot) {
-		
+		if (towerSelection != null&& towerSelection.getParent() != null) {
+	        ((Pane) towerSelection.getParent()).getChildren().remove(towerSelection);
+	    }	
 		int x = (int)(lot.getLayoutX()/80);
     	int y = (int)(lot.getLayoutY()/80);
 		double centerX = lot.getLayoutX() + lot.getFitWidth() / 2;
@@ -215,8 +217,15 @@ public class PlayModeScene {
 	    archerButton.setGraphic(archerButtonView);
 	    archerButton.setBackground(null);
 	    archerButton.setPrefSize(40, 40);
-	    archerButton.setLayoutX(centerX- 25);
-	    archerButton.setLayoutY(centerY - 80);
+	    if(lot.getLayoutY() == 0) {
+	    	archerButton.setLayoutX(centerX- 27);
+		    archerButton.setLayoutY(centerY +25 );
+	    }
+	    else {
+	    	archerButton.setLayoutX(centerX- 25);
+		    archerButton.setLayoutY(centerY - 80);
+	    }
+	   
 	    
 	    Button mageButton = new Button();
 	    mageButton.setGraphic(mageButtonView);
@@ -231,6 +240,7 @@ public class PlayModeScene {
 	    artilleryButton.setPrefSize(40, 40);
 	    artilleryButton.setLayoutX(centerX + 20);
 	    artilleryButton.setLayoutY(centerY -20);
+	    
 	    
 	    archerButton.setOnMouseClicked(event ->{
 	    	removeCircle(towerSelection);
@@ -269,7 +279,11 @@ public class PlayModeScene {
 	}
 	
 	private void showDeleteCircle(ImageView tower) {
-
+		if (removeSelection != null&& removeSelection.getParent() != null) {
+	        ((Pane) removeSelection.getParent()).getChildren().remove(removeSelection);
+	    }	
+		int x = (int)(tower.getLayoutX()/80);
+    	int y = (int)(tower.getLayoutY()/80);
         double centerX = tower.getLayoutX() + tower.getFitWidth() / 2;
         double centerY = tower.getLayoutY() + tower.getFitHeight() / 2;
         Image circleImage = new Image(getClass().getResourceAsStream("/Images/circle.png"));
@@ -294,11 +308,15 @@ public class PlayModeScene {
         }
         else {
             deleteButton.setLayoutX(centerX- 25);
-             deleteButton.setLayoutY(centerY - 80);
+            deleteButton.setLayoutY(centerY - 80);
         }
 
         deleteButton.setOnMouseClicked(event -> {
             removeCircle(removeSelection);
+            mapEditorController.removeTower(x,y);
+            Pane newMap = renderMap();
+			rootPane.getChildren().add(newMap);
+			playerStatsPutter();
         });
 
 
@@ -394,10 +412,6 @@ public class PlayModeScene {
         rootPane.getChildren().addAll(statWave);
 
 
-        
-        
-        
-        
         
 	}
 	
