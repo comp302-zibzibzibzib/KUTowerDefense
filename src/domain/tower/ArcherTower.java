@@ -1,10 +1,8 @@
 package domain.tower;
 
-import domain.map.Location;
-
 public class ArcherTower extends Tower {
 
-	public ArcherTower(int upgradeCost, int level, double range, double fireRate) {
+	public ArcherTower(int cost, int upgradeCost, int level, double range, double fireRate) {
 		super();
 		this.upgradeCost = upgradeCost;
 		this.attackType = AttackType.ARROW;
@@ -15,7 +13,7 @@ public class ArcherTower extends Tower {
 
 	@Override
 	public Projectile createProjectile() {
-		Projectile projectile = new Projectile(attackType, target, location);
+		Projectile projectile = ProjectileFactory.createArrow(target, location);
 		System.out.printf("%f",projectile.damage);
 		return projectile;
 	}

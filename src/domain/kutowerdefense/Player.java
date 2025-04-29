@@ -9,20 +9,41 @@ public class Player {
 	
 	private static Player instance;
 	
-	public int gold;
-	public int lives;
-	public int waveNumber;
+	private int gold;
+	private int lives;
+	private int waveNumber;
 	
+	public int getGold() {
+		return gold;
+	}
+
+	public void setGold(int gold) {
+		this.gold = gold;
+	}
+	
+	public void updateGold(int updateAmount) {
+		this.gold += updateAmount;
+	}
+
+	public int getLives() {
+		return lives;
+	}
+
+	public void setLives(int lives) {
+		this.lives = lives;
+	}
+
+	public int getWaveNumber() {
+		if (waveNumber == 0) PlayModeManager.getInstance().getCurrentWaveIndex();
+		return waveNumber;
+	}
+
+	public void setWaveNumber(int waveNumber) {
+		this.waveNumber = waveNumber;
+	}
+
 	private Player() {
 		this.gold = STARTING_GOLD; this.lives = STARTING_LIVES; this.waveNumber = 0;
-	}
-	
-	public void constructTower(Lot lot, AttackType attackType) {
-		
-	}
-	
-	public void sellTower(Lot lot) {
-		
 	}
 	
 	public static Player getInstance() {
