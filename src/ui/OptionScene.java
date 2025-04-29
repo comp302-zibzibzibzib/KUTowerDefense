@@ -30,7 +30,9 @@ public class OptionScene {
 	private Image buttonBlue = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb.png"));
 	private Image buttonPressed = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb_pressed.png"));
 	private Image buttonDisabled = new Image(getClass().getResourceAsStream(SPRITE_PATH + "disableb.png"));
+	private Image buttonDisabled3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "disableb3.png"));
 	private Image buttonHover = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb.png"));
+	private Image buttonHover3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb3.png"));
 	private Image buttonBlue3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb3.png"));
 	
 	public OptionScene(KuTowerDefenseA app, StackPane root) {
@@ -42,7 +44,7 @@ public class OptionScene {
 		return scene;
 	}
 	
-	private StackPane createButtonStackPane(Image image, Label label, int fontSize, int width) {
+	private StackPane createButtonStackPane(Image image, Image hoverImage, Image clickedImage, Label label, int fontSize, int width) {
 		ImageView view = new ImageView(image);
 		view.setFitHeight(50);
 	    view.setFitWidth(width);
@@ -54,6 +56,18 @@ public class OptionScene {
 	    pane.getChildren().addAll(view, label);
 	    
 	    label.setTranslateY(-5);
+	    
+	    pane.setOnMouseEntered(e -> { view.setImage(hoverImage); });
+	    pane.setOnMouseExited(e -> { view.setImage(image); });
+	    
+	    pane.setOnMousePressed(e -> { view.setImage(clickedImage); });
+	    pane.setOnMouseReleased(e -> { 
+	    	if (pane.isHover()) {
+	    		view.setImage(hoverImage); 
+	    	} else {
+	    		view.setImage(image); 
+	    	}
+	    });
 	    
 	    return pane;
 	}
@@ -82,11 +96,11 @@ public class OptionScene {
 		
 		Button increment = new Button();
 		increment.setBackground(null);
-		StackPane incrementPane = createButtonStackPane(buttonBlue, new Label(">"), 30, 50);
+		StackPane incrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label(">"), 30, 50);
 		increment.setGraphic(incrementPane);
 		Button decrement = new Button();
 		decrement.setBackground(null);
-		StackPane decrementPane = createButtonStackPane(buttonBlue, new Label("<"), 30, 50);
+		StackPane decrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label("<"), 30, 50);
 		decrement.setGraphic(decrementPane);
 		
 		increment.setOnAction(e -> {
@@ -118,11 +132,11 @@ public class OptionScene {
 		
 		Button increment = new Button();
 		increment.setBackground(null);
-		StackPane incrementPane = createButtonStackPane(buttonBlue, new Label(">"), 30, 50);
+		StackPane incrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label(">"), 30, 50);
 		increment.setGraphic(incrementPane);
 		Button decrement = new Button();
 		decrement.setBackground(null);
-		StackPane decrementPane = createButtonStackPane(buttonBlue, new Label("<"), 30, 50);
+		StackPane decrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label("<"), 30, 50);
 		decrement.setGraphic(decrementPane);
 		
 		increment.setOnAction(e -> {
@@ -171,14 +185,14 @@ public class OptionScene {
 		
 		Button saveButton = new Button();
 		saveButton.setBackground(null);
-		saveButton.setGraphic(createButtonStackPane(buttonBlue3, new Label("Save"), 20, 100));
+		saveButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Save"), 20, 100));
 		saveButton.setOnAction(e -> {
 			GameOptionsController.saveOptions();
 		});
 		
 		Button mainMenuButton = new Button();
 		mainMenuButton.setBackground(null);
-		mainMenuButton.setGraphic(createButtonStackPane(buttonBlue3, new Label("Main Menu"), 20, 150));
+		mainMenuButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Main Menu"), 20, 150));
 		mainMenuButton.setOnAction(e -> {
 			app.showMainMenu(new StackPane());
 		});
