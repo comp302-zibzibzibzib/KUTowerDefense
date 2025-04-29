@@ -27,6 +27,7 @@ import domain.map.TileType;
 import domain.map.TowerType;
 import domain.tower.ArcherTower;
 import domain.tower.Tower;
+import domain.tower.TowerFactory;
 
 // Test class to test various components in domain
 public final class Test {
@@ -239,7 +240,7 @@ public final class Test {
 			Tile towerTile = map1.tileMap[2][3];
 			towerTile.setType(TileType.TOWER);
 			Lot lot = new Lot(towerTile.getLocation());
-			Tower archerTower = new ArcherTower(200, 1, 7.5, 2);
+			Tower archerTower = TowerFactory.createArcherTower();
 			lot.placeTower(archerTower, TowerType.ARCHER);
 			
 			List<PathTile> path = Utilities.findPath(map1);

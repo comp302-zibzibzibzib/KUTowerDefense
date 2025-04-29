@@ -112,4 +112,15 @@ public class PlayModeController {
 		playModeManager.quitGame();
 	}
 	
+	public static double getTowerRange(int x, int y) {
+		try {
+			Tile tile = currentMap.tileMap[y][x];
+			if (!(tile instanceof Lot)) return -1;
+			
+			Lot lot = (Lot) tile;
+			return lot.getTower().getRange();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			return -1;
+		}
+	}
 }

@@ -20,6 +20,10 @@ public class Player {
 	public void setGold(int gold) {
 		this.gold = gold;
 	}
+	
+	public void updateGold(int updateAmount) {
+		this.gold += updateAmount;
+	}
 
 	public int getLives() {
 		return lives;

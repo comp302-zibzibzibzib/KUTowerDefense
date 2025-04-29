@@ -108,6 +108,8 @@ public abstract class Tower implements Serializable {
 		this.location = location;
 	}
     
-    
+    public int getCost() {
+    	return cost;
+    }
 }
 
