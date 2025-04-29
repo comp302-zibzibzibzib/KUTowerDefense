@@ -1,5 +1,6 @@
 package ui;
 
+import domain.controller.MapEditorController;
 import domain.controller.PlayModeController;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -15,14 +16,18 @@ public class PlayModeScene {
 	private Group towerSelection = null;
 	private Circle rangeCircle = null;
 	private Group circle = null;
+	private MapEditorController mapEditorController = MapEditorController.getInstance();
+	private Pane rootPane;
+	private Group removeSelection = null;
 
 	public PlayModeScene(KuTowerDefenseA app) {
 		this.app = app;
 	}
 	
 	public Scene getScene() {
-		Pane root = renderMap();
-		Scene scene = new Scene(root);
+		rootPane = renderMap();
+		playerStatsPutter();
+		Scene scene = new Scene(rootPane);
 		return scene;
 		
 	}
@@ -96,22 +101,46 @@ public class PlayModeScene {
 				}
 				else {
 					tileView.setOnMouseClicked(event->{
-						removeCircle();
+						removeCircle(towerSelection);
 					});
 				}
 				if(assetName.equals("archertower")) {
 					tileView.setOnMouseEntered(event -> {
 						rangeRender(tileView);
 					});
+					tileView.setOnMouseClicked(event->{
+						removeRange();
+						showDeleteCircle(tileView);
+					});
 				}
 				else if(assetName.equals("magetower")) {
 					tileView.setOnMouseEntered(event -> {
 						rangeRender(tileView);
 					});
+					tileView.setOnMouseClicked(event->{
+						removeRange();
+						showDeleteCircle(tileView);
+
+					});
+					
 				}
 				else if(assetName.equals("artillerytower")) {
 					tileView.setOnMouseEntered(event -> {
 						rangeRender(tileView);
+					});
+					tileView.setOnMouseClicked(event->{
+						removeRange();
+						showDeleteCircle(tileView);
+
+					});
+				}
+				else if (!assetName.equals("lot")) {
+					tileView.setOnMouseEntered(event -> {
+						removeRange();
+					});
+					tileView.setOnMouseClicked(event->{
+						removeCircle(removeSelection);
+						removeCircle(towerSelection);
 					});
 				}
 				else {
@@ -155,9 +184,9 @@ public class PlayModeScene {
 	}
 	
 	private void showLotCircle(ImageView lot) {
-		if (towerSelection != null) {
-		        ((Pane) towerSelection.getParent()).getChildren().remove(towerSelection);
-		}
+		
+		int x = (int)(lot.getLayoutX()/80);
+    	int y = (int)(lot.getLayoutY()/80);
 		double centerX = lot.getLayoutX() + lot.getFitWidth() / 2;
 	    double centerY = lot.getLayoutY() + lot.getFitHeight() / 2;
 	    
@@ -204,17 +233,32 @@ public class PlayModeScene {
 	    artilleryButton.setLayoutY(centerY -20);
 	    
 	    archerButton.setOnMouseClicked(event ->{
-			buyTower(lot);
+	    	removeCircle(towerSelection);
+			mapEditorController.createArcherTower(x, y);
+			rootPane.getChildren().clear();
+			Pane newMap = renderMap();
+			rootPane.getChildren().add(newMap);
+			playerStatsPutter();
 			System.out.println("aaaa");
 
 		});
 	    mageButton.setOnMouseClicked(event -> {
-	    	buyTower(lot);
+	    	removeCircle(towerSelection);
+			mapEditorController.createMageTower(x, y);
+			rootPane.getChildren().clear();
+			Pane newMap = renderMap();
+			rootPane.getChildren().add(newMap);
+			playerStatsPutter();
 			System.out.println("mmmmm");
 
 	    });
 	    artilleryButton.setOnMouseClicked(event->{
-	    	buyTower(lot);
+	    	removeCircle(towerSelection);
+			mapEditorController.createArtilleryTower(x, y);
+			rootPane.getChildren().clear();
+			Pane newMap = renderMap();
+			rootPane.getChildren().add(newMap);
+			playerStatsPutter();
 			System.out.println("arrrr");
 
 	    });
@@ -224,15 +268,54 @@ public class PlayModeScene {
 	    ((Pane) lot.getParent()).getChildren().add(towerSelection);
 	}
 	
-	private void removeCircle() {
-		if (towerSelection != null && towerSelection.getParent() != null) {
-	        ((Pane) towerSelection.getParent()).getChildren().remove(towerSelection);
-	        towerSelection = null;
+	private void showDeleteCircle(ImageView tower) {
+
+        double centerX = tower.getLayoutX() + tower.getFitWidth() / 2;
+        double centerY = tower.getLayoutY() + tower.getFitHeight() / 2;
+        Image circleImage = new Image(getClass().getResourceAsStream("/Images/circle.png"));
+        ImageView circleView = new ImageView(circleImage);
+        circleView.setFitWidth(100);
+        circleView.setFitHeight(100);
+        circleView.setLayoutX(centerX - 50);
+        circleView.setLayoutY(centerY - 50);
+
+        Image deleteButtonImage  = new Image(getClass().getResourceAsStream("/Images/delete.png"));
+        ImageView deleteButtonView = new ImageView(deleteButtonImage);
+        deleteButtonView.setFitWidth(40);
+        deleteButtonView.setFitHeight(40);
+
+        Button deleteButton = new Button();
+        deleteButton.setGraphic(deleteButtonView);
+        deleteButton.setBackground(null);
+        deleteButton.setPrefSize(40, 40);
+        if(tower.getLayoutY() == 0) {
+            deleteButton.setLayoutX(centerX- 27);
+             deleteButton.setLayoutY(centerY + 25);
+        }
+        else {
+            deleteButton.setLayoutX(centerX- 25);
+             deleteButton.setLayoutY(centerY - 80);
+        }
+
+        deleteButton.setOnMouseClicked(event -> {
+            removeCircle(removeSelection);
+        });
+
+
+        removeSelection = new Group(circleView,deleteButton);
+
+        ((Pane) tower.getParent()).getChildren().add(removeSelection);
+
+	}
+	
+	
+	private void removeCircle(Group group) {
+		if (group != null && group.getParent() != null) {
+	        ((Pane) group.getParent()).getChildren().remove(group);
+	        group = null;
 	    }	
 	}
 	
-	private void buyTower(ImageView lot) {
-	}
 	
 	private void rangeRender(ImageView tower) {
 	 if (circle != null && circle.getParent() != null) {
@@ -256,5 +339,72 @@ public class PlayModeScene {
 	        ((Pane) circle.getParent()).getChildren().remove(circle);
 	        circle = null;
 	    }	
+	}
+	
+	private void playerStatsPutter() {
+		Image coinImage  = new Image(getClass().getResourceAsStream("/Images/coin.png"));
+        ImageView coinView = new ImageView(coinImage);
+        Image heartImage  = new Image(getClass().getResourceAsStream("/Images/health.png"));
+        ImageView heartImageView = new ImageView(heartImage);
+        Image waveImage  = new Image(getClass().getResourceAsStream("/Images/wave.png"));
+        ImageView waveView = new ImageView(waveImage);
+        Image infoImage  = new Image(getClass().getResourceAsStream("/Images/blueb.png"));
+        ImageView infoView1 = new ImageView(infoImage);
+        ImageView infoView2 = new ImageView(infoImage);
+        ImageView infoView3 = new ImageView(infoImage);
+
+        
+        coinView.setFitHeight(50);
+        coinView.setFitWidth(50);
+        
+        heartImageView.setFitHeight(50);
+        heartImageView.setFitWidth(50);
+        
+        waveView.setFitHeight(50);
+        waveView.setFitWidth(50);
+        coinView.setLayoutX(0);
+        coinView.setLayoutY(0);
+        heartImageView.setLayoutX(0);
+        heartImageView.setLayoutY(50);
+        waveView.setLayoutX(0);
+        waveView.setLayoutY(100);
+        
+        infoView1.setFitHeight(50);
+        infoView1.setFitWidth(110);
+        infoView2.setFitHeight(50);
+        infoView2.setFitWidth(110);
+        infoView3.setFitHeight(50);
+        infoView3.setFitWidth(110);
+        
+        infoView1.setLayoutX(50);
+        infoView1.setLayoutY(0);
+       
+        
+        Group statCoin = playerStats(coinView, infoView1);
+        rootPane.getChildren().addAll(statCoin);
+
+        infoView2.setLayoutX(50);
+        infoView2.setLayoutY(50);
+        Group statHealth = playerStats(heartImageView, infoView2);
+        rootPane.getChildren().addAll(statHealth);
+
+        infoView3.setLayoutX(50);
+        infoView3.setLayoutY(100);
+        Group statWave = playerStats(waveView, infoView3);
+        rootPane.getChildren().addAll(statWave);
+
+
+        
+        
+        
+        
+        
+	}
+	
+	private Group playerStats(ImageView image, ImageView info) {
+		Group stats = new Group(image, info);
+		return stats;
+        
+        
 	}
 }

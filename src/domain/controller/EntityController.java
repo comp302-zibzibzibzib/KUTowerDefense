@@ -117,7 +117,7 @@ class MovementTimer extends AnimationTimer {
 		long deltaTime = (now - lastUpdate);
 		lastUpdate = now;
 		
-		List<Enemy> enemyList = new ArrayList(Enemy.getAllEnemies());
+		List<Enemy> enemyList = new ArrayList<Enemy>(Enemy.getAllEnemies());
 		for (Enemy enemy : enemyList) {
 			if (!enemy.isInitalized()) continue;
 			

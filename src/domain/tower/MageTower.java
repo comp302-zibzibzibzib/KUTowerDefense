@@ -2,13 +2,14 @@ package domain.tower;
 
 public class MageTower extends Tower {
 
-	public MageTower(int upgradeCost, int level, double range, double fireRate) {
+	public MageTower(int cost,int upgradeCost, int level, double range, double fireRate) {
 		super();
 		this.upgradeCost = upgradeCost;
 		this.level = level;
 		this.attackType = AttackType.SPELL;
 		this.target = null;
 		this.range = range;
+		this.cost = cost;
 	}
 
 	@Override

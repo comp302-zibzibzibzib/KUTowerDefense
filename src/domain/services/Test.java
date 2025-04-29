@@ -239,7 +239,7 @@ public final class Test {
 			Tile towerTile = map1.tileMap[2][3];
 			towerTile.setType(TileType.TOWER);
 			Lot lot = new Lot(towerTile.getLocation());
-			Tower archerTower = new ArcherTower(200, 1, 7.5, 2);
+			Tower archerTower = new ArcherTower(3,200, 1, 7.5, 2);
 			lot.placeTower(archerTower, TowerType.ARCHER);
 			
 			List<PathTile> path = Utilities.findPath(map1);

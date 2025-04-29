@@ -9,7 +9,7 @@ import domain.map.TowerType;
 
 public class MapEditorController {
 	private static MapEditor mapEditor;
-	private static PlayModeManager playModeManager;
+	private static PlayModeManager playModeManager = PlayModeManager.getInstance();
 	private static MapEditorController instance;
 	
 	private MapEditorController() {
@@ -23,15 +23,19 @@ public class MapEditorController {
 	}
 	
 	public void createArcherTower(int x, int y) {
+		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.TOWER, TowerType.ARCHER, y, x);
+		Map.printMap(playModeManager.getCurrentMap());
 	}
 	
 	public void createMageTower(int x, int y) {
+		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.TOWER, TowerType.MAGE, y, x);
 	}
 	
 	public void createArtilleryTower(int x, int y) {
-		mapEditor.placeTile(TileType.TOWER, TowerType.ARTILLERY, x, y);
+		mapEditor.removeTile(y, x);
+		mapEditor.placeTile(TileType.TOWER, TowerType.ARTILLERY, y, x);
 	}
 	
 	public void removeTower(int x, int y) {
