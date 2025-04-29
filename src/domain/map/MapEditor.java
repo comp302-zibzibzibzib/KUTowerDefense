@@ -185,7 +185,8 @@ public class MapEditor implements Serializable {
 	        tower.setLocation(existingTile.getLocation());
 
 	        // Place the Tower inside the Lot
-	        Lot lot = new Lot(existingTile.getLocation());
+	        
+	        Lot lot = (existingTile.getType() == TileType.LOT) ? (Lot) existingTile : new Lot(existingTile.getLocation());
 	        lot.placeTower(tower,tType); 
 	        lot.setType(TileType.TOWER); 
 
