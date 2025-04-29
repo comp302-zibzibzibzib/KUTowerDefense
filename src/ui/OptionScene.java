@@ -14,13 +14,24 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 // If player exits menu without saving the options still persist during runtime Need Fix
 // However if they don't save the options won't persist for other runs, as expected
 public class OptionScene {
+	private static final String SPRITE_PATH = "/Images/HUD/";
+	
 	private KuTowerDefenseA app;
 	private VBox vbox;
 	private Scene scene;
+	
+	private Image buttonBlue = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb.png"));
+	private Image buttonPressed = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb_pressed.png"));
+	private Image buttonDisabled = new Image(getClass().getResourceAsStream(SPRITE_PATH + "disableb.png"));
+	private Image buttonHover = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb.png"));
+	private Image buttonBlue3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb3.png"));
 	
 	public OptionScene(KuTowerDefenseA app, StackPane root) {
 		this.app = app;
@@ -31,12 +42,52 @@ public class OptionScene {
 		return scene;
 	}
 	
+	private StackPane createButtonStackPane(Image image, Label label, int fontSize, int width) {
+		ImageView view = new ImageView(image);
+		view.setFitHeight(50);
+	    view.setFitWidth(width);
+	    
+	    Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
+	    label.setFont(font);
+	    
+	    StackPane pane = new StackPane();
+	    pane.getChildren().addAll(view, label);
+	    
+	    label.setTranslateY(-5);
+	    
+	    return pane;
+	}
+	
+	private StackPane createLabelStackPane(Image image, Label label, int fontSize) {
+		ImageView view = new ImageView(image);
+		view.setFitHeight(50);
+	    view.setFitWidth(150);
+	    
+	    Font font = Font.font("Calibri", fontSize);
+	    label.setFont(font);
+	    
+	    StackPane pane = new StackPane();
+	    pane.getChildren().addAll(view, label);
+	    
+	    label.setTranslateY(-5);
+	    
+	    return pane;
+	}
+	
 	private HBox createOption(String text, Supplier<Integer> getter, Consumer<Integer> setter, int min, int max, int incrementAmount) {
 		Label label = new Label(text);
 		Label value = new Label(String.valueOf(getter.get()));
+		StackPane labelPane = createLabelStackPane(buttonBlue3, label, 20);
+		StackPane valuePane = createLabelStackPane(buttonBlue3, value, 30);
 		
-		Button increment = new Button("+");
-		Button decrement = new Button("-");
+		Button increment = new Button();
+		increment.setBackground(null);
+		StackPane incrementPane = createButtonStackPane(buttonBlue, new Label(">"), 30, 50);
+		increment.setGraphic(incrementPane);
+		Button decrement = new Button();
+		decrement.setBackground(null);
+		StackPane decrementPane = createButtonStackPane(buttonBlue, new Label("<"), 30, 50);
+		decrement.setGraphic(decrementPane);
 		
 		increment.setOnAction(e -> {
 			int current = getter.get();
@@ -54,7 +105,7 @@ public class OptionScene {
 			}
 		});
 		
-		HBox option = new HBox(10, label, decrement, value, increment);
+		HBox option = new HBox(10, labelPane, decrement, valuePane, increment);
 		option.setAlignment(Pos.CENTER);
 		return option;
 	}
@@ -62,9 +113,17 @@ public class OptionScene {
 	private HBox createOption(String text, Supplier<Double> getter, Consumer<Double> setter, double min, double max, double incrementAmount) {
 		Label label = new Label(text);
 		Label value = new Label(String.valueOf(getter.get()));
+		StackPane labelPane = createLabelStackPane(buttonBlue3, label, 20);
+		StackPane valuePane = createLabelStackPane(buttonBlue3, value, 30);
 		
-		Button increment = new Button("+");
-		Button decrement = new Button("-");
+		Button increment = new Button();
+		increment.setBackground(null);
+		StackPane incrementPane = createButtonStackPane(buttonBlue, new Label(">"), 30, 50);
+		increment.setGraphic(incrementPane);
+		Button decrement = new Button();
+		decrement.setBackground(null);
+		StackPane decrementPane = createButtonStackPane(buttonBlue, new Label("<"), 30, 50);
+		decrement.setGraphic(decrementPane);
 		
 		increment.setOnAction(e -> {
 			double current = getter.get();
@@ -82,16 +141,16 @@ public class OptionScene {
 			}
 		});
 		
-		HBox option = new HBox(10, label, decrement, value, increment);
+		HBox option = new HBox(10, labelPane, decrement, valuePane, increment);
 		option.setAlignment(Pos.CENTER);
 		return option;
 	}
 	
 	private void initializeScene(StackPane root) {
-		Image backgroundImage = new Image(getClass().getResourceAsStream("/Images/MainMenuImage.png"));
+		Image backgroundImage = new Image(getClass().getResourceAsStream("/Images/options_background.png"));
         ImageView backgroundView = new ImageView(backgroundImage);
         
-        backgroundView.setPreserveRatio(true);
+        backgroundView.setPreserveRatio(false);
         backgroundView.fitWidthProperty().bind(root.widthProperty());
         backgroundView.fitHeightProperty().bind(root.heightProperty());
         
@@ -100,6 +159,7 @@ public class OptionScene {
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setPadding(new Insets(20));
 		
+		GameOptionsController.initializeGameOptions();
 		vbox.getChildren().add(createOption("Player Lives", () -> GameOptionsController.getStartingLives(),
 				val -> GameOptionsController.setStartingLives(val), 10, 50, 5));
 		vbox.getChildren().add(createOption("Starting Gold", () -> GameOptionsController.getStartingGold(),
@@ -109,12 +169,16 @@ public class OptionScene {
 		vbox.getChildren().add(createOption("Wave Number", () -> GameOptionsController.getNumberOfWaves(),
 				val -> GameOptionsController.setNumberOfWaves(val), 5, 20, 5));
 		
-		Button saveButton = new Button("Save");
+		Button saveButton = new Button();
+		saveButton.setBackground(null);
+		saveButton.setGraphic(createButtonStackPane(buttonBlue3, new Label("Save"), 20, 100));
 		saveButton.setOnAction(e -> {
 			GameOptionsController.saveOptions();
 		});
 		
-		Button mainMenuButton = new Button("Main Menu");
+		Button mainMenuButton = new Button();
+		mainMenuButton.setBackground(null);
+		mainMenuButton.setGraphic(createButtonStackPane(buttonBlue3, new Label("Main Menu"), 20, 150));
 		mainMenuButton.setOnAction(e -> {
 			app.showMainMenu(new StackPane());
 		});

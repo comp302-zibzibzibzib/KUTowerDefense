@@ -1,5 +1,6 @@
 package ui;
 
+import domain.controller.GameOptionsController;
 import domain.controller.MainMenuController;
 import domain.map.Map;
 import domain.services.Utilities;
@@ -58,7 +59,7 @@ public class MainMenuScene {
 			MainMenuController.startNewGame("Pre-Built Map");
 			app.startGame();
 		} else if (event.getSource() == optionsButton) {
-			MainMenuController.initOptions();
+			GameOptionsController.initializeGameOptions();
 			app.showOptionsMenu(new StackPane());
 		}
 		

@@ -29,7 +29,11 @@ public class GameOptions implements Serializable {
     }
     
     public static void initializeGameOptions() {
-    	instance = getInstance();
+    	try {
+			instance = Utilities.readOptions();
+		} catch (Exception e) {
+			instance = Utilities.readDefaultOptions();
+		}
     }
     
     public static GameOptions getInstance() {

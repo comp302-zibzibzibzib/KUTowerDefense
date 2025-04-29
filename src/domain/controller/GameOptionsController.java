@@ -6,6 +6,10 @@ import domain.services.Utilities;
 public class GameOptionsController {
 	private static GameOptions options = GameOptions.getInstance();
 	
+	public static void initializeGameOptions() {
+		GameOptions.initializeGameOptions();
+		options = GameOptions.getInstance();
+	}
 	
 	public static int getStartingLives() {
 		return options.getStartingPlayerLives();
