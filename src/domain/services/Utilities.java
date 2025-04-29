@@ -22,7 +22,7 @@ import domain.map.TileType;
 
 public final class Utilities {
 	private static final String MAP_FILE_PATH = "Data/Maps/";
-	private static final String OPTIONS_FILE_PATH = "Data/Options";
+	private static final String OPTIONS_FILE_PATH = "Data/Options/";
 	
 	/**
 	 * Comparator for the priority queue used in findPath
@@ -219,7 +219,7 @@ public final class Utilities {
 	public static GameOptions readOptions() {
 		GameOptions options = null;
 		try {
-			FileInputStream fileIn = new FileInputStream(MAP_FILE_PATH + "user_options.ser");
+			FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "user_options.ser");
 			ObjectInputStream objectInput = new ObjectInputStream(fileIn);
 			
 			options = (GameOptions)objectInput.readObject();
@@ -237,7 +237,7 @@ public final class Utilities {
 	public static GameOptions readDefaultOptions() {
 		GameOptions options = null;
 		try {
-			FileInputStream fileIn = new FileInputStream(MAP_FILE_PATH + "default_options.ser");
+			FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "default_options.ser");
 			ObjectInputStream objectInput = new ObjectInputStream(fileIn);
 			
 			options = (GameOptions)objectInput.readObject();
