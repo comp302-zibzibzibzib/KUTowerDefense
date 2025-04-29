@@ -346,9 +346,12 @@ public class PlayModeScene {
 	    }
 		double centerX = tower.getLayoutX() + tower.getFitWidth() / 2;
 	    double centerY = tower.getLayoutY() + tower.getFitHeight() / 2;
-	    double range = 100;
+	    int x = (int)(tower.getLayoutX() / 80);
+	    int y = (int)(tower.getLayoutY() / 80);
+	    double range = PlayModeController.getTowerRange(x, y);
 	    
-	    rangeCircle = new Circle(centerX,centerY,range);
+	    double uiRange = range * 16;
+	    rangeCircle = new Circle(centerX,centerY, uiRange);
 	    rangeCircle.setFill(null);
 	    rangeCircle.setStroke(Color.BLUE);
 	    

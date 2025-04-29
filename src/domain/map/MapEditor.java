@@ -4,10 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import domain.services.Utilities;
-import domain.tower.ArcherTower;
-import domain.tower.ArtilleryTower;
-import domain.tower.AttackType;
-import domain.tower.MageTower;
 import domain.tower.Tower;
 import domain.tower.TowerFactory;
 

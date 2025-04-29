@@ -19,13 +19,16 @@ public class KuTowerDefenseA  extends Application{
 		
 	}
 	public void showMainMenu(StackPane root) {
-        Scene mainMenuScene = new MainMenuScene(this).getScene(root);
+		MainMenuScene menuScene = new MainMenuScene(this, root);
+        Scene mainMenuScene = menuScene.getScene();
         primaryStage.setScene(mainMenuScene);
         primaryStage.setTitle("KU Tower Defense");
         primaryStage.show();
     }
-    public void showOptionsMenu() {
-    	
+    public void showOptionsMenu(StackPane root) {
+    	OptionScene options = new OptionScene(this, root);
+        primaryStage.setScene(options.getScene());
+        primaryStage.show();
     }
     public void showMapEditor() {
     	MapEditorScene mapEditor = new MapEditorScene(this);
@@ -39,10 +42,9 @@ public class KuTowerDefenseA  extends Application{
     	Scene game = playableGame.getScene();
     	primaryStage.setScene(game);
     	primaryStage.setResizable(false);
-    	
-    	
     }
-	
-	
-
+    
+	public Stage getPrimaryStage() {
+		return primaryStage;
+	}
 }
