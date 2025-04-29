@@ -43,7 +43,8 @@ public class Player {
 	}
 
 	private Player() {
-		this.gold = STARTING_GOLD; this.lives = STARTING_LIVES; this.waveNumber = 0;
+		GameOptions options = GameOptions.getInstance();
+		this.gold = options.getStartingPlayerGold(); this.lives = options.getStartingPlayerGold(); this.waveNumber = 0;
 	}
 	
 	public static Player getInstance() {

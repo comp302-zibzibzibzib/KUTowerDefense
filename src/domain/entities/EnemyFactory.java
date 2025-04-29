@@ -1,13 +1,16 @@
 package domain.entities;
 
+import domain.kutowerdefense.GameOptions;
+
 public class EnemyFactory {
+	private static GameOptions options = GameOptions.getInstance();
 	// idk about these values
-	private static final double GOBLIN_HIT_POINTS = 30;
-	private static final double KNIGHT_HIT_POINTS = 50;
-	private static final double GOBLIN_SPEED = 4;
-	private static final double KNIGHT_SPEED = 4;
-	private static final double GOBLIN_SPELL_REDUCTION = 10;
-	private static final double KNIGHT_ARROW_REDUCTION = 10;
+	private static double GOBLIN_HIT_POINTS = 30;
+	private static double KNIGHT_HIT_POINTS = 50;
+	private static double GOBLIN_SPEED = options.getEnemySpeed();
+	private static double KNIGHT_SPEED = options.getEnemySpeed();
+	private static double GOBLIN_SPELL_REDUCTION = 10;
+	private static double KNIGHT_ARROW_REDUCTION = 10;
 	
 	public static Goblin createGoblin() {
 		return new Goblin(GOBLIN_HIT_POINTS, GOBLIN_SPEED, null, GOBLIN_SPELL_REDUCTION);

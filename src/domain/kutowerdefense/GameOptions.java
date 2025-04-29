@@ -9,6 +9,7 @@ import domain.entities.Group;
 
 public class GameOptions implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static GameOptions instance;
     
     private int startingPlayerLives = 20;
     private int startingPlayerGold = 1000;
@@ -17,6 +18,22 @@ public class GameOptions implements Serializable {
     
     public static GameOptions getDefaultOptions() {
     	return new GameOptions();
+    }
+    
+    public static void initializeGameOptions() {
+    	instance = getInstance();
+    }
+    
+    public static GameOptions getInstance() {
+    	if (instance == null) {
+    		try {
+    			instance = Utilities.readOptions();
+    		} catch (Exception e) {
+    			Utilities.writeDefaultOptions();
+    			instance = Utilities.readDefaultOptions();
+    		}
+    	}
+    	return instance;
     }
     
     public GameOptions() {
