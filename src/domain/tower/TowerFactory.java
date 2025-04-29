@@ -26,3 +26,4 @@ public class TowerFactory {
 		return new MageTower(costMage, upgradeCostMage, 1, rangeMage, fireRateMage);
 	}
 }
+

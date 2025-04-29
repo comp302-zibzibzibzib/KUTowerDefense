@@ -26,12 +26,8 @@ public class GameOptions implements Serializable {
     
     public static GameOptions getInstance() {
     	if (instance == null) {
-    		try {
-    			instance = Utilities.readOptions();
-    		} catch (Exception e) {
-    			Utilities.writeDefaultOptions();
-    			instance = Utilities.readDefaultOptions();
-    		}
+    		Utilities.writeDefaultOptions();
+			instance = Utilities.readDefaultOptions();
     	}
     	return instance;
     }

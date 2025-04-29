@@ -27,27 +27,37 @@ public class MapEditorController {
 	}
 	
 	public void createArcherTower(int x, int y) {
+
 		if (player.getGold() < TowerFactory.costArcher) return;
+		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.TOWER, TowerType.ARCHER, y, x);
 		player.updateGold(-TowerFactory.costArcher);
 	}
 	
 	public void createMageTower(int x, int y) {
 		if (player.getGold() < TowerFactory.costMage) return;
-		mapEditor.placeTile(TileType.TOWER, TowerType.MAGE, y, x);
+
+		mapEditor.removeTile(y, x);
+		mapEditor.placeTile(TileType.TOWER, TowerType.ARCHER, y, x);
+		Map.printMap(playModeManager.getCurrentMap());
 		player.updateGold(-TowerFactory.costMage);
 	}
+
 	
 	public void createArtilleryTower(int x, int y) {
 		if (player.getGold() < TowerFactory.costArtillery) return;
-		mapEditor.placeTile(TileType.TOWER, TowerType.ARTILLERY, x, y);
+		mapEditor.removeTile(y, x);
+		mapEditor.placeTile(TileType.TOWER, TowerType.ARTILLERY, y, x);
 		player.updateGold(-TowerFactory.costArtillery);
+
+		
 	}
 	
 	public void removeTower(int x, int y) {
 		Tile tileToRemove = playModeManager.getCurrentMap().tileMap[y][x];
 		if (tileToRemove.getType() != TileType.TOWER) return;
-		player.updateGold(((Lot)tileToRemove).getTower().getCost());
 		mapEditor.removeTile(y, x);
+		player.updateGold(((Lot)tileToRemove).getTower().getCost());
+
 	}
 }

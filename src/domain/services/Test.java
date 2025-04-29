@@ -241,6 +241,7 @@ public final class Test {
 			towerTile.setType(TileType.TOWER);
 			Lot lot = new Lot(towerTile.getLocation());
 			Tower archerTower = TowerFactory.createArcherTower();
+
 			lot.placeTower(archerTower, TowerType.ARCHER);
 			
 			List<PathTile> path = Utilities.findPath(map1);
