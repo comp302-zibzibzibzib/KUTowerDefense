@@ -90,7 +90,7 @@ public class PlayModeManager {
 			return;
 		}	
 		
-		if (!currentWave.isSpawning() || !spawnedAllWaves()) {
+		if (!currentWave.isSpawning() && !spawnedAllWaves()) {
 			currentWave.startSpawning();
 			//System.out.printf("Initializing wave%o!%n", currentWaveIndex + 1);
 		}
