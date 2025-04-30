@@ -62,4 +62,5 @@ public class Player {
 	public void takeDamage() {
 		this.lives -= 1;
 	}
+	
 }

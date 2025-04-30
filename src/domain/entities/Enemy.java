@@ -73,6 +73,7 @@ public abstract class Enemy {
 		//can be put somewhere else
 		this.previousPathIndex = pathIndex;
 		if(Utilities.euclideanDistance(this.location, new Location(nextX, nextY)) < 0.15) {
+
 			this.pathIndex++;
 			if(this.pathIndex == path.size()-1) { //if arrived at ending tile hit the player
 				this.hitPlayer();

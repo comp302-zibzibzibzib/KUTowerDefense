@@ -22,4 +22,5 @@ public class PlayerController {
 	public static int getTotalNumberOfWaves() {
 		return playModeManager.getTotalNumberOfWaves();
 	}
+	
 }
