@@ -13,6 +13,7 @@ public class MapEditor implements Serializable {
 	private boolean isStartingTilePlaced = false;
 	private boolean isEndingTilePlaced = false;
 	private int lotCount = 0;
+	private int castleCount = 0;
 
 	public Map map;
 
