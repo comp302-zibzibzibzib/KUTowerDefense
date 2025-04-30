@@ -26,6 +26,8 @@ public class GameOptions implements Serializable {
     	this.startingPlayerGold = defaultOptions.startingPlayerGold;
     	this.numberOfWaves = defaultOptions.numberOfWaves;
     	this.enemySpeed = defaultOptions.enemySpeed;
+    	
+    	Utilities.writeOptions();
     }
     
     public static void initializeGameOptions() {

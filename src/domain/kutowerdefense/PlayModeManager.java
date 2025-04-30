@@ -74,9 +74,10 @@ public class PlayModeManager {
 	public void initializeWaves(double deltaTime) {
 		if (spawnedAllWaves()) return;
 		
-		if (waves.isEmpty()) 
+		if (waves.isEmpty()) {
 			this.waveLength = GameOptions.getInstance().getNumberOfWaves();
 			for (int i = 0; i < waveLength; i++) instance.waves.add(WaveFactory.createWave()); // Temporarily has 3 identical waves back to back
+		}
 		
 		timeSinceLastWave += deltaTime * gameSpeed;
 		if (currentWaveIndex > 0 && timeSinceLastWave < 10) return;
@@ -86,6 +87,7 @@ public class PlayModeManager {
 		if (currentWave.spawnedAllGroups()) {
 			currentWaveIndex++;
 			timeSinceLastWave = 0;
+			return;
 		}	
 		
 		if (!currentWave.isSpawning() && !spawnedAllWaves()) {

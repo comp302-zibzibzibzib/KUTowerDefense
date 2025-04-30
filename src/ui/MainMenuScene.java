@@ -69,7 +69,7 @@ public class MainMenuScene {
 		newGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("New Game"), 20, 150));
 		optionsButton = new MenuButton(this);
 		optionsButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Options"), 20, 150));
-		optionsButton.setTranslateY(70);
+		optionsButton.setTranslateY(50);
 		this.scene = initScene(root);
 	}
     
@@ -92,7 +92,7 @@ public class MainMenuScene {
 	
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
-			MainMenuController.startNewGame("Pre-Built Map 2");
+			MainMenuController.startNewGame("SUS map");
 			app.startGame();
 		} else if (event.getSource() == optionsButton) {
 			GameOptionsController.initializeGameOptions();
