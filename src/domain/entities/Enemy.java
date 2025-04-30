@@ -22,6 +22,7 @@ public abstract class Enemy {
 	private boolean initialized = false;
 	private int previousXSign;
 	private int previousYSign;
+	private int previousPathIndex;
 	
 	/**
 	 * 
@@ -31,6 +32,7 @@ public abstract class Enemy {
 	
 	protected void hitPlayer() {
 		Player.getInstance().takeDamage();
+		initialized = false;
 		enemies.remove(this);
 	}
 	
@@ -52,6 +54,10 @@ public abstract class Enemy {
 		//get Unit
 		double xUnit = xDelta / distance;
 		double yUnit = yDelta / distance;
+		
+		//get which direction the enemy is moving
+		boolean[] direction = new boolean[] { Math.max(xUnit, yUnit) == xUnit,  Math.max(xUnit, yUnit) == yUnit };
+		
 		//move the enemy
 		this.location.xCoord += xUnit * displacement;
 		this.location.yCoord += yUnit * displacement;
@@ -59,14 +65,16 @@ public abstract class Enemy {
 		double distY = nextTileLoc.xCoord - location.xCoord;
 		double distX = nextTileLoc.yCoord - location.yCoord;
 		
-		boolean overshoot = Math.signum(distX) * previousXSign < 0 || Math.signum(distY) * previousYSign < 0;
+		boolean overshoot = (pathIndex == previousPathIndex) && (Math.signum(distX) * previousXSign < 0 && direction[0]) 
+				|| (Math.signum(distY) * previousYSign < 0 && direction[1]);
 		
 		previousXSign = (int) Math.signum(distX);
 		previousYSign = (int) Math.signum(distY);
 		
 		//updates pathIndex if the current location of enemy is near the next tile centre (limit is arbitrary)
 		//can be put somewhere else
-		if(Utilities.euclideanDistance(this.location, nextTileLoc) < 0.025 || overshoot) {
+		this.previousPathIndex = pathIndex;
+		if(Utilities.euclideanDistance(this.location, nextTileLoc) < 0.1 || overshoot) {
 			this.pathIndex++;
 			if(this.pathIndex == path.size()-1) { //if arrived at ending tile hit the player
 				this.hitPlayer();

@@ -166,7 +166,17 @@ public class EntityController {
     	return Enemy.getAllEnemies().get(i).isInitalized();
     }
     
+    public static boolean isEnemyIDInitialized(int id) {
+    	for (Enemy enemy : Enemy.getAllEnemies()) {
+    		if (enemy.getEnemyID() == id) return enemy.isInitalized();
+    	} return false;
+    }
+    
     public static int getNumberOfEnemies() {
     	return Enemy.getAllEnemies().size();
+    }
+    
+    public static int getEnemyID(int i) {
+    	return Enemy.getAllEnemies().get(i).getEnemyID();
     }
 }
