@@ -165,4 +165,8 @@ public class EntityController {
     public static boolean isEnemyInitialized(int i) {
     	return Enemy.getAllEnemies().get(i).isInitalized();
     }
+    
+    public static int getNumberOfEnemies() {
+    	return Enemy.getAllEnemies().size();
+    }
 }
