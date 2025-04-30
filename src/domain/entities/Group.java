@@ -4,6 +4,7 @@ import java.util.List;
 
 import domain.kutowerdefense.PlayModeManager;
 import domain.map.Location;
+import domain.map.Tile;
 import javafx.animation.AnimationTimer;
 
 /*class EnemyMover implements Runnable{ //deprecated class
@@ -42,6 +43,10 @@ public class Group {
 		if (!startSpawning || spawnedAllEnemies()) return;
 		
 		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
+		double startX = startLocation.xCoord;
+		double startY = startLocation.yCoord + 0.7 * Tile.tileLength; // Offset y so that enemies spawn from the edge
+		Location actualStartLocation = new Location(startX, startY);
+		
 		double delay = 0.5;
 		
 		timeAfterEnemySpawn += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
@@ -49,7 +54,7 @@ public class Group {
 		if(timeAfterEnemySpawn >= delay) {
 			//set location of enemy at start and move
 			Enemy enemy = composition.get(index);
-			enemy.initialize(startLocation);
+			enemy.initialize(actualStartLocation);
 			//System.out.printf("Initializing enemy%o!%n", index + 1);
 			
 			//enemy.moveEnemy();

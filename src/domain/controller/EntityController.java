@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import domain.entities.Enemy;
+import domain.entities.Goblin;
 import domain.entities.Group;
+import domain.entities.Knight;
 import domain.entities.Wave;
 import domain.kutowerdefense.PlayModeManager;
 import javafx.animation.AnimationTimer;
@@ -164,5 +166,27 @@ public class EntityController {
     
     public static boolean isEnemyInitialized(int i) {
     	return Enemy.getAllEnemies().get(i).isInitalized();
+    }
+    
+    public static boolean isEnemyIDInitialized(int id) {
+    	for (Enemy enemy : Enemy.getAllEnemies()) {
+    		if (enemy.getEnemyID() == id) return enemy.isInitalized();
+    	} return false;
+    }
+    
+    public static int getNumberOfEnemies() {
+    	return Enemy.getAllEnemies().size();
+    }
+    
+    public static int getEnemyID(int i) {
+    	return Enemy.getAllEnemies().get(i).getEnemyID();
+    }
+    
+    public static boolean isGoblin(int i) {
+    	return Enemy.getAllEnemies().get(i) instanceof Goblin;
+    }
+    
+    public static boolean isKnight(int i) {
+    	return Enemy.getAllEnemies().get(i) instanceof Knight;
     }
 }

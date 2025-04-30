@@ -7,6 +7,7 @@ import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.map.Location;
 import domain.map.PathTile;
+import domain.map.Tile;
 import domain.services.Utilities;
 
 public abstract class Enemy {
@@ -22,6 +23,7 @@ public abstract class Enemy {
 	private boolean initialized = false;
 	private int previousXSign;
 	private int previousYSign;
+	private int previousPathIndex;
 	
 	/**
 	 * 
@@ -31,6 +33,7 @@ public abstract class Enemy {
 	
 	protected void hitPlayer() {
 		Player.getInstance().takeDamage();
+		initialized = false;
 		enemies.remove(this);
 	}
 	
@@ -43,37 +46,54 @@ public abstract class Enemy {
 		double deltaSecond = deltaTime/1_000_000_000.0; //if causing problems can be removed
 		double displacement = (this.speed * PlayModeManager.getInstance().getGameSpeed())*deltaSecond; //get displacement
 		
-		Location nextTileLoc = path.get(pathIndex+1).getLocation(); //get the location of next tile's centre
-		double distance = Utilities.euclideanDistance(this.location, nextTileLoc); //get distance
+		PathTile nextTile = path.get(pathIndex+1); //get the location of next tile's centre
+		
+		double[] tileOffset = null;
+		if (pathIndex+1 == path.size()-1) 
+			tileOffset = new double[] {0.0, -0.7}; // Enemy has to move further up if next is end tile
+		else tileOffset = nextTile.getPathType().getPathOffsetPercentage();
+		
+		double nextX = nextTile.getLocation().xCoord + tileOffset[0] * Tile.tileLength;
+		double nextY = nextTile.getLocation().yCoord + tileOffset[1] * Tile.tileLength;
+		
+		double distance = Utilities.euclideanDistance(this.location, new Location(nextX, nextY)); //get distance
 		
 		//get difference
-		double xDelta = nextTileLoc.xCoord - this.location.xCoord;
-		double yDelta = nextTileLoc.yCoord - this.location.yCoord;
+		double xDelta = nextX - this.location.xCoord;
+		double yDelta = nextY - this.location.yCoord;
 		//get Unit
 		double xUnit = xDelta / distance;
 		double yUnit = yDelta / distance;
+		
 		//move the enemy
 		this.location.xCoord += xUnit * displacement;
 		this.location.yCoord += yUnit * displacement;
 		
-		double distY = nextTileLoc.xCoord - location.xCoord;
-		double distX = nextTileLoc.yCoord - location.yCoord;
-		
-		boolean overshoot = Math.signum(distX) * previousXSign < 0 || Math.signum(distY) * previousYSign < 0;
-		
-		previousXSign = (int) Math.signum(distX);
-		previousYSign = (int) Math.signum(distY);
-		
 		//updates pathIndex if the current location of enemy is near the next tile centre (limit is arbitrary)
 		//can be put somewhere else
-		if(Utilities.euclideanDistance(this.location, nextTileLoc) < 0.025 || overshoot) {
+		this.previousPathIndex = pathIndex;
+		if(Utilities.euclideanDistance(this.location, new Location(nextX, nextY)) < 0.15) {
 			this.pathIndex++;
 			if(this.pathIndex == path.size()-1) { //if arrived at ending tile hit the player
 				this.hitPlayer();
 			}
+			return;
 		}
 		
+		if (pathIndex+2 >= path.size()) return;
 		
+		PathTile tile2 = path.get(pathIndex+2);
+		double[] offset2 = tile2.getPathType().getPathOffsetPercentage();
+		
+		double nextX2 = tile2.getLocation().xCoord + offset2[0] * Tile.tileLength;
+		double nextY2 = tile2.getLocation().yCoord + offset2[1] * Tile.tileLength;
+		
+		double distance2 = Utilities.euclideanDistance(location, new Location(nextX2, nextY2));
+		
+		if (distance2 < distance) {
+			this.pathIndex++;
+			return;
+		}
 	}
 	
 	public double getHitPoints() {
