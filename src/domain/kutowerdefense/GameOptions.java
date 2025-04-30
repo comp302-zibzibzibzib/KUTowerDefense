@@ -49,7 +49,7 @@ public class GameOptions implements Serializable {
     
     private GameOptions() {
     	startingPlayerLives = 20;
-    	startingPlayerGold = 300;
+    	startingPlayerGold = 1000;
     	numberOfWaves = 10;
     	enemySpeed = 4;
     }
