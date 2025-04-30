@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import domain.entities.Enemy;
+import domain.entities.Goblin;
 import domain.entities.Group;
+import domain.entities.Knight;
 import domain.entities.Wave;
 import domain.kutowerdefense.PlayModeManager;
 import javafx.animation.AnimationTimer;
@@ -178,5 +180,13 @@ public class EntityController {
     
     public static int getEnemyID(int i) {
     	return Enemy.getAllEnemies().get(i).getEnemyID();
+    }
+    
+    public static boolean isGoblin(int i) {
+    	return Enemy.getAllEnemies().get(i) instanceof Goblin;
+    }
+    
+    public static boolean isKnight(int i) {
+    	return Enemy.getAllEnemies().get(i) instanceof Knight;
     }
 }
