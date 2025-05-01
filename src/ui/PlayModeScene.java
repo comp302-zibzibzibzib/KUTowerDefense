@@ -64,12 +64,12 @@ public class PlayModeScene extends AnimationTimer {
 	private HBox hbox;
 
 	private Map<Integer, EnemyStack> enemyStacks = new HashMap<Integer, EnemyStack>();
+	private Map<Integer, Integer> enemyFrameIndicies = new HashMap<Integer, Integer>();
 	private Map<String, List<Image>> enemyAnimations = new HashMap<>();
 	private int frameCounter = 0;
 
 	private double totalElapsed = 0;
 	private long lastUpdate = 0;
-	private int frameIndex = 0;
 	
 	private SecureRandom random = new SecureRandom();
 
@@ -681,8 +681,9 @@ public class PlayModeScene extends AnimationTimer {
 		
 		frameCounter++;
         
+		int addFrame = 0;
 		if (totalElapsed >= 0.1) {
-        	frameIndex = (frameIndex + 1) % 6;
+        	addFrame = 1;
         	totalElapsed = 0;
         }
 
@@ -703,12 +704,16 @@ public class PlayModeScene extends AnimationTimer {
 	        if (!enemyStacks.containsKey(id)) {
 	        	EnemyStack es = new EnemyStack();
 	        	es.healthBar.setPercentage(random.nextDouble(0.3,1));
+	        	enemyFrameIndicies.put(id, 0);
 	        	enemyPane.getChildren().add(es);
 	            enemyStacks.put(id, es);
 	        }
 
 	        EnemyStack es = enemyStacks.get(id);
+	        int frameIndex = (enemyFrameIndicies.get(id) + addFrame) % 6;
 	        es.setImage(frames.get(frameIndex));
+	        enemyFrameIndicies.put(id, frameIndex);
+	        
 	        int scale = EntityController.getXScale(i);
 	        if (scale != 0) {
 	        	es.getEnemyView().setScaleX(scale);
@@ -726,6 +731,7 @@ public class PlayModeScene extends AnimationTimer {
 	        int id = entry.getKey();
 	        if (!EntityController.isEnemyIDInitialized(id)) {
 	        	enemyPane.getChildren().remove(entry.getValue());
+	        	enemyFrameIndicies.remove(id);
 	            return true;
 	        }
 	        return false;
