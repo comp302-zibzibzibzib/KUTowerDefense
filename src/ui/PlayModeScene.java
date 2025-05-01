@@ -40,6 +40,7 @@ public class PlayModeScene extends AnimationTimer {
 	private Group circle = null;
 	private MapEditorController mapEditorController = MapEditorController.getInstance();
 	private Pane rootPane;
+	private Pane enemyPane;
 	private Pane overlayPane;
 	private Group removeSelection = null;
 
@@ -151,10 +152,12 @@ public class PlayModeScene extends AnimationTimer {
 	public Scene getScene() {
 		loadEnemyFrames();
 		rootPane = renderMap();
+		enemyPane = new Pane();
+		enemyPane.setMouseTransparent(true);
 		overlayPane = new Pane();
 		overlayPane.setPickOnBounds(false);
 		pauseResumeButton();
-		StackPane stack = new StackPane(rootPane, overlayPane);
+		StackPane stack = new StackPane(rootPane, enemyPane, overlayPane);
 		EntityController.startEntityLogic();
 		this.start();
 		
@@ -500,7 +503,7 @@ public class PlayModeScene extends AnimationTimer {
             Image lotImage = new Image(getClass().getResourceAsStream("/Images/lot.png"));
             TileView lotView = new TileView(lotImage, x, y);
             
-            lotView.setOnMouseClicked(event2 ->{
+            lotView.setOnMouseClicked(event2 -> {
 				selectedLot = lotView;
 				showLotCircle(lotView);
 				System.out.println("damn");
@@ -512,12 +515,9 @@ public class PlayModeScene extends AnimationTimer {
         deleteButton.setOnMouseEntered(e -> { deleteButtonView.setImage(deleteHover); });
 	    deleteButton.setOnMouseExited(e -> { deleteButtonView.setImage(deleteButtonImage); });
 
-
-
         removeSelection = new Group(circleView,deleteButton);
 
         overlayPane.getChildren().add(removeSelection);
-
 	}
 	
 	
@@ -703,7 +703,7 @@ public class PlayModeScene extends AnimationTimer {
 	        if (!enemyStacks.containsKey(id)) {
 	        	EnemyStack es = new EnemyStack();
 	        	es.healthBar.setPercentage(random.nextDouble(0.3,1));
-	        	rootPane.getChildren().add(es);
+	        	enemyPane.getChildren().add(es);
 	            enemyStacks.put(id, es);
 	        }
 
@@ -725,7 +725,7 @@ public class PlayModeScene extends AnimationTimer {
 		enemyStacks.entrySet().removeIf(entry -> {
 	        int id = entry.getKey();
 	        if (!EntityController.isEnemyIDInitialized(id)) {
-	        	rootPane.getChildren().remove(entry.getValue());
+	        	enemyPane.getChildren().remove(entry.getValue());
 	            return true;
 	        }
 	        return false;
