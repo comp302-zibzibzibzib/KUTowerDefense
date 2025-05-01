@@ -38,4 +38,7 @@ public class PlayerController {
 		player.getWaveNumberListener().addListener(consumer);
 	}
 	
+	public static void resetPlayer() {
+		player.resetPlayer();
+	}
 }

@@ -43,8 +43,10 @@ public abstract class Enemy {
 	}
 	
 	public void moveEnemy(long deltaTime) {
+		if(PlayModeManager.getInstance().getGameSpeed() == 0) return;
+		
 		double deltaSecond = deltaTime/1_000_000_000.0; //if causing problems can be removed
-		double displacement = (this.speed * PlayModeManager.getInstance().getGameSpeed())*deltaSecond; //get displacement
+		double displacement = (this.speed * PlayModeManager.getInstance().getGameSpeed()) * deltaSecond; //get displacement
 		
 		PathTile nextTile = path.get(pathIndex+1); //get the location of next tile's centre
 		

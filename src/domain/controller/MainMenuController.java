@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import domain.entities.Enemy;
 import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.KUTowerDefense;
+import domain.kutowerdefense.PlayModeManager;
 
 public class MainMenuController {
 	
@@ -14,6 +15,9 @@ public class MainMenuController {
 		Enemy.enemies.clear();
 		GameOptionsController.initializeGameOptions();
 		MapEditorController.createStaticMap2();
+		PlayModeManager.resetManager();
+		PlayerController.resetPlayer();
+		MapEditorController.resetMap();
 		KUTowerDefense.newGame(mapName);
 	}
 	

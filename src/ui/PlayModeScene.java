@@ -742,6 +742,8 @@ public class PlayModeScene extends AnimationTimer {
 
 		
 		gearView.setOnMouseClicked(e->{
+			EntityController.stop();
+			PlayModeController.resetManager();
 			app.showMainMenu(new StackPane());
 		});
 		gearView.setOnMouseEntered(e->{

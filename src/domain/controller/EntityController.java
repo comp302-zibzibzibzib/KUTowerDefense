@@ -21,19 +21,24 @@ class SpawnerLoopTimer extends AnimationTimer {
     @Override
     public void start() {
     	super.start();
+    	lastUpdate = 0;
     	running = true;
     }
     
     @Override
     public void stop() {
     	super.stop();
-    	testFunctionality();
+    	lastUpdate = 0;
+    	//testFunctionality();
     	running = false;
     }
 
     @Override
     public void handle(long now) {
-    	if (PlayModeManager.getInstance().getGameSpeed() == 0.0) return;
+    	if (PlayModeManager.getInstance().getGameSpeed() == 0.0) {
+			lastUpdate = now;
+			return;
+		}
     	
         if (lastUpdate == 0) {
             lastUpdate = now;
@@ -109,7 +114,10 @@ class MovementTimer extends AnimationTimer {
 	
 	@Override
 	public void handle(long now) {
-		if (PlayModeManager.getInstance().getGameSpeed() == 0.0) return;
+		if (PlayModeManager.getInstance().getGameSpeed() == 0.0) {
+			lastUpdate = now;
+			return;
+		}
 		
 		if (lastUpdate == 0) {
 			lastUpdate = now;
@@ -188,6 +196,11 @@ public class EntityController {
     
     public static boolean isKnight(int i) {
     	return Enemy.getAllEnemies().get(i) instanceof Knight;
+    }
+    
+    public static void stop() {
+    	if (gameLoop != null) gameLoop.stop();
+    	if (moveTimer != null) moveTimer.stop();
     }
 
 }

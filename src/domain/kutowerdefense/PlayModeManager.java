@@ -36,11 +36,14 @@ public class PlayModeManager {
 	
 	public static void resetManager() {
 		if (instance == null) instance = new PlayModeManager();
+		instance.currentMap = null;
 		instance.currentWaveIndex = 0;
+		instance.timeSinceLastWave = 0;
 		instance.gameSpeed = 1.0;
 		instance.previousGameSpeed = 1.0;
 		instance.waves = new ArrayList<Wave>();
 		Enemy.enemies.clear();
+		for (int i = 0; i < instance.waveLength; i++) instance.waves.add(WaveFactory.createWave());
 		instance.currentMap = null;
 	}
 	

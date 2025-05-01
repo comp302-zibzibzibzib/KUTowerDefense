@@ -2,10 +2,7 @@ package ui;
 
 import domain.controller.GameOptionsController;
 import domain.controller.MainMenuController;
-import domain.map.Map;
-import domain.services.Utilities;
 import javafx.event.ActionEvent;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 
 public class MainMenuScene {
 	private static final String SPRITE_PATH = "/Images/HUD/";
@@ -96,7 +92,7 @@ public class MainMenuScene {
 	
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
-			MainMenuController.startNewGame("Pre-Built Map 2");
+			MainMenuController.startNewGame("SUS map");
 			app.startGame();
 		} else if (event.getSource() == optionsButton) {
 			GameOptionsController.initializeGameOptions();

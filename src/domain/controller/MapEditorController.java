@@ -24,6 +24,11 @@ public class MapEditorController {
 		mapEditor = new MapEditor(currentMap);
 	}
 	
+	public static void resetMap() {
+		mapEditor = null;
+		instance = null;
+	}
+	
 	public static MapEditorController getInstance() {
 		if (instance == null) return new MapEditorController();
 		return instance;

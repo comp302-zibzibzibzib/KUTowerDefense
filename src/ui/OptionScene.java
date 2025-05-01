@@ -217,11 +217,11 @@ public class OptionScene {
 		vbox.getChildren().add(new OptionHBoxInt("Player Lives", () -> GameOptionsController.getStartingLives(),
 				val -> GameOptionsController.setStartingLives(val), 10, 50, 5));
 		vbox.getChildren().add(new OptionHBoxInt("Starting Gold", () -> GameOptionsController.getStartingGold(),
-				val -> GameOptionsController.setStartingGold(val), 300, 600, 100));
+				val -> GameOptionsController.setStartingGold(val), 100, 400, 50));
 		vbox.getChildren().add(new OptionHBoxDouble("Enemy Speed", () -> GameOptionsController.getEnemySpeed(),
-				val -> GameOptionsController.setEnemySpeed(val), 2.0, 8.0, 1.0));
+				val -> GameOptionsController.setEnemySpeed(val), 1.0, 10.0, 1.0));
 		vbox.getChildren().add(new OptionHBoxInt("Wave Number", () -> GameOptionsController.getNumberOfWaves(),
-				val -> GameOptionsController.setNumberOfWaves(val), 5, 20, 5));
+				val -> GameOptionsController.setNumberOfWaves(val), 2, 20, 1));
 		
 		Button saveButton = new Button();
 		saveButton.setBackground(null);
