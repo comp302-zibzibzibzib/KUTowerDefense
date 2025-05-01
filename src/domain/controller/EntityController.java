@@ -189,4 +189,5 @@ public class EntityController {
     public static boolean isKnight(int i) {
     	return Enemy.getAllEnemies().get(i) instanceof Knight;
     }
+
 }

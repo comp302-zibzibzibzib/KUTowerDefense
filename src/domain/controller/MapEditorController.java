@@ -129,7 +129,7 @@ public class MapEditorController {
 		me_1.placeTile(TileType.DECORATIVES, DecorativeType.TREE2, 4, 15);
 		me_1.placeTile(TileType.DECORATIVES, DecorativeType.TREE3, 0, 8);
 		me_1.placeTile(TileType.DECORATIVES, DecorativeType.TREE3, 1, 6);
-		me_1.placeTile(TileType.LOT, 4,2);
+		me_1.placeTile(TileType.LOT, 0,15);
 		me_1.placeTile(TileType.LOT, 6,9);
 		me_1.placeTile(TileType.LOT, 7,1);
 		me_1.placeTile(TileType.LOT, 8,0);

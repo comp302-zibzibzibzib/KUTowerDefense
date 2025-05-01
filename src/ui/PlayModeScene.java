@@ -20,8 +20,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -40,6 +42,26 @@ public class PlayModeScene extends AnimationTimer {
 	private Pane rootPane;
 	private Pane overlayPane;
 	private Group removeSelection = null;
+
+	private Image archerButtonImage  = new Image(getClass().getResourceAsStream("/Images/archerbutton.png"));
+  private Image mageButtonImage = new Image(getClass().getResourceAsStream("/Images/magebutton.png"));
+  private Image artilleryButtonImage = new Image(getClass().getResourceAsStream("/Images/artillerybutton.png"));
+  private Image circleImage = new Image(getClass().getResourceAsStream("/Images/circle.png"));
+  private Image hoverArtillery = new Image(getClass().getResourceAsStream("/Images/artillerybuttonhover.png"));
+  private Image hoverMage = new Image(getClass().getResourceAsStream("/Images/magebuttonhover.png"));
+  private Image hoverArcher  = new Image(getClass().getResourceAsStream("/Images/archerbuttonhover.png"));
+  private Image gearButtonImage = new Image(getClass().getResourceAsStream("/Images/gearbutton.png"));
+  private Image resumeButtonImage =  new Image(getClass().getResourceAsStream("/Images/resume.png"));
+  private Image pauseButtonImage = new Image(getClass().getResourceAsStream("/Images/pause.png"));
+  private Image accelerateButtonImage = new Image(getClass().getResourceAsStream("/Images/accelerate.png"));
+  private Image deleteHover = new Image(getClass().getResourceAsStream("/Images/deletehover.png"));
+  private Image gearHover = new Image(getClass().getResourceAsStream("/Images/gearHover.png"));
+  private Image resumeHover = new Image(getClass().getResourceAsStream("/Images/resumehover.png"));
+  private Image accelerateHover = new Image(getClass().getResourceAsStream("/Images/acceleratehover.png"));
+  private Image pauseHover = new Image(getClass().getResourceAsStream("/Images/pausehover.png"));
+
+	private HBox hbox;
+
 	private Map<Integer, EnemyStack> enemyStacks = new HashMap<Integer, EnemyStack>();
 	private Map<String, List<Image>> enemyAnimations = new HashMap<>();
 	private int frameCounter = 0;
@@ -49,6 +71,7 @@ public class PlayModeScene extends AnimationTimer {
 	private int frameIndex = 0;
 	
 	private SecureRandom random = new SecureRandom();
+
 	private class TileView extends ImageView {
 		public TileView(Image image, int xIndex, int yIndex) {
 			super(image);
@@ -130,6 +153,7 @@ public class PlayModeScene extends AnimationTimer {
 		rootPane = renderMap();
 		overlayPane = new Pane();
 		overlayPane.setMouseTransparent(true);
+    pauseResumeButton();
 		StackPane stack = new StackPane(rootPane, overlayPane);
 		EntityController.startEntityLogic();
 		this.start();
@@ -283,9 +307,6 @@ public class PlayModeScene extends AnimationTimer {
 		double centerX = lot.getLayoutX() + lot.getFitWidth() / 2;
 	    double centerY = lot.getLayoutY() + lot.getFitHeight() / 2;
 	    
-	    Image archerButtonImage  = new Image(getClass().getResourceAsStream("/Images/archerbutton.png"));
-	    Image mageButtonImage = new Image(getClass().getResourceAsStream("/Images/magebutton.png"));
-	    Image artilleryButtonImage = new Image(getClass().getResourceAsStream("/Images/artillerybutton.png"));
 	    ImageView archerButtonView = new ImageView(archerButtonImage);
 	    ImageView mageButtonView = new ImageView(mageButtonImage);
 	    ImageView artilleryButtonView = new ImageView(artilleryButtonImage);
@@ -297,7 +318,6 @@ public class PlayModeScene extends AnimationTimer {
 	    artilleryButtonView.setFitHeight(40);
 
 
-	    Image circleImage = new Image(getClass().getResourceAsStream("/Images/circle.png"));
 	    ImageView circleView = new ImageView(circleImage);
 	    circleView.setFitWidth(100);
 	    circleView.setFitHeight(100);
@@ -317,16 +337,17 @@ public class PlayModeScene extends AnimationTimer {
 		    archerButton.setLayoutY(centerY - 80);
 	    }
 	   
-	    
 	    Button mageButton = new Button();
+	    mageButton.setPrefSize(20,20);
 	    mageButton.setGraphic(mageButtonView);
-	    mageButton.setBackground(null);
-	    mageButton.setPrefSize(40, 40);
-	    mageButton.setLayoutX(centerX- 80);
+	    mageButton.setStyle("-fx-background-color: transparent;");
+	    mageButton.setLayoutX(centerX- 75);
 	    mageButton.setLayoutY(centerY - 20);
+	    mageButton.setFocusTraversable(false);
+
 	    
 	    Button artilleryButton = new Button();
-	    artilleryButton.setBackground(null);
+	    artilleryButton.setStyle("-fx-background-color: transparent;");
 	    artilleryButton.setGraphic(artilleryButtonView);
 	    artilleryButton.setPrefSize(40, 40);
 	    artilleryButton.setLayoutX(centerX + 20);
@@ -360,6 +381,9 @@ public class PlayModeScene extends AnimationTimer {
 			System.out.println("aaaa");
 			
 		});
+	    archerButton.setOnMouseEntered(e -> { archerButtonView.setImage(hoverArcher); });
+	    archerButton.setOnMouseExited(e -> {archerButtonView.setImage(archerButtonImage); });
+	    
 	    mageButton.setOnMouseClicked(event -> {
 	    	removeCircle(towerSelection);
 	    	if (!TowerController.canBuildMage()) return;
@@ -387,6 +411,9 @@ public class PlayModeScene extends AnimationTimer {
 			System.out.println("mmmmm");
 
 	    });
+	    mageButton.setOnMouseEntered(e -> { mageButtonView.setImage(hoverMage); });
+	    mageButton.setOnMouseExited(e -> { mageButtonView.setImage(mageButtonImage); });
+	    
 	    artilleryButton.setOnMouseClicked(event->{
 	    	removeCircle(towerSelection);
 	    	if (!TowerController.canBuildArtillery()) return;
@@ -414,6 +441,8 @@ public class PlayModeScene extends AnimationTimer {
 			System.out.println("arrrr");
 
 	    });
+	    artilleryButton.setOnMouseEntered(e -> { artilleryButtonView.setImage(hoverArtillery); });
+		artilleryButton.setOnMouseExited(e -> { artilleryButtonView.setImage(artilleryButtonImage); });
 	    
 	    towerSelection = new Group(circleView, archerButton,mageButton,artilleryButton);
 
@@ -445,11 +474,11 @@ public class PlayModeScene extends AnimationTimer {
         deleteButton.setBackground(null);
         deleteButton.setPrefSize(40, 40);
         if(tower.getLayoutY() == 0) {
-            deleteButton.setLayoutX(centerX- 27);
+            deleteButton.setLayoutX(centerX - 27);
              deleteButton.setLayoutY(centerY + 25);
         }
         else {
-            deleteButton.setLayoutX(centerX- 25);
+            deleteButton.setLayoutX(centerX - 27);
             deleteButton.setLayoutY(centerY - 80);
         }
 
@@ -475,6 +504,9 @@ public class PlayModeScene extends AnimationTimer {
 			parent.getChildren().add(lotView);
 			System.out.print(PlayerController.getPlayerGold());
         });
+        deleteButton.setOnMouseEntered(e -> { deleteButtonView.setImage(deleteHover); });
+	    deleteButton.setOnMouseExited(e -> { deleteButtonView.setImage(deleteButtonImage); });
+
 
 
         removeSelection = new Group(circleView,deleteButton);
@@ -633,7 +665,6 @@ public class PlayModeScene extends AnimationTimer {
 			return;
 		}
 		
-		//System.out.println(rootPane.getChildren().size());
 		double deltaTime = (arg0 - lastUpdate)/1_000_000_000.0;
 		lastUpdate = arg0;
 		totalElapsed += deltaTime;
@@ -685,5 +716,81 @@ public class PlayModeScene extends AnimationTimer {
 	        }
 	        return false;
 		});
+	}
+
+	private void pauseResumeButton() {
+		ImageView gearView = new ImageView(gearButtonImage);
+		ImageView accelerateView = new ImageView(accelerateButtonImage);
+		ImageView pauseView = new ImageView(pauseButtonImage);
+		gearView.setFitWidth(40);
+		gearView.setFitHeight(40);
+		accelerateView.setFitHeight(40);
+		accelerateView.setFitWidth(40);
+		pauseView.setFitHeight(40);
+		pauseView.setFitWidth(40);
+
+		hbox = new HBox(accelerateView,pauseView,gearView);
+		hbox.setLayoutX(1150);
+		hbox.setLayoutY(10); 
+		hbox.setPickOnBounds(false);
+
+		
+		gearView.setOnMouseClicked(e->{
+			app.showMainMenu(new StackPane());
+		});
+		gearView.setOnMouseEntered(e->{
+			gearView.setImage(gearHover);
+		});
+		gearView.setOnMouseExited(e->{
+			gearView.setImage(gearButtonImage);
+		});
+		
+		accelerateView.setOnMouseClicked(e->{
+			if(PlayModeController.getGameSpeed() == 2.0) {
+				PlayModeController.decelerateGame();
+			}
+			else {
+				PlayModeController.accelerateGame();
+
+			}
+
+		});
+		accelerateView.setOnMouseEntered(e->{
+			accelerateView.setImage(accelerateHover);
+		});
+		accelerateView.setOnMouseExited(e->{
+			accelerateView.setImage(accelerateButtonImage);
+		});
+		
+		pauseView.setOnMouseClicked(e->{
+			if(PlayModeController.getGameSpeed() == 0) {
+				PlayModeController.resumeGame();
+				pauseView.setImage(pauseButtonImage);
+			}
+			else {
+				PlayModeController.pauseGame();
+				pauseView.setImage(resumeButtonImage);
+			}
+		});
+		
+		
+		pauseView.setOnMouseEntered(e->{
+			if(PlayModeController.getGameSpeed() == 0) {
+				pauseView.setImage(resumeHover);
+			}
+			else {
+				pauseView.setImage(pauseHover);
+			}
+		});
+		pauseView.setOnMouseExited(e->{
+			if(PlayModeController.getGameSpeed() == 0) {
+				pauseView.setImage(resumeButtonImage);
+			}
+			else {
+				pauseView.setImage(pauseButtonImage);
+			}
+		});
+		
+		rootPane.getChildren().addAll(hbox);
 	}
 }

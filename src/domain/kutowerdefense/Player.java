@@ -71,7 +71,7 @@ public class Player {
 		this.lives -= 1;
 		livesListener.invoke();
 	}
-	
+
 	public PlayerValueListener getGoldListener() {
 		return goldListener;
 	}
