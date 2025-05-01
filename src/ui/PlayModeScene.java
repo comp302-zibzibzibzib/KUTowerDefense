@@ -44,21 +44,21 @@ public class PlayModeScene extends AnimationTimer {
 	private Group removeSelection = null;
 
 	private Image archerButtonImage  = new Image(getClass().getResourceAsStream("/Images/archerbutton.png"));
-  private Image mageButtonImage = new Image(getClass().getResourceAsStream("/Images/magebutton.png"));
-  private Image artilleryButtonImage = new Image(getClass().getResourceAsStream("/Images/artillerybutton.png"));
-  private Image circleImage = new Image(getClass().getResourceAsStream("/Images/circle.png"));
-  private Image hoverArtillery = new Image(getClass().getResourceAsStream("/Images/artillerybuttonhover.png"));
-  private Image hoverMage = new Image(getClass().getResourceAsStream("/Images/magebuttonhover.png"));
-  private Image hoverArcher  = new Image(getClass().getResourceAsStream("/Images/archerbuttonhover.png"));
-  private Image gearButtonImage = new Image(getClass().getResourceAsStream("/Images/gearbutton.png"));
-  private Image resumeButtonImage =  new Image(getClass().getResourceAsStream("/Images/resume.png"));
-  private Image pauseButtonImage = new Image(getClass().getResourceAsStream("/Images/pause.png"));
-  private Image accelerateButtonImage = new Image(getClass().getResourceAsStream("/Images/accelerate.png"));
-  private Image deleteHover = new Image(getClass().getResourceAsStream("/Images/deletehover.png"));
-  private Image gearHover = new Image(getClass().getResourceAsStream("/Images/gearHover.png"));
-  private Image resumeHover = new Image(getClass().getResourceAsStream("/Images/resumehover.png"));
-  private Image accelerateHover = new Image(getClass().getResourceAsStream("/Images/acceleratehover.png"));
-  private Image pauseHover = new Image(getClass().getResourceAsStream("/Images/pausehover.png"));
+    private Image mageButtonImage = new Image(getClass().getResourceAsStream("/Images/magebutton.png"));
+    private Image artilleryButtonImage = new Image(getClass().getResourceAsStream("/Images/artillerybutton.png"));
+    private Image circleImage = new Image(getClass().getResourceAsStream("/Images/circle.png"));
+    private Image hoverArtillery = new Image(getClass().getResourceAsStream("/Images/artillerybuttonhover.png"));
+    private Image hoverMage = new Image(getClass().getResourceAsStream("/Images/magebuttonhover.png"));
+    private Image hoverArcher  = new Image(getClass().getResourceAsStream("/Images/archerbuttonhover.png"));
+    private Image gearButtonImage = new Image(getClass().getResourceAsStream("/Images/gearbutton.png"));
+    private Image resumeButtonImage =  new Image(getClass().getResourceAsStream("/Images/resume.png"));
+    private Image pauseButtonImage = new Image(getClass().getResourceAsStream("/Images/pause.png"));
+    private Image accelerateButtonImage = new Image(getClass().getResourceAsStream("/Images/accelerate.png"));
+    private Image deleteHover = new Image(getClass().getResourceAsStream("/Images/deletehover.png"));
+    private Image gearHover = new Image(getClass().getResourceAsStream("/Images/gearHover.png"));
+    private Image resumeHover = new Image(getClass().getResourceAsStream("/Images/resumehover.png"));
+    private Image accelerateHover = new Image(getClass().getResourceAsStream("/Images/acceleratehover.png"));
+    private Image pauseHover = new Image(getClass().getResourceAsStream("/Images/pausehover.png"));
 
 	private HBox hbox;
 
@@ -153,6 +153,7 @@ public class PlayModeScene extends AnimationTimer {
 		rootPane = renderMap();
 		overlayPane = new Pane();
 		overlayPane.setMouseTransparent(true);
+		overlayPane.setPickOnBounds(false);
     pauseResumeButton();
 		StackPane stack = new StackPane(rootPane, overlayPane);
 		EntityController.startEntityLogic();
@@ -193,14 +194,19 @@ public class PlayModeScene extends AnimationTimer {
 			for(int j = 0; j < width;j++) {
 				assetName = PlayModeController.getAssetName(j, i);
 				
-				if(assetName.equals("hugetower")) {
-					if(castleRender) {
-						continue;
-					}	
-					castleMaker(map, i ,j);
-					castleRender = true;
-					continue;
-				}
+				if (assetName.equals("hugetower")) {
+					if (j + 1 < width && i + 1 < height) {
+						String r = PlayModeController.getAssetName(j + 1, i);
+						String d = PlayModeController.getAssetName(j, i + 1);
+						String dr = PlayModeController.getAssetName(j + 1, i + 1);
+
+						if (r.equals("hugetower") && d.equals("hugetower") && dr.equals("hugetower")) {
+							castleMaker(map, i, j);
+							continue; 
+						}
+					}
+					continue; 
+			}
 				
 				Image tileImage = new Image(getClass().getResourceAsStream("/Images/"+assetName+".png"));
 				TileView tileView = new TileView(tileImage, j, i);
