@@ -666,6 +666,11 @@ public class PlayModeScene extends AnimationTimer {
 
 	@Override
 	public void handle(long arg0) {
+		if (PlayModeController.getGameSpeed() == 0) {
+			lastUpdate = arg0;
+			return;
+		}
+		
 		if (lastUpdate == 0) {
 			lastUpdate = arg0;
 			return;
@@ -705,6 +710,10 @@ public class PlayModeScene extends AnimationTimer {
 
 	        EnemyStack es = enemyStacks.get(id);
 	        es.setImage(frames.get(frameIndex));
+	        int scale = EntityController.getXScale(i);
+	        if (scale != 0) {
+	        	es.getEnemyView().setScaleX(scale);
+	        }
 	        
 	        es.setLayoutX(x * 16 - es.getEnemyView().getFitWidth()/2);  // adjust scale as needed
 	        es.setLayoutY(y * 16 - es.getEnemyView().getFitHeight()/2);

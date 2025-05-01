@@ -25,6 +25,8 @@ public abstract class Enemy {
 	private int previousYSign;
 	private int previousPathIndex;
 	
+	private double[] direction = new double[] {0.0, 0.0};
+	
 	/**
 	 * 
 	 * @param player
@@ -66,6 +68,8 @@ public abstract class Enemy {
 		//get Unit
 		double xUnit = xDelta / distance;
 		double yUnit = yDelta / distance;
+		
+		direction = new double[] {xUnit, yUnit};
 		
 		//move the enemy
 		this.location.xCoord += xUnit * displacement;
@@ -164,5 +168,9 @@ public abstract class Enemy {
 	
 	public int getEnemyID() {
 		return enemyID;
+	}
+	
+	public double[] getDirection() {
+		return direction;
 	}
 }

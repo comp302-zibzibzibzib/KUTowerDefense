@@ -198,6 +198,16 @@ public class EntityController {
     	return Enemy.getAllEnemies().get(i) instanceof Knight;
     }
     
+    public static int getXScale(int i) {
+    	double[] direction = Enemy.getAllEnemies().get(i).getDirection();
+    	return (int) Math.signum(direction[0]);
+    }
+    
+    public static int getYScale(int i) {
+    	double[] direction = Enemy.getAllEnemies().get(i).getDirection();
+    	return (int) Math.signum(direction[1]);
+    }
+    
     public static void stop() {
     	if (gameLoop != null) gameLoop.stop();
     	if (moveTimer != null) moveTimer.stop();
