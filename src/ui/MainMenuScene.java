@@ -32,6 +32,7 @@ public class MainMenuScene {
 	private KuTowerDefenseA app;
     private Button newGameButton;
     private Button optionsButton;
+    private Button quitGameButton;
     private Scene scene;
     
     private StackPane createButtonStackPane(Image image, Image hoverImage, Image clickedImage, Label label, int fontSize, int width) {
@@ -70,6 +71,9 @@ public class MainMenuScene {
 		optionsButton = new MenuButton(this);
 		optionsButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Options"), 20, 150));
 		optionsButton.setTranslateY(50);
+		quitGameButton = new MenuButton(this);
+		quitGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Quit Game"), 20, 150));
+		quitGameButton.setTranslateY(100);
 		this.scene = initScene(root);
 	}
     
@@ -84,7 +88,7 @@ public class MainMenuScene {
         mv.fitHeightProperty().bind(root.heightProperty());
         
 		root.getChildren().addAll(mv);
-		root.getChildren().addAll(newGameButton, optionsButton);
+		root.getChildren().addAll(newGameButton, optionsButton, quitGameButton);
 		Scene scene = new Scene(root);
 
 		return scene;
@@ -97,7 +101,8 @@ public class MainMenuScene {
 		} else if (event.getSource() == optionsButton) {
 			GameOptionsController.initializeGameOptions();
 			app.showOptionsMenu(new StackPane());
+		} else if (event.getSource() == quitGameButton) {
+			MainMenuController.quitGame();
 		}
 	}
-
 }

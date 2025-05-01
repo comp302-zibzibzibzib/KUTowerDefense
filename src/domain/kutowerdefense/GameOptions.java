@@ -1,6 +1,5 @@
 package domain.kutowerdefense;
 
-import java.io.FileNotFoundException;
 import java.io.Serializable;
 
 import domain.services.Utilities;
@@ -51,7 +50,7 @@ public class GameOptions implements Serializable {
     
     private GameOptions() {
     	startingPlayerLives = 20;
-    	startingPlayerGold = 1000;
+    	startingPlayerGold = 300;
     	numberOfWaves = 10;
     	enemySpeed = 4;
     }
