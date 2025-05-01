@@ -241,6 +241,10 @@ public class OptionScene {
 					OptionHBoxInt hbox = (OptionHBoxInt) node;
 					Label value = hbox.getValueLabel();
 					value.setText(String.valueOf(hbox.getter.get()));
+				} else if (node instanceof OptionHBoxDouble) {
+					OptionHBoxDouble hbox = (OptionHBoxDouble) node;
+					Label value = hbox.getValueLabel();
+					value.setText(String.valueOf(hbox.getter.get()));
 				}
 			}
 		});

@@ -86,6 +86,7 @@ public class PlayModeManager {
 		
 		if (currentWave.spawnedAllGroups()) {
 			currentWaveIndex++;
+			Player.getInstance().setWaveNumber(currentWaveIndex+1);
 			timeSinceLastWave = 0;
 			return;
 		}	

@@ -1,6 +1,5 @@
 package domain.kutowerdefense;
 
-import java.io.FileNotFoundException;
 import java.io.Serializable;
 
 import domain.services.Utilities;
