@@ -14,6 +14,7 @@ import domain.controller.PlayModeController;
 import domain.controller.PlayerController;
 import domain.controller.TowerController;
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,7 +24,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
@@ -152,9 +152,8 @@ public class PlayModeScene extends AnimationTimer {
 		loadEnemyFrames();
 		rootPane = renderMap();
 		overlayPane = new Pane();
-		overlayPane.setMouseTransparent(true);
 		overlayPane.setPickOnBounds(false);
-    pauseResumeButton();
+		pauseResumeButton();
 		StackPane stack = new StackPane(rootPane, overlayPane);
 		EntityController.startEntityLogic();
 		this.start();
@@ -452,7 +451,7 @@ public class PlayModeScene extends AnimationTimer {
 	    
 	    towerSelection = new Group(circleView, archerButton,mageButton,artilleryButton);
 
-	    ((Pane) lot.getParent()).getChildren().add(towerSelection);
+	    overlayPane.getChildren().add(towerSelection);
 	}
 	
 	private void showDeleteCircle(ImageView tower) {
@@ -517,7 +516,7 @@ public class PlayModeScene extends AnimationTimer {
 
         removeSelection = new Group(circleView,deleteButton);
 
-        ((Pane) tower.getParent()).getChildren().add(removeSelection);
+        overlayPane.getChildren().add(removeSelection);
 
 	}
 	
@@ -704,7 +703,7 @@ public class PlayModeScene extends AnimationTimer {
 	        if (!enemyStacks.containsKey(id)) {
 	        	EnemyStack es = new EnemyStack();
 	        	es.healthBar.setPercentage(random.nextDouble(0.3,1));
-	        	overlayPane.getChildren().add(es);
+	        	rootPane.getChildren().add(es);
 	            enemyStacks.put(id, es);
 	        }
 
@@ -726,7 +725,7 @@ public class PlayModeScene extends AnimationTimer {
 		enemyStacks.entrySet().removeIf(entry -> {
 	        int id = entry.getKey();
 	        if (!EntityController.isEnemyIDInitialized(id)) {
-	        	overlayPane.getChildren().remove(entry.getValue());
+	        	rootPane.getChildren().remove(entry.getValue());
 	            return true;
 	        }
 	        return false;
@@ -763,6 +762,7 @@ public class PlayModeScene extends AnimationTimer {
 		});
 		
 		accelerateView.setOnMouseClicked(e->{
+			pauseView.setImage(pauseButtonImage);
 			if(PlayModeController.getGameSpeed() == 2.0) {
 				PlayModeController.decelerateGame();
 			}
@@ -808,6 +808,6 @@ public class PlayModeScene extends AnimationTimer {
 			}
 		});
 		
-		rootPane.getChildren().addAll(hbox);
+		overlayPane.getChildren().addAll(hbox);
 	}
 }

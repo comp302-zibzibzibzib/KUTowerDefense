@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupFactory {
-	public static final String groupComp1 = "kgkgg";
-	public static final String groupComp2 = "ggg";
-	public static final String groupComp3 = "kkk";
+	public static final String groupComp1 = "kgkgk";
+	public static final String groupComp2 = "gggkgk";
+	public static final String groupComp3 = "kkkkkkkk";
 	public static final String groupComp4 = "kgk";
 	public static final String groupComp5 = "gkg";
 

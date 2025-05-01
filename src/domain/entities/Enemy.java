@@ -173,4 +173,8 @@ public abstract class Enemy {
 	public double[] getDirection() {
 		return direction;
 	}
+	
+	public static void resetID() {
+		numberOfEnemies = 0;
+	}
 }
