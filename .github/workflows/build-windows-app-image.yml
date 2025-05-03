@@ -43,7 +43,7 @@ jobs:
         --type app-image
         --input target
         --name KuTowerDefense
-        --main-jar kutowerdefense.jar
+        --main-jar KUTowerDefense-1.0.jar
         --main-class ui.Main
         --runtime-image runtime
         --dest dist
