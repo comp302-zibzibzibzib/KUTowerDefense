@@ -3,7 +3,6 @@
 
 # Log file
 *.log
-*.iml
 
 # BlueJ files
 *.ctxt
@@ -24,4 +23,19 @@
 hs_err_pid*
 replay_pid*
 /bin/
-/.idea
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# User-specific files
+.idea/*/workspace.xml
+.idea/*/tasks.xml
+.idea/*/sonarlint/
+.idea/*/artifacts/
+
+# OS generated files
+.DS_Store
+Thumbs.db
