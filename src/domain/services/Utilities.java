@@ -5,6 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -141,111 +144,112 @@ public final class Utilities {
 		
 		return Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 	}
-	
-	/**
-	 * 
-	 * @param map
-	 * Writes map to disk to save it for later, files are sent to Data/Maps/
-	 */
+
+	private static String getDataDirectory() {
+		// For packaged app (jpackage)
+		String appDir = System.getProperty("app.dir", "");
+		if (!appDir.isEmpty()) {
+			return appDir + "/app/Data/";
+		}
+		// For development
+		return "Data/";
+	}
+
+	private static void ensureDirectoryExists(String path) throws IOException {
+		Path dirPath = Paths.get(path);
+		if (!Files.exists(dirPath)) {
+			Files.createDirectories(dirPath);
+		}
+	}
+
 	public static void writeMap(Map map) {
 		try {
-			FileOutputStream fileOut = new FileOutputStream(MAP_FILE_PATH + map.mapName + ".ser");
-			ObjectOutputStream objectOutput = new ObjectOutputStream(fileOut);
-			
-			objectOutput.writeObject(map);
-			
-			objectOutput.close();
-			fileOut.close();
+			ensureDirectoryExists(MAP_FILE_PATH);
+			Path filePath = Paths.get(MAP_FILE_PATH + map.mapName + ".ser");
+			try (ObjectOutputStream out = new ObjectOutputStream(
+					Files.newOutputStream(filePath))) {
+				out.writeObject(map);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("Oops something went wrong while writing map to disk :( ");
-		} 
+		}
 	}
-	
-	/**
-	 * 
-	 * @param fileName
-	 * @return Returns a map object read from disk with the given fileName
-	 */
+
 	public static Map readMap(String fileName) {
-		Map map = null;
 		try {
-			FileInputStream fileIn = new FileInputStream(MAP_FILE_PATH + fileName + ".ser");
-			ObjectInputStream objectInput = new ObjectInputStream(fileIn);
-			
-			map = (Map)objectInput.readObject();
-			
-			objectInput.close();
-			fileIn.close();
+			Path filePath = Paths.get(MAP_FILE_PATH + fileName + ".ser");
+			try (ObjectInputStream in = new ObjectInputStream(
+					Files.newInputStream(filePath))) {
+				return (Map) in.readObject();
+			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
-			System.out.println("Sorry couldn't read your map, better luck next time!");
+			return null;
 		}
-		
-		return map;
 	}
-	
+
 	public static void writeOptions() {
-		GameOptions options = GameOptions.getInstance();
 		try {
-			FileOutputStream fileOut = new FileOutputStream(OPTIONS_FILE_PATH + "user_options.ser");
-			ObjectOutputStream objectOutput = new ObjectOutputStream(fileOut);
-			
-			objectOutput.writeObject(options);
-			
-			objectOutput.close();
-			fileOut.close();
+			ensureDirectoryExists(OPTIONS_FILE_PATH);
+			Path filePath = Paths.get(OPTIONS_FILE_PATH + "user_options.ser");
+			try (ObjectOutputStream out = new ObjectOutputStream(
+					Files.newOutputStream(filePath))) {
+				out.writeObject(GameOptions.getInstance());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("Oops something went wrong while writing options to disk :( ");
-		} 
+		}
 	}
-	
-	private static void writeDefaultOptions() { // To be only used in readDefaultOptions
-		GameOptions options = GameOptions.getDefaultOptions();
+
+	private static void writeDefaultOptions() {
 		try {
-			FileOutputStream fileOut = new FileOutputStream(OPTIONS_FILE_PATH + "default_options.ser");
-			ObjectOutputStream objectOutput = new ObjectOutputStream(fileOut);
-			
-			objectOutput.writeObject(options);
-			
-			objectOutput.close();
-			fileOut.close();
+			ensureDirectoryExists(OPTIONS_FILE_PATH);
+			Path filePath = Paths.get(OPTIONS_FILE_PATH + "default_options.ser");
+			try (ObjectOutputStream out = new ObjectOutputStream(
+					Files.newOutputStream(filePath))) {
+				out.writeObject(GameOptions.getDefaultOptions());
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("Oops something went wrong while writing options to disk :( ");
-		} 
+		}
 	}
-	
-	public static GameOptions readOptions() throws IOException, ClassNotFoundException {
-		GameOptions options = null;
-		FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "user_options.ser");
-		ObjectInputStream objectInput = new ObjectInputStream(fileIn);
-			
-		options = (GameOptions)objectInput.readObject();
-			
-		objectInput.close();
-		
-		return options;
-	}
-	
-	public static GameOptions readDefaultOptions() {
-		Utilities.writeDefaultOptions();
-		GameOptions options = null;
+
+	public static GameOptions readOptions() {
 		try {
-			FileInputStream fileIn = new FileInputStream(OPTIONS_FILE_PATH + "default_options.ser");
-			ObjectInputStream objectInput = new ObjectInputStream(fileIn);
-			
-			options = (GameOptions)objectInput.readObject();
-			
-			objectInput.close();
-			fileIn.close();
+			Path filePath = Paths.get(OPTIONS_FILE_PATH + "user_options.ser");
+			if (!Files.exists(filePath)) {
+				writeDefaultOptions(); // Create default if missing
+			}
+			try (ObjectInputStream in = new ObjectInputStream(
+					Files.newInputStream(filePath))) {
+				return (GameOptions) in.readObject();
+			}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
-			System.out.println("Sorry couldn't read your options, better luck next time!");
+			return readDefaultOptions(); // Fallback to defaults
 		}
-		
-		return options;
+	}
+
+	public static GameOptions readDefaultOptions() {
+		try {
+			Path defaultPath = Paths.get(OPTIONS_FILE_PATH + "default_options.ser");
+
+			// Create default file if missing
+			if (!Files.exists(defaultPath)) {
+				writeDefaultOptions();
+			}
+
+			try (ObjectInputStream in = new ObjectInputStream(
+					Files.newInputStream(defaultPath))) {
+				return (GameOptions) in.readObject();
+			}
+		} catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			// Ultimate fallback - generate fresh defaults
+			GameOptions options = GameOptions.getDefaultOptions();
+			writeDefaultOptions(); // Try writing again
+			return options;
+		}
 	}
 	
 	public static double manhattanDistance(Location location1, Location location2) {
@@ -254,5 +258,4 @@ public final class Utilities {
 		
 		return Math.abs(distanceX) +Math.abs(distanceY);
 	}
-	
 }
