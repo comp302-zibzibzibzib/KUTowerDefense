@@ -7,7 +7,9 @@
 2) Unzip the files and run "KuTowerDefense"
 3) If you are on MacOS you have to allow the application to have access to working directory when prompted, otherwise it can't read/write on disk<br />
    You also have to run this command on the terminal in the directory of the installation: <br />
-   #### sudo xattr -rd com.apple.quarantine KuTowerDefense.app 
+   #### sudo xattr -rd com.apple.quarantine KuTowerDefense.app
+   or
+   #### sudo xattr -rd com.apple.quarantine /path/to/KuTowerDefense.app
 
 # Compiling using an IDE
 In order to run this in eclipse;
