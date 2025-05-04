@@ -1,6 +1,13 @@
 # KUTowerDefense
-Repository for the COMP302 term project
 
+## You can either compile and run this code on an IDE, or download the [release v0.1.0](https://github.com/comp302-zibzibzibzib/KUTowerDefense/releases/tag/v0.1.0) executable builds.
+
+# Download executables from [release v0.1.0](https://github.com/comp302-zibzibzibzib/KUTowerDefense/releases/tag/v0.1.0)
+1) Download the correct version for your platform
+2) Unzip the files and run "KuTowerDefense"
+3) If you are on MacOS you have to allow the application to have access to working directory when prompted, otherwise it can't read/write on disk
+
+# Compiling using an IDE
 In order to run this in eclipse;
 1) You have to download JavaFX SDK 21.0.7 on this [link](https://gluonhq.com/products/javafx/).<br />
 2) Go to Settings/Preferences.<br />
@@ -35,7 +42,6 @@ Linux/Mac: --module-path /path/to/javafx-sdk-21.0.7/lib --add-modules javafx.con
 Windows: --module-path "\path\to\javafx-sdk-21.0.7\lib" --add-modules javafx.controls,javafx.fxml
 For mac you have to turn off the section "Use the -XstartOnFirstThread argument when launching with SWT"<br />
 <img width="800" alt="damn" src="https://github.com/user-attachments/assets/01900101-1031-4b04-baa8-4691a46226a5" />
-
 
 
 
