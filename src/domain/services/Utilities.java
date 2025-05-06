@@ -22,6 +22,7 @@ import domain.map.Map;
 import domain.map.PathTile;
 import domain.map.Tile;
 import domain.map.TileType;
+import ui.Main;
 
 public final class Utilities {
 	private static final String MAP_FILE_PATH = "Data/Maps/";
@@ -164,8 +165,13 @@ public final class Utilities {
 
 	public static void writeMap(Map map) {
 		try {
-			ensureDirectoryExists(MAP_FILE_PATH);
-			Path filePath = Paths.get(MAP_FILE_PATH + map.mapName + ".ser");
+			Path jarPath = Paths.get(Main.class
+					.getProtectionDomain()
+					.getCodeSource()
+					.getLocation()
+					.getPath());
+			Path base = jarPath.getParent();
+			Path filePath = base.resolve(MAP_FILE_PATH + map.mapName + ".ser");
 			try (ObjectOutputStream out = new ObjectOutputStream(
 					Files.newOutputStream(filePath))) {
 				out.writeObject(map);
@@ -177,7 +183,13 @@ public final class Utilities {
 
 	public static Map readMap(String fileName) {
 		try {
-			Path filePath = Paths.get(MAP_FILE_PATH + fileName + ".ser");
+			Path jarPath = Paths.get(Main.class
+					.getProtectionDomain()
+					.getCodeSource()
+					.getLocation()
+					.getPath());
+			Path base = jarPath.getParent();
+			Path filePath = base.resolve(MAP_FILE_PATH + fileName + ".ser");
 			try (ObjectInputStream in = new ObjectInputStream(
 					Files.newInputStream(filePath))) {
 				return (Map) in.readObject();
@@ -190,8 +202,13 @@ public final class Utilities {
 
 	public static void writeOptions() {
 		try {
-			ensureDirectoryExists(OPTIONS_FILE_PATH);
-			Path filePath = Paths.get(OPTIONS_FILE_PATH + "user_options.ser");
+			Path jarPath = Paths.get(Main.class
+					.getProtectionDomain()
+					.getCodeSource()
+					.getLocation()
+					.getPath());
+			Path base = jarPath.getParent();
+			Path filePath = base.resolve(OPTIONS_FILE_PATH + "user_options.ser");
 			try (ObjectOutputStream out = new ObjectOutputStream(
 					Files.newOutputStream(filePath))) {
 				out.writeObject(GameOptions.getInstance());
@@ -203,8 +220,13 @@ public final class Utilities {
 
 	private static void writeDefaultOptions() {
 		try {
-			ensureDirectoryExists(OPTIONS_FILE_PATH);
-			Path filePath = Paths.get(OPTIONS_FILE_PATH + "default_options.ser");
+			Path jarPath = Paths.get(Main.class
+					.getProtectionDomain()
+					.getCodeSource()
+					.getLocation()
+					.getPath());
+			Path base = jarPath.getParent();
+			Path filePath = base.resolve(OPTIONS_FILE_PATH + "default_options.ser");
 			try (ObjectOutputStream out = new ObjectOutputStream(
 					Files.newOutputStream(filePath))) {
 				out.writeObject(GameOptions.getDefaultOptions());
@@ -216,7 +238,13 @@ public final class Utilities {
 
 	public static GameOptions readOptions() {
 		try {
-			Path filePath = Paths.get(OPTIONS_FILE_PATH + "user_options.ser");
+			Path jarPath = Paths.get(Main.class
+					.getProtectionDomain()
+					.getCodeSource()
+					.getLocation()
+					.getPath());
+			Path base = jarPath.getParent();
+			Path filePath = base.resolve(OPTIONS_FILE_PATH + "user_options.ser");
 			if (!Files.exists(filePath)) {
 				writeDefaultOptions(); // Create default if missing
 			}
@@ -232,7 +260,13 @@ public final class Utilities {
 
 	public static GameOptions readDefaultOptions() {
 		try {
-			Path defaultPath = Paths.get(OPTIONS_FILE_PATH + "default_options.ser");
+			Path jarPath = Paths.get(Main.class
+					.getProtectionDomain()
+					.getCodeSource()
+					.getLocation()
+					.getPath());
+			Path base = jarPath.getParent();
+			Path defaultPath = base.resolve(OPTIONS_FILE_PATH + "default_options.ser");
 
 			// Create default file if missing
 			if (!Files.exists(defaultPath)) {
