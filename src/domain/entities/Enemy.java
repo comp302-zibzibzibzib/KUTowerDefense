@@ -44,6 +44,16 @@ public abstract class Enemy {
 		Player.getInstance().setGold(Player.getInstance().getGold() + 25);
 	}
 	
+	//3% chance to reset back to start when hit by mage tower, can be put somewhere else
+	public void resetPosition() { 
+		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
+		double startX = startLocation.xCoord;
+		double startY = startLocation.yCoord + 0.7 * Tile.tileLength;
+		Location actualStartLocation = new Location(startX, startY);
+		this.location = actualStartLocation;
+		this.pathIndex = 0;
+	}
+	
 	public void moveEnemy(long deltaTime) {
 		if(PlayModeManager.getInstance().getGameSpeed() == 0) return;
 		
