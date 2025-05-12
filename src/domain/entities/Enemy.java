@@ -19,6 +19,7 @@ public abstract class Enemy {
 	protected Location location;
 	protected int pathIndex;
 	protected int enemyID;
+	protected boolean slowedDown;
 	
 	private boolean initialized = false;
 	private int previousXSign;
@@ -42,6 +43,21 @@ public abstract class Enemy {
 	public void killEnemy() { //VALUE IS RANDOM FOR NOW, MUST BE ABLE TO CHANGE IN OPTIONS
 		enemies.remove(this);
 		Player.getInstance().setGold(Player.getInstance().getGold() + 25);
+	}
+	
+	//need some way to store when the enemy got slowed down
+	public void slowDown() { //slow down by 20% when hit by lvl2 mage tower
+		if(this.slowedDown == false) {
+			this.speed = this.speed*0.8;
+			this.slowedDown = true;
+		}
+	}
+	
+	public void speedUp() { //return to normal speed
+		if(this.slowedDown == true) {
+			this.speed = this.speed*1.25;
+			this.slowedDown = false;
+		}
 	}
 	
 	//3% chance to reset back to start when hit by mage tower, can be put somewhere else
@@ -187,4 +203,14 @@ public abstract class Enemy {
 	public static void resetID() {
 		numberOfEnemies = 0;
 	}
+
+	public boolean isSlowedDown() {
+		return slowedDown;
+	}
+
+	public void setSlowedDown(boolean slowedDown) {
+		this.slowedDown = slowedDown;
+	}
+	
+	
 }

@@ -11,6 +11,7 @@ public class Knight extends Enemy {
 	
 	public Knight(double hitPoints, double speed, Location location, double arrowDamageReduction) {//var can be changed
 		this.hitPoints = hitPoints;
+		this.slowedDown = false;
 		this.spedUp = false;
 		this.speed = speed;
 		this.location = new Location();

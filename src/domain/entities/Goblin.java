@@ -8,6 +8,7 @@ public class Goblin extends Enemy {
 	
 	public Goblin(double hitPoints, double speed, Location location, double spellDamageReduction) { //var can be set/changed thus needs a parameter
 		this.hitPoints = hitPoints;
+		this.slowedDown = false;
 		this.speed = speed;
 		this.location = new Location();
 		if (location != null) {
