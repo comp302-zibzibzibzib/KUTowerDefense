@@ -10,6 +10,7 @@ public class ArtilleryTower extends Tower {
 		this.level = level;
 		this.target = null;
 		this.range = range;
+		this.fireRate = fireRate;
 	}
 
 	@Override

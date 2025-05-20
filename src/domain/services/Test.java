@@ -26,6 +26,8 @@ import domain.map.Tile;
 import domain.map.TileType;
 import domain.map.TowerType;
 import domain.tower.ArcherTower;
+import domain.tower.AttackType;
+import domain.tower.Projectile;
 import domain.tower.Tower;
 import domain.tower.TowerFactory;
 
@@ -349,7 +351,6 @@ public final class Test {
 			testTargetEnemy();
 		}
 	}
-	
 	static class enemyMovement {
 		
 		private static long lastUpdate = 0;
@@ -408,7 +409,7 @@ public final class Test {
 	                    System.out.println("1 sec");
 	                    s = 0;
 	                    totalTimeElapsed ++;
-	                }
+	                }	
 	                
 	                if(e1.getPathIndex() == path.size()-1) {
 	                	System.out.printf("Enemy has reaced end in: %d seconds\n",totalTimeElapsed);
@@ -424,6 +425,102 @@ public final class Test {
 		
 		public static void main(String[] args) {
 			testMovement();
+		}
+	}
+	public class ProjectileTest {
+		private static int  total = 0;
+		private static void testProjectile() {
+		    Map map = new Map("map1", 5, 5);
+		    MapEditor me3 = new MapEditor(map);
+		    
+		    me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 4, 3);
+		    me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 0, 1);
+		    me3.placeTile(TileType.PATH, PathType.TOPRIGHT, 3, 3);
+		    me3.placeTile(TileType.PATH, PathType.BOTTOMRIGHT, 3, 4);
+		    me3.placeTile(TileType.PATH, PathType.VERTICAL_END_TOP, 2, 4);
+		    me3.placeTile(TileType.PATH, PathType.BOTTOMLEFT, 3, 2);
+		    me3.placeTile(TileType.PATH, PathType.TOPRIGHT, 2, 2);
+		    me3.placeTile(TileType.PATH, PathType.BOTTOMLEFT, 2, 1);
+		    me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 1, 1);
+		    
+		    List<PathTile> path = Utilities.findPath(map);
+		    Enemy.path = path;
+		    
+		    me3.placeTile(TileType.LOT, 2, 3);
+		    Lot lot1 = (Lot) map.tileMap[2][3];
+		    Tower archerTower = TowerFactory.createArcherTower();
+		    lot1.placeTower(archerTower, TowerType.ARCHER);
+		    archerTower.setLocation(lot1.getLocation());
+
+		    me3.placeTile(TileType.LOT, 0, 0);
+		    Lot lot2 = (Lot) map.tileMap[0][0];
+		    Tower mageTower = TowerFactory.createMageTower();
+		    lot2.placeTower(mageTower, TowerType.MAGE);
+		    mageTower.setLocation(lot2.getLocation());
+		    
+		    PlayModeManager.getInstance().setCurrentMap(map);
+		    Enemy goblin = EnemyFactory.createGoblin();
+		    goblin.setLocation(path.get(0).location);
+		    goblin.setPathIndex(0);
+		    Enemy.getAllEnemies().add(goblin);
+		    
+		    List<Projectile> projectiles = new ArrayList<>();
+		    double archerInterval = 1.0 / archerTower.getFireRate();
+		    double mageInterval   = 1.0 / mageTower.getFireRate();
+		    archerTower.update(archerInterval);
+		    mageTower.update(mageInterval);
+		    
+		    ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor(); //LÜTFEN DÜZELTİN!!
+		    final long[] lastNano = { System.nanoTime() };
+
+		    exec.scheduleAtFixedRate(() -> {
+		        long now = System.nanoTime();
+		        long deltaNano = now - lastNano[0];
+		        double deltaSec= deltaNano / 1_000_000_000.0;
+		        lastNano[0] = now;
+		        
+		      
+		        goblin.moveEnemy(deltaNano);
+		        System.out.printf("Goblin @ (%.2f, %.2f)%n",
+		            goblin.getLocation().xCoord,
+		            goblin.getLocation().yCoord);
+		        
+		        Projectile p;
+		        p = archerTower.update(deltaSec);
+		        if (p != null) { 
+		        	projectiles.add(p); 
+		        	total++; 
+		        }
+		        p = mageTower.update(deltaSec);
+		        if (p != null) { 
+		        	projectiles.add(p); 
+		        	total++; 
+		        }
+		        
+		        projectiles.removeIf(proj -> {
+		            boolean hit = proj.followTarget();
+		            return hit;  
+		        });
+		       
+		        System.out.printf("Enemy HP=%.1f  Fired: %d  Active: %d%n", goblin.getHitPoints(),total,projectiles.size());
+		        for (int i = 0; i < projectiles.size(); i++) {
+		            Projectile proj = projectiles.get(i);
+		            System.out.printf("-%s Projectile @ (%.2f, %.2f)%n",proj.getAttackType(),proj.getLocation().xCoord,proj.getLocation().yCoord);
+		        }
+		        System.out.println("----------------------------------");
+
+		 
+		        boolean reachedEnd = goblin.getPathIndex() == path.size() - 1;
+		        boolean dead = goblin.getHitPoints() <= 0;
+		        if (reachedEnd || dead) {
+		            System.out.println(dead ? "Rip BOZO!" : "Goblin escaped the map!");
+		            exec.shutdown();
+		        }
+		    }, 0, 16, TimeUnit.MILLISECONDS);
+		}
+	
+		public static void main(String[] args) {
+			testProjectile();		
 		}
 	}
 }

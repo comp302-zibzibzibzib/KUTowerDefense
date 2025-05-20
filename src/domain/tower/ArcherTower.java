@@ -11,6 +11,7 @@ public class ArcherTower extends Tower {
 		this.target = null;
 		this.range = range;
 		this.cost = cost;
+		this.fireRate = fireRate;
 	}
 
 	@Override
