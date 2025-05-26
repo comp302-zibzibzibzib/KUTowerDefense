@@ -44,6 +44,7 @@ public class PlayModeScene extends AnimationTimer {
 	private Group circle = null;
 	private MapEditorController mapEditorController = MapEditorController.getInstance();
 	private Pane rootPane;
+	private Pane enemyPane;
 	private Pane overlayPane;
 	private Group removeSelection = null;
 
@@ -67,12 +68,12 @@ public class PlayModeScene extends AnimationTimer {
 	private HBox hbox;	
 	
 	private Map<Integer, EnemyStack> enemyStacks = new HashMap<Integer, EnemyStack>();
+	private Map<Integer, Integer> enemyFrameIndicies = new HashMap<Integer, Integer>();
 	private Map<String, List<Image>> enemyAnimations = new HashMap<>();
 	private int frameCounter = 0;
 
 	private double totalElapsed = 0;
 	private long lastUpdate = 0;
-	private int frameIndex = 0;
 	
 	private SecureRandom random = new SecureRandom();
 
@@ -155,10 +156,12 @@ public class PlayModeScene extends AnimationTimer {
 	public Scene getScene() {
 		loadEnemyFrames();
 		rootPane = renderMap();
+		enemyPane = new Pane();
+		enemyPane.setMouseTransparent(true);
 		overlayPane = new Pane();
 		overlayPane.setPickOnBounds(false);
 		pauseResumeButton();
-		StackPane stack = new StackPane(rootPane, overlayPane);
+		StackPane stack = new StackPane(rootPane, enemyPane, overlayPane);
 		EntityController.startEntityLogic();
 		this.start();
 		
@@ -505,7 +508,7 @@ public class PlayModeScene extends AnimationTimer {
             Image lotImage = new Image(getClass().getResourceAsStream("/Images/lot.png"));
             TileView lotView = new TileView(lotImage, x, y);
             
-            lotView.setOnMouseClicked(event2 ->{
+            lotView.setOnMouseClicked(event2 -> {
 				selectedLot = lotView;
 				showLotCircle(lotView);
 				System.out.println("damn");
@@ -517,12 +520,9 @@ public class PlayModeScene extends AnimationTimer {
         deleteButton.setOnMouseEntered(e -> { deleteButtonView.setImage(deleteHover); });
 	    deleteButton.setOnMouseExited(e -> { deleteButtonView.setImage(deleteButtonImage); });
 
-
-
         removeSelection = new Group(circleView,deleteButton);
 
         overlayPane.getChildren().add(removeSelection);
-
 	}
 	
 	
@@ -685,8 +685,9 @@ public class PlayModeScene extends AnimationTimer {
 		
 		frameCounter++;
         
+		int addFrame = 0;
 		if (totalElapsed >= 0.1) {
-        	frameIndex = (frameIndex + 1) % 6;
+        	addFrame = 1;
         	totalElapsed = 0;
         }
 
@@ -707,12 +708,16 @@ public class PlayModeScene extends AnimationTimer {
 	        if (!enemyStacks.containsKey(id)) {
 	        	EnemyStack es = new EnemyStack();
 	        	es.healthBar.setPercentage(random.nextDouble(0.3,1));
-	        	rootPane.getChildren().add(es);
+	        	enemyFrameIndicies.put(id, 0);
+	        	enemyPane.getChildren().add(es);
 	            enemyStacks.put(id, es);
 	        }
 
 	        EnemyStack es = enemyStacks.get(id);
+	        int frameIndex = (enemyFrameIndicies.get(id) + addFrame) % 6;
 	        es.setImage(frames.get(frameIndex));
+	        enemyFrameIndicies.put(id, frameIndex);
+	        
 	        int scale = EntityController.getXScale(i);
 	        if (scale != 0) {
 	        	es.getEnemyView().setScaleX(scale);
@@ -730,7 +735,8 @@ public class PlayModeScene extends AnimationTimer {
 		enemyStacks.entrySet().removeIf(entry -> {
 	        int id = entry.getKey();
 	        if (!EntityController.isEnemyIDInitialized(id)) {
-	        	rootPane.getChildren().remove(entry.getValue());
+	        	enemyPane.getChildren().remove(entry.getValue());
+	        	enemyFrameIndicies.remove(id);
 	            return true;
 	        }
 	        return false;
