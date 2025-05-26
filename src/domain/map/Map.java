@@ -1,12 +1,15 @@
 package domain.map;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import domain.services.Utilities;
+import domain.tower.Tower;
 
 public class Map implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private List<Tower> towerList = new ArrayList<>();
 
 	public String mapName; 			// Name of map used to read and write map
 	
@@ -130,6 +133,18 @@ public class Map implements Serializable {
 		
 		this.endingTile = endingTile;
 		tileMap[d[0]][d[1]] = endingTile;
+	}
+
+	public void addTower(Tower tower) {
+		towerList.add(tower);
+	}
+
+	public void removeTower(Tower tower) {
+		towerList.remove(tower);
+	}
+
+	public List<Tower> getTowerList() {
+		return towerList;
 	}
 	
 	public static void printMap(Map map) {

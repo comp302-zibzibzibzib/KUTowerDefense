@@ -2,8 +2,8 @@ package domain.tower;
 
 public enum AttackType {
 	ARROW(5),
-    SPELL(10),
-    ARTILLERY(20);
+    SPELL(8),
+    ARTILLERY(15);
 
 	private final double damage;
 

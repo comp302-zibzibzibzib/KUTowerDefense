@@ -19,6 +19,8 @@ public class MainMenuController {
 		PlayerController.resetPlayer();
 		MapEditorController.resetMap();
 		KUTowerDefense.newGame(mapName);
+		EntityController.startEntityLogic();
+		TowerController.startTowerLogic();
 	}
 	
 	public static void quitGame() {

@@ -35,6 +35,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
+import javax.swing.text.View;
+
 public class PlayModeScene extends AnimationTimer {
 	private KuTowerDefenseA app;
 	private Group towerSelection = null;
@@ -65,11 +67,12 @@ public class PlayModeScene extends AnimationTimer {
     private Image accelerateHover = new Image(getClass().getResourceAsStream("/Images/acceleratehover.png"));
     private Image pauseHover = new Image(getClass().getResourceAsStream("/Images/pausehover.png"));
 
-	private HBox hbox;	
+	private HBox hbox;
 	
 	private Map<Integer, EnemyStack> enemyStacks = new HashMap<Integer, EnemyStack>();
 	private Map<Integer, Integer> enemyFrameIndicies = new HashMap<Integer, Integer>();
 	private Map<String, List<Image>> enemyAnimations = new HashMap<>();
+	private Map<Integer, ProjectileView> projectileViews = new HashMap<>();
 	private int frameCounter = 0;
 
 	private double totalElapsed = 0;
@@ -146,6 +149,19 @@ public class PlayModeScene extends AnimationTimer {
 		public ImageView getEnemyView() {
 			return enemyView;
 		}
+
+		public Consumer<Double> getConsumer() {
+			return (val) -> healthBar.setPercentage(val);
+		}
+	}
+
+	private class ProjectileView extends StackPane {
+		public ProjectileView() {
+			Circle circle = new Circle();
+			circle.setRadius(10.0);
+
+			this.getChildren().add(circle);
+		}
 	}
 	
 
@@ -162,7 +178,6 @@ public class PlayModeScene extends AnimationTimer {
 		overlayPane.setPickOnBounds(false);
 		pauseResumeButton();
 		StackPane stack = new StackPane(rootPane, enemyPane, overlayPane);
-		EntityController.startEntityLogic();
 		this.start();
 		
 		playerStatsPutter();
@@ -691,12 +706,36 @@ public class PlayModeScene extends AnimationTimer {
         	totalElapsed = 0;
         }
 
+		for (int i = 0; i < TowerController.getNumberOfProjectiles(); i++) {
+			int id = TowerController.getProjectileID(i);
+			double x = TowerController.getProjectileX(i);
+			double y = TowerController.getProjectileY(i);
+
+			if (!projectileViews.containsKey(id)) {
+				ProjectileView projView = new ProjectileView();
+				projectileViews.put(id, projView);
+				enemyPane.getChildren().add(projView);
+			}
+
+			ProjectileView projView = projectileViews.get(id);
+			projView.setLayoutX(x * 16 - projView.getWidth()/2);
+			projView.setLayoutY(y * 16 - projView.getHeight()/2);
+		}
+
+		projectileViews.entrySet().removeIf(entry -> {
+			int id = entry.getKey();
+			if (TowerController.projectileDead(id)) {
+				enemyPane.getChildren().remove(entry.getValue());
+				return true;
+			}
+			return false;
+		});
+
 		for (int i = 0; i < EntityController.getNumberOfEnemies(); i++) {
-	        if (!EntityController.isEnemyInitialized(i)) continue;
-	        
+
 	        String type = null;
 	        if (EntityController.isGoblin(i)) type = "goblin";
-	        if (EntityController.isKnight(i)) type = "warrior";
+	        else type = "warrior";
 	        
 	        List<Image> frames = enemyAnimations.get(type);
 
@@ -707,8 +746,12 @@ public class PlayModeScene extends AnimationTimer {
 	        // If this enemy doesn't have an ImageView yet
 	        if (!enemyStacks.containsKey(id)) {
 	        	EnemyStack es = new EnemyStack();
-	        	es.healthBar.setPercentage(random.nextDouble(0.3,1));
 	        	enemyFrameIndicies.put(id, 0);
+
+				es.healthBar.setPercentage(1);
+				Consumer<Double> healthBarUpdater = es.getConsumer();
+				EntityController.addEnemyHPListener(i, healthBarUpdater);
+
 	        	enemyPane.getChildren().add(es);
 	            enemyStacks.put(id, es);
 	        }
@@ -762,6 +805,7 @@ public class PlayModeScene extends AnimationTimer {
 		
 		gearView.setOnMouseClicked(e->{
 			EntityController.stop();
+			TowerController.stop();
 			PlayModeController.resetManager();
 			app.showMainMenu(new StackPane());
 		});

@@ -6,6 +6,7 @@ import java.util.List;
 import domain.controller.MainMenuController;
 import domain.entities.Enemy;
 import domain.entities.EnemyFactory;
+import domain.entities.GoblinFactory;
 import domain.kutowerdefense.PlayModeManager;
 import domain.map.Map;
 import domain.map.MapEditor;
@@ -96,7 +97,7 @@ public class MovementTest extends Application {
         
         MainMenuController.startNewGame("map1");
         
-        Enemy goblin = EnemyFactory.createGoblin();
+        Enemy goblin = GoblinFactory.getInstance().createEnemy();
         goblin.initialize(man.getCurrentMap().getStartingTile().getLocation());
         timer = new MovementTimer();
         timer.start();

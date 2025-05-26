@@ -1,9 +1,11 @@
 package domain.tower;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import domain.entities.Enemy;
+import domain.kutowerdefense.PlayModeManager;
 import domain.map.Location;
 import domain.map.PathTile;
 import domain.map.Tile;
@@ -20,9 +22,30 @@ public abstract class Tower implements Serializable {
     protected AttackType attackType;
     protected Enemy target;
     protected Location location;
-    protected double timeSinceLastShot = 0;
 
-    public abstract Projectile createProjectile();
+	private double timeSinceLastShot;
+	private double firePeriod;
+
+	public Tower(int cost, int upgradeCost, AttackType attackType, int level, double range, double fireRate) {
+		this.cost = cost;
+		this.upgradeCost = upgradeCost;
+		this.attackType = attackType;
+		this.level = level;
+		this.target = null;
+		this.range = range;
+		this.fireRate = fireRate;
+		firePeriod = 1/fireRate;
+		timeSinceLastShot = firePeriod;
+		PlayModeManager.getInstance().getCurrentMap().addTower(this);
+	}
+
+    public Projectile createProjectile() {
+		return switch (attackType) {
+			case AttackType.ARROW -> ArrowFactory.getInstance().createProjectile(target, location);
+			case AttackType.SPELL -> SpellFactory.getInstance().createProjectile(target, location);
+			case AttackType.ARTILLERY -> ArtilleryFactory.getInstance().createProjectile(target, location);
+		};
+	}
 
     public void targetEnemy() {
     	int currentpathIndex;
@@ -32,8 +55,14 @@ public abstract class Tower implements Serializable {
     	double totalProgress = 0.0;
     	double bestProgress = Double.MIN_VALUE;
     	Enemy lastTarget = null;
-    	
-    	for (Enemy e : Enemy.getAllEnemies()) {
+
+		if (target != null && Utilities.euclideanDistance(location, target.getLocation()) > range) {
+			double a = Utilities.euclideanDistance(location, target.getLocation());
+			target = null;
+		}
+
+		List<Enemy> enemyList = new ArrayList<>(Enemy.getAllEnemies());
+    	for (Enemy e : enemyList) {
     	    if (Utilities.euclideanDistance(location, e.getLocation()) <= range) {
     	        currentpathIndex = e.getPathIndex();
     	        nextpathIndex = currentpathIndex + 1;
@@ -55,34 +84,24 @@ public abstract class Tower implements Serializable {
    	        	}
    	    	}
    	    }
+		target = lastTarget;
     }
     
     public Projectile update(double dt) {
+		targetEnemy();
         timeSinceLastShot += dt; //Tracks how much time has passed since last creation
-        double interval = 1.0 / fireRate; //Projectile creation period
+		//Projectile creation period
         //If not enough time has passed does not create another projectile
-        if (timeSinceLastShot < interval) { 
+        if (timeSinceLastShot < firePeriod || target == null) {
             return null;
         }
         //Allocates target if is in range
-        targetEnemy();
-        if (target == null) {
-            return null;
-        }
         //Resets the time (enough time has passed) 
         timeSinceLastShot = 0;
         //Creates projectile based on attack type of the tower
-        if(attackType == AttackType.ARROW) {
-        	return ProjectileFactory.createArrow(target,this.location); //IMPORTANT: Location of the projectile is the same
-        																//as the location of the tower at creation, add offset if convenient 
-        }
-        else if(attackType == AttackType.SPELL) {
-        	return ProjectileFactory.createSpell(target,this.location);
-        }
-        else if(attackType == AttackType.ARTILLERY) {
-        	return ProjectileFactory.createArtilleryShell(target,this.location);
-        }
-		return null;
+		//IMPORTANT: Location of the projectile is the same
+		//as the location of the tower at creation, add offset if convenient
+        return createProjectile();
     }
     
 	public int getUpgradeCost() {

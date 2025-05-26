@@ -2,6 +2,7 @@ package domain.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import domain.entities.Enemy;
 import domain.entities.Goblin;
@@ -16,7 +17,6 @@ class SpawnerLoopTimer extends AnimationTimer {
 	
     private long lastUpdate = 0;
     private double totalElapsed = 0;
-    private PlayModeManager manager = PlayModeManager.getInstance();
     
     @Override
     public void start() {
@@ -48,13 +48,13 @@ class SpawnerLoopTimer extends AnimationTimer {
         double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
         lastUpdate = now;
         
-        totalElapsed += deltaTime * manager.getGameSpeed();
+        totalElapsed += deltaTime * PlayModeManager.getInstance().getGameSpeed();
 
         updateManager(deltaTime);
         updateWaves(deltaTime);
         updateGroups(deltaTime);
 
-        if (manager.spawnedAllWaves()) {
+        if (PlayModeManager.getInstance().spawnedAllWaves()) {
             System.out.println("All waves spawned. Stopping spawner loop.");
             stop();
         }
@@ -66,12 +66,12 @@ class SpawnerLoopTimer extends AnimationTimer {
 
     private void updateManager(double deltaTime) {
         if (totalElapsed > PlayModeManager.GRACE_PERIOD_SECONDS) {
-            manager.initializeWaves(deltaTime);
+            PlayModeManager.getInstance().initializeWaves(deltaTime);
         }
     }
 
     private void updateWaves(double deltaTime) {
-        List<Wave> waves = manager.getWaves();
+        List<Wave> waves = PlayModeManager.getInstance().getWaves();
         for (Wave wave : waves) {
             if (wave.isSpawning()) {
                 wave.spawnGroups(deltaTime);
@@ -80,7 +80,7 @@ class SpawnerLoopTimer extends AnimationTimer {
     }
 
     private void updateGroups(double deltaTime) {
-        List<Wave> waves = manager.getWaves();
+        List<Wave> waves = PlayModeManager.getInstance().getWaves();
         for (Wave wave : waves) {
             List<Group> groups = wave.getGroups();
             for (Group group : groups) {
@@ -97,7 +97,7 @@ class SpawnerLoopTimer extends AnimationTimer {
     	boolean passed = true;
     	for (Enemy enemy : Enemy.getAllEnemies()) {
 			if (!enemy.getLocation().equals(man.getCurrentMap().getStartingTile().getLocation())
-					&& enemy.isInitalized()) {
+					&& enemy.isInitialized()) {
 				passed = false;
 				break;
 			}
@@ -129,8 +129,8 @@ class MovementTimer extends AnimationTimer {
 		
 		List<Enemy> enemyList = new ArrayList<Enemy>(Enemy.getAllEnemies());
 		for (Enemy enemy : enemyList) {
-			if (!enemy.isInitalized()) continue;
-			
+			if (!enemy.isInitialized()) continue;
+
 			enemy.moveEnemy(deltaTime);
 			
 			if(enemy.getPathIndex() == Enemy.path.size()-1) {
@@ -165,25 +165,30 @@ public class EntityController {
     }
     
     public static double getEnemyXCoord(int i) {
-    	return Enemy.getAllEnemies().get(i).getLocation().getXCoord();
+    	return Enemy.getActiveEnemies().get(i).getLocation().getXCoord();
     }
     
     public static double getEnemyYCoord(int i) {
-    	return Enemy.getAllEnemies().get(i).getLocation().getYCoord();
+    	return Enemy.getActiveEnemies().get(i).getLocation().getYCoord();
+    }
+
+    public static void addEnemyHPListener(int i, Consumer<Double> consumer) {
+        Enemy enemy = Enemy.getActiveEnemies().get(i);
+        enemy.getHitPointsListener().addListener(consumer);
     }
     
     public static boolean isEnemyInitialized(int i) {
-    	return Enemy.getAllEnemies().get(i).isInitalized();
+    	return Enemy.getAllEnemies().get(i).isInitialized();
     }
     
     public static boolean isEnemyIDInitialized(int id) {
     	for (Enemy enemy : Enemy.getAllEnemies()) {
-    		if (enemy.getEnemyID() == id) return enemy.isInitalized();
+    		if (enemy.getEnemyID() == id) return enemy.isInitialized();
     	} return false;
     }
     
     public static int getNumberOfEnemies() {
-    	return Enemy.getAllEnemies().size();
+    	return Enemy.getActiveEnemies().size();
     }
     
     public static int getEnemyID(int i) {
