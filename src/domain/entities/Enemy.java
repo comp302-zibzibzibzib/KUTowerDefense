@@ -24,8 +24,8 @@ public abstract class Enemy {
 	protected Location location;
 	protected int pathIndex;
 	protected int enemyID;
-
 	private EnemyHitPointsListener hitPointsListener = new EnemyHitPointsListener();
+	protected boolean slowedDown;
 	private boolean initialized = false;
 	private int previousXSign;
 	private int previousYSign;
@@ -38,6 +38,7 @@ public abstract class Enemy {
 		this.totalHitPoints = hitPoints;
 		this.speed = speed;
 		this.location = new Location();
+    this.slowedDown = false;
 		if (location != null) {
 			this.location.xCoord = location.xCoord;
 			this.location.yCoord = location.yCoord;
@@ -56,6 +57,31 @@ public abstract class Enemy {
 		if (!initialized) return;
 		cleanupEnemy();
 		Player.getInstance().setGold(Player.getInstance().getGold() + 25);
+	}
+	
+	//need some way to store when the enemy got slowed down
+	public void slowDown() { //slow down by 20% when hit by lvl2 mage tower
+		if(this.slowedDown == false) {
+			this.speed = this.speed*0.8;
+			this.slowedDown = true;
+		}
+	}
+	
+	public void speedUp() { //return to normal speed
+		if(this.slowedDown == true) {
+			this.speed = this.speed*1.25;
+			this.slowedDown = false;
+		}
+	}
+	
+	//3% chance to reset back to start when hit by mage tower, can be put somewhere else
+	public void resetPosition() { 
+		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
+		double startX = startLocation.xCoord;
+		double startY = startLocation.yCoord + 0.7 * Tile.tileLength;
+		Location actualStartLocation = new Location(startX, startY);
+		this.location = actualStartLocation;
+		this.pathIndex = 0;
 	}
 	
 	public void moveEnemy(long deltaTime) {
@@ -203,5 +229,13 @@ public abstract class Enemy {
 		initialized = false;
 		enemies.remove(this);
 		activeEnemies.remove(this);
+	}
+
+  public boolean isSlowedDown() {
+		return slowedDown;
+	}
+
+	public void setSlowedDown(boolean slowedDown) {
+		this.slowedDown = slowedDown;
 	}
 }
