@@ -1,6 +1,8 @@
 package domain.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import domain.kutowerdefense.PlayModeManager;
@@ -9,39 +11,51 @@ import domain.map.Location;
 import domain.map.PathTile;
 import domain.map.Tile;
 import domain.services.Utilities;
+import domain.tower.AttackType;
 
 public abstract class Enemy {
-	public static ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+	public static ArrayList<Enemy> enemies = new ArrayList<>();
+	public static ArrayList<Enemy> activeEnemies = new ArrayList<>();
 	public static List<PathTile> path = new ArrayList<PathTile>();
 	private static int numberOfEnemies = 0; // Not active enemy number just the total amount created during runtime
 	protected double hitPoints;
+	protected final double totalHitPoints;
 	protected double speed;
 	protected Location location;
 	protected int pathIndex;
 	protected int enemyID;
+	private EnemyHitPointsListener hitPointsListener = new EnemyHitPointsListener();
 	protected boolean slowedDown;
-	
 	private boolean initialized = false;
 	private int previousXSign;
 	private int previousYSign;
 	private int previousPathIndex;
 	
 	private double[] direction = new double[] {0.0, 0.0};
-	
-	/**
-	 * 
-	 * @param player
-	 * decreases lives of player, currently hard coded to be 1
-	 */
+
+	public Enemy(double hitPoints, double speed, Location location) {
+		this.hitPoints = hitPoints;
+		this.totalHitPoints = hitPoints;
+		this.speed = speed;
+		this.location = new Location();
+    this.slowedDown = false;
+		if (location != null) {
+			this.location.xCoord = location.xCoord;
+			this.location.yCoord = location.yCoord;
+		}
+		this.enemyID = getID();
+		enemies.add(this);
+	}
 	
 	protected void hitPlayer() {
 		Player.getInstance().takeDamage();
 		initialized = false;
-		enemies.remove(this);
+		cleanupEnemy();
 	}
 	
 	public void killEnemy() { //VALUE IS RANDOM FOR NOW, MUST BE ABLE TO CHANGE IN OPTIONS
-		enemies.remove(this);
+		if (!initialized) return;
+		cleanupEnemy();
 		Player.getInstance().setGold(Player.getInstance().getGold() + 25);
 	}
 	
@@ -134,8 +148,9 @@ public abstract class Enemy {
 		return hitPoints;
 	}
 
-	public void setHitPoints(double hitPoints) {
-		this.hitPoints = hitPoints;
+	public void updateHitPoints(double damage) {
+		this.hitPoints -= damage;
+		hitPointsListener.invoke(this.hitPoints / this.totalHitPoints);
 	}
 
 	public double getSpeed() {
@@ -158,10 +173,11 @@ public abstract class Enemy {
 	public static ArrayList<Enemy> getAllEnemies(){
 		return enemies;
 	}
+	public static ArrayList<Enemy> getActiveEnemies() { return activeEnemies; }
 	
-	public void hitEnemy(double damage) {
-		hitPoints -= damage;
-		if(hitPoints <= 0) {
+	public void hitEnemy(double damage, AttackType attackType) {
+		updateHitPoints(damage);
+		if(hitPoints <= 0 && initialized) {
 			this.killEnemy();
 		}
 	}
@@ -181,10 +197,11 @@ public abstract class Enemy {
 	public void initialize(Location location) {
 		setLocation(location);
 		initialized = true;
+		activeEnemies.add(this);
 		setPath();
 	}
 	
-	public boolean isInitalized() {
+	public boolean isInitialized() {
 		return initialized;
 	}
 	
@@ -199,18 +216,26 @@ public abstract class Enemy {
 	public double[] getDirection() {
 		return direction;
 	}
+
+	public EnemyHitPointsListener getHitPointsListener() {
+		return hitPointsListener;
+	}
 	
 	public static void resetID() {
 		numberOfEnemies = 0;
 	}
 
-	public boolean isSlowedDown() {
+	private void cleanupEnemy() {
+		initialized = false;
+		enemies.remove(this);
+		activeEnemies.remove(this);
+	}
+
+  public boolean isSlowedDown() {
 		return slowedDown;
 	}
 
 	public void setSlowedDown(boolean slowedDown) {
 		this.slowedDown = slowedDown;
 	}
-	
-	
 }

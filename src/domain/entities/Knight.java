@@ -7,23 +7,14 @@ import domain.services.Utilities;
 public class Knight extends Enemy {
 	
 	double arrowDamageReduction;
-	boolean spedUp;
-	
-	public Knight(double hitPoints, double speed, Location location, double arrowDamageReduction) {//var can be changed
-		this.hitPoints = hitPoints;
-		this.slowedDown = false;
-		this.spedUp = false;
-		this.speed = speed;
-		this.location = new Location();
-		if (location != null) {
-			this.location.xCoord = location.xCoord;
-			this.location.yCoord = location.yCoord;
-		}
+  boolean spedUp;
+  
+	public Knight(double hitPoints, double speed, Location location, double arrowDamageReduction) {
+		super(hitPoints, speed, location);
 		this.arrowDamageReduction = arrowDamageReduction;
-		Enemy.enemies.add(this);
-		this.enemyID = getID();
+    spedUp = false;
 	}
-	
+
 	//if distance between a knight and goblin less than width of tile speed up knight
 	//might need a place to store default knight speed
 	public void knightSpeedUp() {
@@ -47,7 +38,4 @@ public class Knight extends Enemy {
 		}
 		
 	}
-	
-	
-
 }

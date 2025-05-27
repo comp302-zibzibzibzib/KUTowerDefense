@@ -13,12 +13,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import domain.controller.PlayModeController;
 import domain.kutowerdefense.GameOptions;
 import domain.map.Location;
+import domain.map.Lot;
 import domain.map.Map;
 import domain.map.PathTile;
 import domain.map.Tile;
 import domain.map.TileType;
+import domain.tower.Tower;
 
 public final class Utilities {
 	private static final String MAP_FILE_PATH = "Data/Maps/";
@@ -161,7 +164,6 @@ public final class Utilities {
 			System.out.println("Oops something went wrong while writing map to disk :( ");
 		} 
 	}
-	
 	/**
 	 * 
 	 * @param fileName
