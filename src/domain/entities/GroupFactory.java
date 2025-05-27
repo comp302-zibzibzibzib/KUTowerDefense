@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupFactory {
-	public static final String groupComp1 = "kgkgg";
-	public static final String groupComp2 = "ggg";
-	public static final String groupComp3 = "kkk";
+	public static final String groupComp1 = "kgkgk";
+	public static final String groupComp2 = "gggkgk";
+	public static final String groupComp3 = "kkkkkkkk";
 	public static final String groupComp4 = "kgk";
 	public static final String groupComp5 = "gkg";
 
@@ -14,8 +14,8 @@ public class GroupFactory {
 		List<Enemy> enemyComposition = new ArrayList<Enemy>();
 		for (char c : groupComposition.toCharArray()) {
 			Enemy enemy = switch(c) {
-				case 'k' -> EnemyFactory.createKnight();
-				case 'g' -> EnemyFactory.createGoblin();
+				case 'k' -> KnightFactory.getInstance().createEnemy();
+				case 'g' -> GoblinFactory.getInstance().createEnemy();
 				default -> null;
 			};
 			

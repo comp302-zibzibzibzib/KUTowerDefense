@@ -2,7 +2,7 @@
 
 // Enumeration to differentiate between different shapes of path tiles
 public enum PathType {
-	HORIZONTAL_MIDDLE(" HM", new boolean[] {false, false, true, true}, "horizontalmiddle"),
+	HORIZONTAL_MIDDLE(" HM", new boolean[] {false, false, true, true}, "horizontalmiddle" ,new double[] {0, -0.15}),
 	HORIZONTAL_END_LEFT("HEL", new boolean[] {false, false, false, true}, "horizontalendleft"),
 	HORIZONTAL_END_RIGHT("HER", new boolean[] {false, false, true, false},"horizontalendright"),
 	VERTICAL_MIDDLE(" VM", new boolean[] {true, true, false, false}, "verticalmiddle"), 

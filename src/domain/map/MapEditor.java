@@ -3,9 +3,9 @@ package domain.map;
 import java.io.Serializable;
 import java.util.List;
 
+import domain.kutowerdefense.PlayModeManager;
 import domain.services.Utilities;
-import domain.tower.Tower;
-import domain.tower.TowerFactory;
+import domain.tower.*;
 
 public class MapEditor implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -18,6 +18,7 @@ public class MapEditor implements Serializable {
 
 	public MapEditor(Map map) {
 		this.map = map;
+		PlayModeManager.getInstance().setCurrentMap(map);
 	}
 
 	public void placeTile(TileType type, int height, int width) {
@@ -172,9 +173,9 @@ public class MapEditor implements Serializable {
 
 	        // Create the Tower based on TowerType
 	        Tower tower = switch (tType) {
-	            case ARCHER -> TowerFactory.createArcherTower();
-	            case MAGE -> TowerFactory.createMageTower();
-	            case ARTILLERY -> TowerFactory.createArtilleryTower();
+	            case ARCHER -> ArcherTowerFactory.getInstance().createTower();
+	            case MAGE -> MageTowerFactory.getInstance().createTower();
+	            case ARTILLERY -> ArtilleryTowerFactory.getInstance().createTower();
 	        };
 
 	        // Set the location of the tower to match the Lot's location
@@ -277,6 +278,7 @@ public class MapEditor implements Serializable {
 
 			} 
 			else if (currentTile.type == TileType.TOWER) {
+				map.removeTower(((Lot) currentTile).getTower());
 				Lot lot = new Lot(currentTile.getLocation());
 				map.tileMap[y][x] = lot; // When tower is removed a lot remains, since towers are normally placed on top of lots
 				lotCount++;

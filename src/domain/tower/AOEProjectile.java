@@ -8,20 +8,26 @@ import domain.services.Utilities;
 
 public class AOEProjectile extends Projectile {
 	private double splashRadius;
-	
 
 	public AOEProjectile(Enemy target, Location location, double splashRadius) {
 		super(AttackType.ARTILLERY, target, location);
 		// TODO Auto-generated constructor stub
 		this.splashRadius = splashRadius;
 	}
-	public void hitArea() {
-		ArrayList<Enemy> enemies = Enemy.getAllEnemies();
+
+	private void hitArea() {
+		ArrayList<Enemy> enemies = new ArrayList<>(Enemy.getActiveEnemies());
 		for(Enemy e: enemies) {
+			if (e == target) continue;
 			if(Utilities.euclideanDistance(e.getLocation(), location)<= splashRadius) {
-				e.hitEnemy(damage);
+				e.hitEnemy(damage, AttackType.ARTILLERY);
 			}
 		}
 	}
 
+	@Override
+	public void hitTarget() {
+		super.hitTarget();
+		hitArea();
+	}
 }

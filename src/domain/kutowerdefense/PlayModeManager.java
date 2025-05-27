@@ -25,6 +25,7 @@ public class PlayModeManager {
 		this.currentWaveIndex = 0; this.gameSpeed = 1.0; this.previousGameSpeed = 1.0;
 		this.waves = new ArrayList<Wave>();
 		Enemy.enemies.clear();
+		Enemy.resetID();
 		this.waveLength = GameOptions.getInstance().getNumberOfWaves();
 		for (int i = 0; i < waveLength; i++) waves.add(WaveFactory.createWave()); // Temporarily has 3 identical waves back to back
 	}
@@ -36,11 +37,15 @@ public class PlayModeManager {
 	
 	public static void resetManager() {
 		if (instance == null) instance = new PlayModeManager();
+		instance.currentMap = null;
 		instance.currentWaveIndex = 0;
+		instance.timeSinceLastWave = 0;
 		instance.gameSpeed = 1.0;
 		instance.previousGameSpeed = 1.0;
 		instance.waves = new ArrayList<Wave>();
 		Enemy.enemies.clear();
+		Enemy.resetID();
+		for (int i = 0; i < instance.waveLength; i++) instance.waves.add(WaveFactory.createWave());
 		instance.currentMap = null;
 	}
 	
@@ -75,12 +80,17 @@ public class PlayModeManager {
 		if (spawnedAllWaves()) return;
 		
 		if (waves.isEmpty()) {
+			Enemy.enemies.clear();
+			Enemy.resetID();
 			this.waveLength = GameOptions.getInstance().getNumberOfWaves();
 			for (int i = 0; i < waveLength; i++) instance.waves.add(WaveFactory.createWave()); // Temporarily has 3 identical waves back to back
 		}
 		
 		timeSinceLastWave += deltaTime * gameSpeed;
-		if (currentWaveIndex > 0 && timeSinceLastWave < 10) return;
+		if (currentWaveIndex > 0 && timeSinceLastWave < 10) {
+			if (timeSinceLastWave > 8) Player.getInstance().setWaveNumber(currentWaveIndex+1);
+			else return;
+		}
 		
 		Wave currentWave = waves.get(currentWaveIndex);
 		

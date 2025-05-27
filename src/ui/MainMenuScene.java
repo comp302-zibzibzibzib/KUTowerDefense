@@ -2,10 +2,7 @@ package ui;
 
 import domain.controller.GameOptionsController;
 import domain.controller.MainMenuController;
-import domain.map.Map;
-import domain.services.Utilities;
 import javafx.event.ActionEvent;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -14,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 
 public class MainMenuScene {
 	private static final String SPRITE_PATH = "/Images/HUD/";
@@ -32,6 +28,7 @@ public class MainMenuScene {
 	private KuTowerDefenseA app;
     private Button newGameButton;
     private Button optionsButton;
+    private Button quitGameButton;
     private Scene scene;
     
     private StackPane createButtonStackPane(Image image, Image hoverImage, Image clickedImage, Label label, int fontSize, int width) {
@@ -70,6 +67,9 @@ public class MainMenuScene {
 		optionsButton = new MenuButton(this);
 		optionsButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Options"), 20, 150));
 		optionsButton.setTranslateY(50);
+		quitGameButton = new MenuButton(this);
+		quitGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Quit Game"), 20, 150));
+		quitGameButton.setTranslateY(100);
 		this.scene = initScene(root);
 	}
     
@@ -84,7 +84,7 @@ public class MainMenuScene {
         mv.fitHeightProperty().bind(root.heightProperty());
         
 		root.getChildren().addAll(mv);
-		root.getChildren().addAll(newGameButton, optionsButton);
+		root.getChildren().addAll(newGameButton, optionsButton, quitGameButton);
 		Scene scene = new Scene(root);
 
 		return scene;
@@ -92,12 +92,13 @@ public class MainMenuScene {
 	
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
-			MainMenuController.startNewGame("SUS map");
+			MainMenuController.startNewGame("Pre-Built Map 2");
 			app.startGame();
 		} else if (event.getSource() == optionsButton) {
 			GameOptionsController.initializeGameOptions();
 			app.showOptionsMenu(new StackPane());
+		} else if (event.getSource() == quitGameButton) {
+			MainMenuController.quitGame();
 		}
 	}
-
 }
