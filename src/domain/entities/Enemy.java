@@ -53,6 +53,7 @@ public abstract class Enemy {
 	}
 	
 	public void killEnemy() { //VALUE IS RANDOM FOR NOW, MUST BE ABLE TO CHANGE IN OPTIONS
+		if (!initialized) return;
 		cleanupEnemy();
 		Player.getInstance().setGold(Player.getInstance().getGold() + 25);
 	}
@@ -150,7 +151,7 @@ public abstract class Enemy {
 	
 	public void hitEnemy(double damage, AttackType attackType) {
 		updateHitPoints(damage);
-		if(hitPoints <= 0) {
+		if(hitPoints <= 0 && initialized) {
 			this.killEnemy();
 		}
 	}
@@ -199,6 +200,7 @@ public abstract class Enemy {
 	}
 
 	private void cleanupEnemy() {
+		initialized = false;
 		enemies.remove(this);
 		activeEnemies.remove(this);
 	}

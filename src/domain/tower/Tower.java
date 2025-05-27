@@ -61,7 +61,7 @@ public abstract class Tower implements Serializable {
 			target = null;
 		}
 
-		List<Enemy> enemyList = new ArrayList<>(Enemy.getAllEnemies());
+		List<Enemy> enemyList = new ArrayList<>(Enemy.getActiveEnemies());
     	for (Enemy e : enemyList) {
     	    if (Utilities.euclideanDistance(location, e.getLocation()) <= range) {
     	        currentpathIndex = e.getPathIndex();

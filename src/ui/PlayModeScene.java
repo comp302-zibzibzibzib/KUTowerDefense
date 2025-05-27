@@ -7,12 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import domain.controller.EntityController;
-import domain.controller.GameOptionsController;
-import domain.controller.MapEditorController;
-import domain.controller.PlayModeController;
-import domain.controller.PlayerController;
-import domain.controller.TowerController;
+import domain.controller.*;
 import domain.map.Lot;
 import domain.map.Tile;
 import domain.tower.Projectile;
@@ -121,9 +116,9 @@ public class PlayModeScene extends AnimationTimer {
 		}
 		
 		public void setPercentage(double percentage) {
-			if (percentage < 0) percentage = 0;
-			else if (percentage > 1) percentage = 1;
-			clip.setWidth(percentage * 45);
+			if (percentage - 0.05 < 0) percentage = 0.05; // small offset so that it doesn't appear as an enemy not taking damage
+			else if (percentage - 0.05 > 1) percentage = 0.95;
+			clip.setWidth((percentage - 0.05) * 45);
 		}
 	}
 	
@@ -804,9 +799,7 @@ public class PlayModeScene extends AnimationTimer {
 
 		
 		gearView.setOnMouseClicked(e->{
-			EntityController.stop();
-			TowerController.stop();
-			PlayModeController.resetManager();
+			MainMenuController.cleanupSession();
 			app.showMainMenu(new StackPane());
 		});
 		gearView.setOnMouseEntered(e->{

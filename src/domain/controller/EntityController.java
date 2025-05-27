@@ -10,6 +10,7 @@ import domain.entities.Group;
 import domain.entities.Knight;
 import domain.entities.Wave;
 import domain.kutowerdefense.PlayModeManager;
+import domain.map.PathTile;
 import javafx.animation.AnimationTimer;
 
 class SpawnerLoopTimer extends AnimationTimer {
@@ -216,6 +217,13 @@ public class EntityController {
     public static void stop() {
     	if (gameLoop != null) gameLoop.stop();
     	if (moveTimer != null) moveTimer.stop();
+        resetEnemies();
+    }
+
+    public static void resetEnemies() {
+        Enemy.enemies = new ArrayList<Enemy>();
+        Enemy.activeEnemies = new ArrayList<Enemy>();
+        Enemy.path = new ArrayList<PathTile>();
     }
 
 }

@@ -84,6 +84,8 @@ public class TowerController {
 
 	public static void startTowerLogic() {
 		towerLoop.start();
+		Projectile.resetProjectiles();
+		PlayModeManager.getInstance().getCurrentMap().resetTowers();
 	}
 
 	public static boolean projectileDead(int id) {
@@ -95,6 +97,8 @@ public class TowerController {
 
 	public static void stop() {
 		towerLoop.stop();
+		Projectile.resetProjectiles();
+		PlayModeManager.getInstance().getCurrentMap().resetTowers();
 	}
 
 	private static Projectile getProjectile(int id) {

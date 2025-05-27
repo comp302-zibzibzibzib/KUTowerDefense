@@ -22,6 +22,12 @@ public class MainMenuController {
 		EntityController.startEntityLogic();
 		TowerController.startTowerLogic();
 	}
+
+	public static void cleanupSession() {
+		EntityController.stop();
+		TowerController.stop();
+		PlayModeManager.resetManager();
+	}
 	
 	public static void quitGame() {
 		KUTowerDefense.quitGame();

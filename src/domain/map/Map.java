@@ -21,6 +21,12 @@ public class Map implements Serializable {
 	
 	private List<PathTile> path;
 	
+	public void resetTowers() {
+		for (Tower tower : towerList) {
+			tower.setTarget(null);
+		}
+	}
+
 	public List<PathTile> getPath() {
 		if (path == null) setPath();
 		return path;

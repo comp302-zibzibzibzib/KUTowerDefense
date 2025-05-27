@@ -117,4 +117,8 @@ public class Projectile implements Serializable{
 	public int getID() {
 		return id;
 	}
+
+	public static void resetProjectiles() {
+		projectiles = new ArrayList<Projectile>();
+	}
 }
