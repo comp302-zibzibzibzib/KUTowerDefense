@@ -1,6 +1,7 @@
 package domain.controller;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -132,7 +133,7 @@ class MovementTimer extends AnimationTimer {
 		for (Enemy enemy : enemyList) {
 			if (!enemy.isInitialized()) continue;
 
-			enemy.moveEnemy(deltaTime);
+			enemy.updateEnemy(deltaTime);
 			
 			if(enemy.getPathIndex() == Enemy.path.size()-1) {
             	System.out.printf("Enemy %d: Reached End%n", enemy.getEnemyID());
@@ -191,6 +192,27 @@ public class EntityController {
     public static int getNumberOfEnemies() {
     	return Enemy.getActiveEnemies().size();
     }
+
+    public static ArrayList<Integer> getEnemyIDsRenderSort() {
+        Comparator<Enemy> comparator = new Comparator<Enemy>() {
+            @Override
+            public int compare(Enemy o1, Enemy o2) {
+                if (o1.getLocation().yCoord < o2.getLocation().yCoord) return -1;
+                else if (o1.getLocation().yCoord > o2.getLocation().yCoord) return 1;
+                return 0;
+            }
+        };
+
+        ArrayList<Enemy> enemyList = new ArrayList<>(Enemy.getActiveEnemies());
+        enemyList.sort(comparator);
+
+        ArrayList<Integer> ids = new ArrayList<>();
+        for (Enemy enemy : enemyList) {
+            ids.add(enemy.getEnemyID());
+        }
+
+        return ids;
+    }
     
     public static int getEnemyID(int i) {
     	return Enemy.getAllEnemies().get(i).getEnemyID();
@@ -230,5 +252,10 @@ public class EntityController {
         Enemy enemy = Enemy.getActiveEnemies().get(i);
         if (!(enemy instanceof Knight)) return false;
         return ((Knight) enemy).isFast();
+    }
+
+    public static boolean isEnemySlowedDown(int i) {
+        Enemy enemy = Enemy.getActiveEnemies().get(i);
+        return enemy.isSlowedDown();
     }
 }

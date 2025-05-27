@@ -39,10 +39,13 @@ public abstract class Tower implements Serializable {
 		PlayModeManager.getInstance().getCurrentMap().addTower(this);
 	}
 
+	public abstract void upgradeTower();
+
     public Projectile createProjectile() {
 		return switch (attackType) {
 			case AttackType.ARROW -> ArrowFactory.getInstance().createProjectile(target, location);
 			case AttackType.SPELL -> SpellFactory.getInstance().createProjectile(target, location);
+			case AttackType.SLOW_SPELL -> SlowSpellFactory.getInstance().createProjectile(target, location);
 			case AttackType.ARTILLERY -> ArtilleryFactory.getInstance().createProjectile(target, location);
 		};
 	}

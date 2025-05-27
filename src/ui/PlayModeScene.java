@@ -831,7 +831,7 @@ public class PlayModeScene extends AnimationTimer {
 	        int frameIndex = (enemyFrameIndicies.get(id) + addFrame) % 6;
 	        es.setImage(frames.get(frameIndex));
 	        enemyFrameIndicies.put(id, frameIndex);
-	        es.updateIcons(false, EntityController.isKnightFast(i));
+	        es.updateIcons(EntityController.isEnemySlowedDown(i), EntityController.isKnightFast(i));
 
 	        int scale = EntityController.getXScale(i);
 	        if (scale != 0) {
@@ -841,6 +841,13 @@ public class PlayModeScene extends AnimationTimer {
 	        es.setLayoutX(x * 16 - es.getEnemyView().getFitWidth()/2);  // adjust scale as needed
 	        es.setLayoutY(y * 16 - es.getEnemyView().getFitHeight()/2);
 	    }
+
+		// Bring every enemy stack to front from top to down so that the most down enemy is always drawn on top
+		ArrayList<Integer> enemyIdList = EntityController.getEnemyIDsRenderSort();
+		for (int id : enemyIdList) {
+			EnemyStack es = enemyStacks.get(id);
+			es.toFront();
+		}
 		
 		
 		if (rangeCircle != null) {

@@ -6,4 +6,11 @@ public class MageTower extends Tower {
 	public MageTower(int cost, int upgradeCost, int level, double range, double fireRate) {
 		super(cost, upgradeCost, AttackType.SPELL, level, range, fireRate);
 	}
+
+	@Override
+	public void upgradeTower() {
+		if (level == 2) return;
+		level = 2;
+		attackType = AttackType.SLOW_SPELL;
+	}
 }

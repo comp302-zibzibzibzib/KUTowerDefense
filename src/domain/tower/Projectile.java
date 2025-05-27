@@ -110,6 +110,13 @@ public class Projectile implements Serializable{
 		projectiles.remove(this);
 	}
 
+	public static void killProjectiles(Enemy target) {
+		ArrayList<Projectile> projectileList = new ArrayList<>(projectiles);
+		for (Projectile projectile : projectileList) {
+			if (projectile.target == target) projectile.killProjectile();
+		}
+	}
+
 	private int getProjID() {
 		return numOfProj++;
 	}

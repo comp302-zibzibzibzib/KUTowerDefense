@@ -2,16 +2,12 @@ package domain.services;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import domain.controller.EntityController;
 import domain.entities.*;
 import domain.kutowerdefense.PlayModeManager;
-import domain.kutowerdefense.Player;
 import domain.map.DecorativeType;
 import domain.map.Location;
 import domain.map.Lot;
@@ -394,7 +390,7 @@ public final class Test {
 	                lastUpdate = now;
 
 
-	                e1.moveEnemy(deltaTime);
+	                e1.updateEnemy(deltaTime);
 	                System.out.printf("%f x, %f y \n",e1.getLocation().xCoord, e1.getLocation().yCoord);
 	                
 	                s++;
@@ -473,7 +469,7 @@ public final class Test {
 		        lastNano[0] = now;
 		        
 		      
-		        goblin.moveEnemy(deltaNano);
+		        goblin.updateEnemy(deltaNano);
 		        System.out.printf("Goblin @ (%.2f, %.2f)%n",
 		            goblin.getLocation().xCoord,
 		            goblin.getLocation().yCoord);

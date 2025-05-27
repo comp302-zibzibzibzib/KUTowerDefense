@@ -8,7 +8,7 @@ import domain.tower.AttackType;
 public class Knight extends Enemy {
 	private static final double SYNERGY_CHECK_INTERVAL = 1;
 
-	private double defaultSpeed;
+
 	private double arrowDamageReduction;
     private boolean spedUp;
 
@@ -16,7 +16,6 @@ public class Knight extends Enemy {
   
 	public Knight(double hitPoints, double speed, Location location, double arrowDamageReduction) {
 		super(hitPoints, speed, location);
-		defaultSpeed = speed;
 		this.arrowDamageReduction = arrowDamageReduction;
         spedUp = false;
 		timeSinceLastCheck = 0;
@@ -30,18 +29,16 @@ public class Knight extends Enemy {
 			if(!(enemy instanceof Goblin)) continue;
 			double distance = Utilities.euclideanDistance(this.location, enemy.getLocation());
 			if(distance < Tile.tileLength) {
-				spedUp = true;
-				speed = (defaultSpeed + enemy.speed) / 2; //values can be switched to default goblin/knight variables if added
+				speedUp(); //values can be switched to default goblin/knight variables if added
 				return;
 			}
 		}
-		spedUp = false;
-		speed = defaultSpeed;
+		endSpeedUp();
 	}
 
 	@Override
-	public void moveEnemy(long deltaTime) {
-		super.moveEnemy(deltaTime);
+	public void updateEnemy(long deltaTime) {
+		super.updateEnemy(deltaTime);
 		knightSpeedUp();
 	}
 
@@ -50,6 +47,43 @@ public class Knight extends Enemy {
 		double reducedDamage = damage;
 		if (attackType == AttackType.ARROW) reducedDamage = (1 - arrowDamageReduction) * reducedDamage;
 		super.hitEnemy(reducedDamage, attackType);
+	}
+
+	@Override
+	public void slowDown() {
+		timeSinceSlowedDown = 0;
+		slowedDown = true;
+		determineSpeed();
+	}
+
+	@Override
+	public void endSlowDown() {
+		timeSinceSlowedDown = 0;
+		slowedDown = false;
+		determineSpeed();
+	}
+
+	private void speedUp() {
+		if (isFast()) return;
+		spedUp = true;
+		determineSpeed();
+	}
+
+	private void endSpeedUp() {
+		if (!isFast()) return;
+		spedUp = false;
+		determineSpeed();
+	}
+
+	private void determineSpeed() {
+		if (spedUp) {
+			speed = (defaultSpeed + EnemyFactory.GOBLIN_SPEED) / 2;
+			if (slowedDown) speed *= 0.8;
+		} else if (slowedDown) {
+			speed = defaultSpeed * 0.8;
+		} else {
+			speed = defaultSpeed;
+		}
 	}
 
 	public boolean isFast() {

@@ -1,9 +1,6 @@
 package domain.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
@@ -12,8 +9,11 @@ import domain.map.PathTile;
 import domain.map.Tile;
 import domain.services.Utilities;
 import domain.tower.AttackType;
+import domain.tower.Projectile;
 
 public abstract class Enemy {
+	private static final Random random = new Random();
+
 	public static ArrayList<Enemy> enemies = new ArrayList<>();
 	public static ArrayList<Enemy> activeEnemies = new ArrayList<>();
 	public static List<PathTile> path = new ArrayList<PathTile>();
@@ -21,36 +21,56 @@ public abstract class Enemy {
 	protected double hitPoints;
 	protected final double totalHitPoints;
 	protected double speed;
+	protected double defaultSpeed;
 	protected Location location;
 	protected int pathIndex;
 	protected int enemyID;
-	private EnemyHitPointsListener hitPointsListener = new EnemyHitPointsListener();
+	private final EnemyHitPointsListener hitPointsListener = new EnemyHitPointsListener();
 	protected boolean slowedDown;
 	private boolean initialized = false;
-	private int previousXSign;
-	private int previousYSign;
-	private int previousPathIndex;
 	
 	private double[] direction = new double[] {0.0, 0.0};
+
+	double timeSinceSlowedDown = 0.0;
 
 	public Enemy(double hitPoints, double speed, Location location) {
 		this.hitPoints = hitPoints;
 		this.totalHitPoints = hitPoints;
 		this.speed = speed;
+		defaultSpeed = speed;
 		this.location = new Location();
-    this.slowedDown = false;
+        slowedDown = false;
 		if (location != null) {
 			this.location.xCoord = location.xCoord;
 			this.location.yCoord = location.yCoord;
 		}
-		this.enemyID = getID();
+		enemyID = getID();
 		enemies.add(this);
+	}
+
+	public void initialize(Location location) {
+		setLocation(location);
+		initialized = true;
+		activeEnemies.add(this);
+		setPath();
 	}
 	
 	protected void hitPlayer() {
 		Player.getInstance().takeDamage();
 		initialized = false;
 		cleanupEnemy();
+	}
+
+	public void hitEnemy(double damage, AttackType attackType) {
+		if (attackType == AttackType.SLOW_SPELL) slowDown();
+		if ((attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) && random.nextDouble() <= 1) {
+			resetPosition();
+			return;
+		}
+		updateHitPoints(damage);
+		if(hitPoints <= 0 && initialized) {
+			this.killEnemy();
+		}
 	}
 	
 	public void killEnemy() { //VALUE IS RANDOM FOR NOW, MUST BE ABLE TO CHANGE IN OPTIONS
@@ -61,40 +81,48 @@ public abstract class Enemy {
 	
 	//need some way to store when the enemy got slowed down
 	public void slowDown() { //slow down by 20% when hit by lvl2 mage tower
-		if(this.slowedDown == false) {
-			this.speed = this.speed*0.8;
-			this.slowedDown = true;
+		timeSinceSlowedDown = 0;
+		if(!slowedDown) {
+			speed *= 0.8;
+			slowedDown = true;
 		}
 	}
 	
-	public void speedUp() { //return to normal speed
-		if(this.slowedDown == true) {
-			this.speed = this.speed*1.25;
-			this.slowedDown = false;
-		}
+	public void endSlowDown() { //return to normal speed
+		timeSinceSlowedDown = 0;
+		speed = defaultSpeed;
+		slowedDown = false;
 	}
 	
 	//3% chance to reset back to start when hit by mage tower, can be put somewhere else
 	public void resetPosition() { 
 		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
 		double startX = startLocation.xCoord;
-		double startY = startLocation.yCoord + 0.7 * Tile.tileLength;
-		Location actualStartLocation = new Location(startX, startY);
-		this.location = actualStartLocation;
+		double startY = startLocation.yCoord + 1.0 * Tile.tileLength;
+        this.location = new Location(startX, startY);
 		this.pathIndex = 0;
+
+		Projectile.killProjectiles(this);
 	}
 	
-	public void moveEnemy(long deltaTime) {
+	public void updateEnemy(long deltaTime) {
 		if(PlayModeManager.getInstance().getGameSpeed() == 0) return;
 		
 		double deltaSecond = deltaTime/1_000_000_000.0; //if causing problems can be removed
+
+		// Handle slowed down logic
+		if (slowedDown) timeSinceSlowedDown += deltaSecond;
+		if (timeSinceSlowedDown >= 4.0) {
+			endSlowDown();
+		}
+
 		double displacement = (this.speed * PlayModeManager.getInstance().getGameSpeed()) * deltaSecond; //get displacement
 		
 		PathTile nextTile = path.get(pathIndex+1); //get the location of next tile's centre
 		
 		double[] tileOffset = null;
 		if (pathIndex+1 == path.size()-1) 
-			tileOffset = new double[] {0.0, -0.7}; // Enemy has to move further up if next is end tile
+			tileOffset = new double[] {0.0, -1}; // Enemy has to move further up if next is end tile
 		else tileOffset = nextTile.getPathType().getPathOffsetPercentage();
 		
 		double nextX = nextTile.getLocation().xCoord + tileOffset[0] * Tile.tileLength;
@@ -118,7 +146,6 @@ public abstract class Enemy {
 		//updates pathIndex if the current location of enemy is near the next tile centre (limit is arbitrary)
 		//can be put somewhere else
 
-		this.previousPathIndex = pathIndex;
 		if(Utilities.euclideanDistance(this.location, new Location(nextX, nextY)) < 0.15) {
 
 			this.pathIndex++;
@@ -140,8 +167,7 @@ public abstract class Enemy {
 		
 		if (distance2 < distance) {
 			this.pathIndex++;
-			return;
-		}
+        }
 	}
 	
 	public double getHitPoints() {
@@ -174,14 +200,7 @@ public abstract class Enemy {
 		return enemies;
 	}
 	public static ArrayList<Enemy> getActiveEnemies() { return activeEnemies; }
-	
-	public void hitEnemy(double damage, AttackType attackType) {
-		updateHitPoints(damage);
-		if(hitPoints <= 0 && initialized) {
-			this.killEnemy();
-		}
-	}
-	
+
 	public void setPathIndex(int pathIndex) {
 		this.pathIndex = pathIndex;
 	}
@@ -192,13 +211,6 @@ public abstract class Enemy {
 	
 	public static void setPath() {
 		path = PlayModeManager.getInstance().getCurrentMap().getPath();
-	}
-	
-	public void initialize(Location location) {
-		setLocation(location);
-		initialized = true;
-		activeEnemies.add(this);
-		setPath();
 	}
 	
 	public boolean isInitialized() {
@@ -231,11 +243,7 @@ public abstract class Enemy {
 		activeEnemies.remove(this);
 	}
 
-  public boolean isSlowedDown() {
+  	public boolean isSlowedDown() {
 		return slowedDown;
-	}
-
-	public void setSlowedDown(boolean slowedDown) {
-		this.slowedDown = slowedDown;
 	}
 }

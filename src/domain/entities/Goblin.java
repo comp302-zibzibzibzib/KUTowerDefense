@@ -23,7 +23,7 @@ public class Goblin extends Enemy {
 	@Override
 	public void hitEnemy(double damage, AttackType attackType) {
 		double reducedDamage = damage;
-		if (attackType == AttackType.SPELL) reducedDamage = (1 - spellDamageReduction) * reducedDamage;
+		if (attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) reducedDamage = (1 - spellDamageReduction) * reducedDamage;
 		super.hitEnemy(reducedDamage, attackType);
 	}
 }
