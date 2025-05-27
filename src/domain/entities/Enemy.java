@@ -63,7 +63,7 @@ public abstract class Enemy {
 
 	public void hitEnemy(double damage, AttackType attackType) {
 		if (attackType == AttackType.SLOW_SPELL) slowDown();
-		if ((attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) && random.nextDouble() <= 1) {
+		if ((attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) && random.nextDouble() <= 0.3) {
 			resetPosition();
 			return;
 		}
