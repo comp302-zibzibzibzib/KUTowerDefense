@@ -15,6 +15,6 @@ public class KnightFactory implements EnemyFactory {
 
     @Override
     public Enemy createEnemy() {
-        return new Knight(KNIGHT_HIT_POINTS, GameOptions.getInstance().getEnemySpeed(), null, KNIGHT_ARROW_REDUCTION);
+        return new Knight(KNIGHT_HIT_POINTS, 3, null, KNIGHT_ARROW_REDUCTION);
     }
 }

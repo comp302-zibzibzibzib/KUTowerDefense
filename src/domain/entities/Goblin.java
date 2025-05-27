@@ -19,4 +19,11 @@ public class Goblin extends Enemy {
 	public void setSpellDamageReduction(double spellDamageReduction) {
 		this.spellDamageReduction = spellDamageReduction;
 	}
+
+	@Override
+	public void hitEnemy(double damage, AttackType attackType) {
+		double reducedDamage = damage;
+		if (attackType == AttackType.SPELL) reducedDamage = (1 - spellDamageReduction) * reducedDamage;
+		super.hitEnemy(reducedDamage, attackType);
+	}
 }

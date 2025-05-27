@@ -13,6 +13,9 @@ import domain.map.Tile;
 import domain.tower.Projectile;
 import domain.tower.Tower;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -93,40 +96,78 @@ public class PlayModeScene extends AnimationTimer {
 	}
 	
 	private class HealthBar extends StackPane {
-		private Image barEmpty = new Image(getClass().getResourceAsStream("/Images/HUD/bar.png"));
-		private Image barFull = new Image(getClass().getResourceAsStream("/Images/HUD/bar_full.png"));
-		
+		private final Image barEmpty = new Image(getClass().getResourceAsStream("/Images/HUD/bar.png"));
+		private final Image barFull = new Image(getClass().getResourceAsStream("/Images/HUD/bar_full.png"));
+
 		private ImageView emptyView;
 		private ImageView fullView;
-		private Rectangle clip;
-		
+		private DoubleProperty widthProperty = new SimpleDoubleProperty(1.0);
+
+		double width = 45.0;
+		double height = 10.0;
+
 		public HealthBar() {
 			super();
 			emptyView = new ImageView(barEmpty);
 			fullView = new ImageView(barFull);
-			emptyView.setFitWidth(45);
-			emptyView.setFitHeight(10);
-			fullView.setFitWidth(45);
-			fullView.setFitHeight(10);
-			
-			clip = new Rectangle(45, 10);
-			fullView.setClip(clip);
+
+			emptyView.setFitWidth(width);
+			emptyView.setFitHeight(height);
+			fullView.setFitWidth(width);
+			fullView.setFitHeight(height);
+
+			fullView.fitWidthProperty().bind(widthProperty);
 			
 			this.getChildren().addAll(emptyView, fullView);
 		}
+
+		private void updateFullViewPosition() {
+			double fitWidth = widthProperty.getValue();
+
+			double difference = width - fitWidth;
+			double offset = -difference * 0.38; // DON'T CHANGE THIS NUMBER IT BREAKS EVERYTHING!!?!?!!?
+
+			fullView.setTranslateX(offset); // Had to remove the Rectangle Clip because of pixel issues
+			// This is smoother but needed a number found by trial and error :D
+		}
 		
-		public void setPercentage(double percentage) {
-			if (percentage - 0.05 < 0) percentage = 0.05; // small offset so that it doesn't appear as an enemy not taking damage
-			else if (percentage - 0.05 > 1) percentage = 0.95;
-			clip.setWidth((percentage - 0.05) * 45);
+		public void setPercentage(double value) {
+			if (value < 0.0) value = 0.0;
+			else if (value > 1.0) value = 1.0;
+			widthProperty.set(value * width);
+			updateFullViewPosition();
 		}
 	}
 	
 	private class EnemyStack extends StackPane {
+		private final Image snowflake = new Image(getClass().getResourceAsStream("/Images/HUD/snowflake_icon.png"));;
+		private final Image thunder = new Image(getClass().getResourceAsStream("/Images/HUD/thunder_icon.png"));
+
+		private ImageView snowflakeView;
+		private ImageView thunderView;
 		private ImageView enemyView;
 		private HealthBar healthBar;
-		
+
+		double thunderX, thunderY = 35;
+		double snowflakeX, snowflakeY = 35;
+		boolean isSlowed;
+		boolean isFast;
+
 		public EnemyStack() {
+			isSlowed = false;
+			isFast = false;
+
+			double iconSize = 12;
+			thunderView = new ImageView(thunder);
+			thunderView.setTranslateY(thunderY);
+			thunderView.setFitHeight(iconSize);
+			thunderView.setFitWidth(iconSize);
+
+			snowflakeView = new ImageView(snowflake);
+			snowflakeView.setTranslateY(snowflakeY);
+			snowflakeView.setFitHeight(iconSize);
+			snowflakeView.setFitWidth(iconSize);
+
 			enemyView = new ImageView();
 			healthBar = new HealthBar();
 			
@@ -135,6 +176,37 @@ public class PlayModeScene extends AnimationTimer {
             healthBar.setTranslateY(35);
             
             this.getChildren().addAll(enemyView, healthBar);
+		}
+
+		private void repaintEnemyStack(boolean isSlowed, boolean isFast) {
+			this.getChildren().clear();
+			this.getChildren().addAll(enemyView, healthBar);
+			if (isSlowed) this.getChildren().add(snowflakeView);
+			if (isFast) this.getChildren().add(thunderView);
+		}
+
+		public void updateIcons(boolean isSlowed, boolean isFast) {
+			if (this.isSlowed == isSlowed && this.isFast == isFast) return;
+
+			this.isSlowed = isSlowed; this.isFast = isFast;
+			if (!isSlowed && !isFast) {
+				if (thunderX != 0 || snowflakeX != 0) {
+					thunderX = 0; snowflakeX = 0;
+					repaintEnemyStack(false, false);
+					return;
+				}
+			}
+			if (isSlowed && isFast) {
+				snowflakeX = -42.0; thunderX = -30.0;
+			} else if (isSlowed && !isFast) {
+				snowflakeX = -30;
+			} else if (!isSlowed && isFast) {
+				thunderX = -30;
+			}
+
+			thunderView.setTranslateX(thunderX);
+			snowflakeView.setTranslateX(snowflakeX);
+			repaintEnemyStack(isSlowed, isFast);
 		}
 		
 		public void setImage(Image image) {
@@ -146,7 +218,11 @@ public class PlayModeScene extends AnimationTimer {
 		}
 
 		public Consumer<Double> getConsumer() {
-			return (val) -> healthBar.setPercentage(val);
+			return (val) -> {
+				healthBar.applyCss();
+				healthBar.layout();
+				healthBar.setPercentage(val);
+			};
 		}
 	}
 
@@ -743,7 +819,7 @@ public class PlayModeScene extends AnimationTimer {
 	        	EnemyStack es = new EnemyStack();
 	        	enemyFrameIndicies.put(id, 0);
 
-				es.healthBar.setPercentage(1);
+				es.getConsumer().accept(1.0);
 				Consumer<Double> healthBarUpdater = es.getConsumer();
 				EntityController.addEnemyHPListener(i, healthBarUpdater);
 
@@ -755,7 +831,8 @@ public class PlayModeScene extends AnimationTimer {
 	        int frameIndex = (enemyFrameIndicies.get(id) + addFrame) % 6;
 	        es.setImage(frames.get(frameIndex));
 	        enemyFrameIndicies.put(id, frameIndex);
-	        
+	        es.updateIcons(false, EntityController.isKnightFast(i));
+
 	        int scale = EntityController.getXScale(i);
 	        if (scale != 0) {
 	        	es.getEnemyView().setScaleX(scale);

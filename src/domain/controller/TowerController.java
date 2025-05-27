@@ -34,12 +34,6 @@ class TowerLoop extends AnimationTimer {
 		for (int i = 0; i < towerList.size(); i++) {
 			Tower tower = towerList.get(i);
 			tower.update(deltaTime);
-			if (tower instanceof ArtilleryTower && tower.getTarget() != null) {
-				String name = (tower.getTarget() instanceof Goblin) ? "Goblin" : "Knight";
-				System.out.printf("Target %s %d is at: x = %f, y = %f%n",name, tower.getTarget().getEnemyID(),
-						tower.getTarget().getLocation().xCoord, tower.getTarget().getLocation().yCoord);
-			}
-			//System.out.println(tower.getTarget());
 		}
 
 

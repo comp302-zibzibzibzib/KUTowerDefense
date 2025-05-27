@@ -15,6 +15,6 @@ public class GoblinFactory implements EnemyFactory {
 
     @Override
     public Enemy createEnemy() {
-        return new Goblin(GOBLIN_HIT_POINTS, GameOptions.getInstance().getEnemySpeed(), null, GOBLIN_SPELL_REDUCTION);
+        return new Goblin(GOBLIN_HIT_POINTS, 6, null, GOBLIN_SPELL_REDUCTION);
     }
 }

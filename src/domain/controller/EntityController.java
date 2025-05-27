@@ -226,4 +226,9 @@ public class EntityController {
         Enemy.path = new ArrayList<PathTile>();
     }
 
+    public static boolean isKnightFast(int i) {
+        Enemy enemy = Enemy.getActiveEnemies().get(i);
+        if (!(enemy instanceof Knight)) return false;
+        return ((Knight) enemy).isFast();
+    }
 }
