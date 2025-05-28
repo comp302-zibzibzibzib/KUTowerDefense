@@ -134,8 +134,14 @@ public abstract class Enemy {
 		double xDelta = nextX - this.location.xCoord;
 		double yDelta = nextY - this.location.yCoord;
 		//get Unit
-		double xUnit = xDelta / distance;
-		double yUnit = yDelta / distance;
+		double xUnit, yUnit;
+		if (distance <= 0.005) {
+			xUnit = 0.0;
+			yUnit = 0.0;
+		} else {
+			xUnit = xDelta / distance;
+			yUnit = yDelta / distance;
+		}
 		
 		direction = new double[] {xUnit, yUnit};
 		
@@ -216,6 +222,12 @@ public abstract class Enemy {
 	public boolean isInitialized() {
 		return initialized;
 	}
+
+	public void setInitialized(boolean value) {
+		initialized = value;
+		if (value) activeEnemies.add(this);
+		else activeEnemies.remove(this);
+	}
 	
 	protected static int getID() {
 		return numberOfEnemies++;
@@ -241,6 +253,12 @@ public abstract class Enemy {
 		initialized = false;
 		enemies.remove(this);
 		activeEnemies.remove(this);
+	}
+
+	public static void cleanupAllEnemies() {
+		for (Enemy enemy : enemies) enemy.setInitialized(false);
+		activeEnemies.clear();
+		enemies.clear();
 	}
 
   	public boolean isSlowedDown() {
