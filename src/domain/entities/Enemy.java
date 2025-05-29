@@ -12,7 +12,6 @@ import domain.tower.AttackType;
 import domain.tower.Projectile;
 
 public abstract class Enemy {
-	private static final Random random = new Random();
 
 	public static ArrayList<Enemy> enemies = new ArrayList<>();
 	public static ArrayList<Enemy> activeEnemies = new ArrayList<>();
@@ -62,8 +61,8 @@ public abstract class Enemy {
 	}
 
 	public void hitEnemy(double damage, AttackType attackType) {
-		if (attackType == AttackType.SLOW_SPELL) slowDown();
-		if ((attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) && random.nextDouble() <= 0.3) {
+		if (attackType == AttackType.SLOW_SPELL && Utilities.globalRNG.nextDouble() <= 0.2) slowDown();
+		if ((attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) && Utilities.globalRNG.nextDouble() <= 0.03) {
 			resetPosition();
 			return;
 		}
@@ -75,6 +74,7 @@ public abstract class Enemy {
 	
 	public void killEnemy() { //VALUE IS RANDOM FOR NOW, MUST BE ABLE TO CHANGE IN OPTIONS
 		if (!initialized) return;
+		GoldBagFactory.getInstance().trySpawnGoldBag(this.location);
 		cleanupEnemy();
 		Player.getInstance().setGold(Player.getInstance().getGold() + 25);
 	}

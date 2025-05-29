@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 import domain.controller.PlayModeController;
 import domain.kutowerdefense.GameOptions;
@@ -26,6 +27,7 @@ import domain.tower.Tower;
 public final class Utilities {
 	private static final String MAP_FILE_PATH = "Data/Maps/";
 	private static final String OPTIONS_FILE_PATH = "Data/Options/";
+	public static final Random globalRNG = new Random(); 
 	
 	/**
 	 * Comparator for the priority queue used in findPath

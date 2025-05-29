@@ -13,6 +13,7 @@ import domain.services.Utilities;
 
 public abstract class Tower implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private static double freezeDuration = 4.0; 
 	
 	protected int cost;
 	protected int upgradeCost;
@@ -22,6 +23,9 @@ public abstract class Tower implements Serializable {
     protected AttackType attackType;
     protected Enemy target;
     protected Location location;
+    
+    protected boolean isFrozen;
+    protected double timeSinceFrozen;
 
 	private double timeSinceLastShot;
 	private double firePeriod;
@@ -37,6 +41,9 @@ public abstract class Tower implements Serializable {
 		firePeriod = 1/fireRate;
 		timeSinceLastShot = firePeriod;
 		PlayModeManager.getInstance().getCurrentMap().addTower(this);
+		
+		this.isFrozen = false;
+		this.timeSinceFrozen = 0.0;
 	}
 
 	public abstract void upgradeTower();
@@ -91,6 +98,17 @@ public abstract class Tower implements Serializable {
     }
     
     public Projectile update(double dt) {
+    	if(isFrozen) {
+    		this.timeSinceFrozen += dt;
+    		if(this.timeSinceFrozen < freezeDuration) {
+    			return null;
+    		}
+    		else {
+    			isFrozen = false;
+    			timeSinceFrozen = 0.0;
+    		}
+    	}
+    	
 		targetEnemy();
         timeSinceLastShot += dt; //Tracks how much time has passed since last creation
 		//Projectile creation period
@@ -166,5 +184,15 @@ public abstract class Tower implements Serializable {
     public int getCost() {
     	return cost;
     }
+
+	public boolean isIsFrozen() {
+		return isFrozen;
+	}
+
+	public void setIsFrozen(boolean isfrozen) {
+		this.isFrozen = isfrozen;
+	}
+    
+    
 }
 
