@@ -98,7 +98,11 @@ public abstract class Tower implements Serializable {
     }
     
     public Projectile update(double dt) {
-    	if(isFrozen) {
+    	
+		targetEnemy();
+        timeSinceLastShot += dt; //Tracks how much time has passed since last creation
+        
+        if(isFrozen) {
     		this.timeSinceFrozen += dt;
     		if(this.timeSinceFrozen < freezeDuration) {
     			return null;
@@ -108,9 +112,6 @@ public abstract class Tower implements Serializable {
     			timeSinceFrozen = 0.0;
     		}
     	}
-    	
-		targetEnemy();
-        timeSinceLastShot += dt; //Tracks how much time has passed since last creation
 		//Projectile creation period
         //If not enough time has passed does not create another projectile
         if (timeSinceLastShot < firePeriod || target == null) {
