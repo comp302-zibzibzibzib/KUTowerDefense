@@ -1,5 +1,9 @@
 package ui;
 
+import domain.controller.MapEditorController;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,31 +13,92 @@ import javafx.scene.layout.StackPane;
 
 public class MapEditorScene {
 	private KuTowerDefenseA app;
+	private MapEditorController mapEditorController = MapEditorController.getInstance();
+	Pane editedMap = new Pane();
+	Pane mapForEditor = new Pane();
 	StackPane root = new StackPane();
 	Pane draggingLayer = new Pane();
+	Pane biggerSideBar = new Pane();
+	Pane exitBar = new Pane();
+    Pane optionBar = new Pane();
+	Pane sideBar = new Pane();
 	private ImageView draggingClone = null;
-	
+	private AssetImage topmid = new AssetImage("top", this);
+	private AssetImage topbottom = new AssetImage("topleft", this);
+	private AssetImage topright = new AssetImage("topright", this);
+	private AssetImage horizontalTopEnd = new AssetImage("verticalendtop", this);
+	private AssetImage midLeft = new AssetImage("left", this);
+	private AssetImage grass = new AssetImage("grass", this);
+	private AssetImage midRight = new AssetImage("right", this);
+	private AssetImage horizontalMid = new AssetImage("verticalmiddle", this);
+	private AssetImage leftBottom = new AssetImage("bottomleft", this);
+	private AssetImage midBottom = new AssetImage("bottom", this);
+	private AssetImage midBottomRight = new AssetImage("bottomright", this);
+	private AssetImage horizontalBottom = new AssetImage("verticalendbottom", this);
+	private AssetImage verticalLeft = new AssetImage("horizontalendleft", this);
+	private AssetImage verticalMid = new AssetImage("horizontalmiddle", this);
+	private AssetImage verticalRight = new AssetImage("horizontalendright", this);
+	private AssetImage treeFirst = new AssetImage("tree1", this);
+	private AssetImage treeSecond = new AssetImage("tree2", this);
+	private AssetImage treeThird = new AssetImage("tree3", this);
+	private AssetImage rockFirst = new AssetImage("rock1", this);
+	private AssetImage artilleryTower = new AssetImage("artillerytower", this);
+	private AssetImage mageTower = new AssetImage("magetower", this);
+	private AssetImage house = new AssetImage("house", this);
+	private AssetImage rockSecond = new AssetImage("rock2", this);
+	private AssetImage lot = new AssetImage("lot", this);
+	private AssetImage castle = new AssetImage("castle", this);
+	private AssetImage archerTower = new AssetImage("archertower", this);
+	private AssetImage well = new AssetImage("well", this);
+	private AssetImage houseSecond = new AssetImage("house2", this);
+	private AssetImage wood = new AssetImage("wood", this);
+	private AssetImage saveButton = new AssetImage("savebutton", this);
+	private AssetImage exitButton = new AssetImage("exitbutton", this);
+
 	
 	public MapEditorScene(KuTowerDefenseA app) {
+		System.out.println(getClass());
 		this.app = app;
 	}
 	
 	public Scene getScene() {
+		Pane dashedLineMap = dashedLines(9,16,70,70);
+		dashedLineMap.setPickOnBounds(false);
 		draggingLayer.setPickOnBounds(false);
+		editedMap.setPickOnBounds(false);
 		HBox content = new HBox(renderMapEditor(), getSideBar());
-		root.getChildren().addAll(content, draggingLayer);
+		root.getChildren().addAll(content,editedMap,dashedLineMap, draggingLayer);
 		Scene scene = new Scene(root);
 		return scene;
 	}
 	
+	private Pane dashedLines(int inty, int intx, double height,double width) {
+		Pane dashedPane = new Pane();
+		double x;
+		double y;
+		for(int i = 0; i< inty; i++) {
+			for(int j = 0; j< intx; j++) {
+				x = j* width;
+				y = i* height;
+				
+				Pane tilePane = new Pane();
+				tilePane.setPrefSize(height, width);
+				tilePane.setStyle("-fx-border-style: dashed; -fx-border-width: 0.8; -fx-border-color: black;");
+				tilePane.setLayoutX(x);
+				tilePane.setLayoutY(y);
+				dashedPane.getChildren().addAll(tilePane);
+
+			}
+		}
+		return dashedPane;
+		
+	}
 	private Pane renderMapEditor() {
-		Pane mapForEditor = new Pane();
 		double x;
 		double y;
 		
 		for(int i = 0; i <9; i++) {
 			for(int j = 0; j< 16; j++) {
-				Image grass = new Image(getClass().getResourceAsStream("/Images/grass.png"));
 				ImageView tileView = new ImageView(grass);
 				
 				tileView.setFitWidth(70);  
@@ -44,14 +109,8 @@ public class MapEditorScene {
 				
 				tileView.setLayoutX(x);
 				tileView.setLayoutY(y);
-				Pane tilePane = new Pane();
-				tilePane.setPrefSize(70, 70);
-				tilePane.setStyle("-fx-border-style: dashed; -fx-border-width: 0.8; -fx-border-color: black;");
-				tilePane.setLayoutX(x);
-				tilePane.setLayoutY(y);
 				
 				mapForEditor.getChildren().addAll(tileView);
-				mapForEditor.getChildren().addAll(tilePane);
 				
 			}
 		}
@@ -60,265 +119,260 @@ public class MapEditorScene {
 	}
 	
 	private Pane getSideBar() {
-		Pane biggerSideBar = new Pane();
+		System.out.println(getClass());
+
 		biggerSideBar.setPrefSize(255,630);
         biggerSideBar.setStyle("-fx-background-color: #434447;");
-
-		Pane exitBar = new Pane();
+        
 		exitBar.setPrefSize(254,62.5);
 		exitBar.setLayoutX(4);
 		exitBar.setLayoutY(0);
         exitBar.setStyle("-fx-background-color: #8FD393;");
         
-        Pane optionBar = new Pane();
         optionBar.setPrefSize(254, 62.5);
         optionBar.setLayoutX(4);
 		optionBar.setLayoutY(63.5);
         optionBar.setStyle("-fx-background-color: #8FD393;");
+        
+        ImageView saveView = new ImageView(saveButton);
+        ImageView exitView = new ImageView(exitButton);
+        exitView.setFitHeight(57);
+        exitView.setFitWidth(57);
+        exitView.setLayoutX(194);
+        exitView.setLayoutY(0);
 
+        saveView.setFitHeight(57);
+        saveView.setFitWidth(57);
+        saveView.setLayoutX(194);
+        saveView.setLayoutY(0);
+        
+        saveView.setOnMouseClicked(e->{
+        	boolean valid = mapEditorController.validateMap();
+        	
+        	if(!valid) {
+        		
+        	}
+        	else {
+        		
+        		mapEditorController.saveMap();
+        	}
+        });
+        
+        optionBar.getChildren().addAll(saveView);
+        
+        exitBar.getChildren().addAll(exitView);
 
-
-		Pane sideBar = new Pane();
 		sideBar.setPrefSize(250, 630); 
         sideBar.setStyle(" -fx-background-color: #8FD393;");
         sideBar.setLayoutX(4);
 		sideBar.setLayoutY(127);
 		
-		Image topbottom = new Image(getClass().getResourceAsStream("/Images/topleft.png"));
-		ImageView topBot = new ImageView(topbottom);
-		topBot.setFitWidth(62.5);
-		topBot.setFitHeight(62.5);
-		topBot.setLayoutX(0);
-		topBot.setLayoutY(0);
 		
-		Image topmid = new Image(getClass().getResourceAsStream("/Images/top.png"));
-		ImageView topMid = new ImageView(topmid);
-		topMid.setFitWidth(62.5);
-		topMid.setFitHeight(62.5);
-		topMid.setLayoutX(62.5);
-		topMid.setLayoutY(0);
-		
-		Image topright = new Image(getClass().getResourceAsStream("/Images/topright.png"));
-		ImageView topRight = new ImageView(topright);
-		topRight.setFitWidth(62.5);
-		topRight.setFitHeight(62.5);
-		topRight.setLayoutX(125);
-		topRight.setLayoutY(0);
-		
-		
-		Image horizontalTopEnd = new Image(getClass().getResourceAsStream("/Images/verticalendtop.png"));
-		ImageView horizontalTop = new ImageView(horizontalTopEnd);
-		horizontalTop.setFitWidth(62.5);
-		horizontalTop.setFitHeight(62.5);
-		horizontalTop.setLayoutX(187.5);
-		horizontalTop.setLayoutY(0);
-		
-		Image midLeft = new Image(getClass().getResourceAsStream("/Images/left.png"));
-		ImageView midL = new ImageView(midLeft);
-		midL.setFitWidth(62.5);
-		midL.setFitHeight(62.5);
-		midL.setLayoutX(0);
-		midL.setLayoutY(62.5);
-		
-		
-		Image grass = new Image(getClass().getResourceAsStream("/Images/grass.png"));
-		ImageView grassView = new ImageView(grass);
-		grassView.setFitWidth(62.5);
-		grassView.setFitHeight(62.5);
-		grassView.setLayoutX(62.5);
-		grassView.setLayoutY(62.5);
-		
-		
-		Image midRight = new Image(getClass().getResourceAsStream("/Images/right.png"));
-		ImageView midRightView = new ImageView(midRight);
-		midRightView.setFitWidth(62.5);
-		midRightView.setFitHeight(62.5);
-		midRightView.setLayoutX(125);
-		midRightView.setLayoutY(62.5);
-		
-		
-		Image horizontalMid = new Image(getClass().getResourceAsStream("/Images/verticalmiddle.png"));
-		ImageView horizontalMidView = new ImageView(horizontalMid);
-		horizontalMidView.setFitWidth(62.5);
-		horizontalMidView.setFitHeight(62.5);
-		horizontalMidView.setLayoutX(187.5);
-		horizontalMidView.setLayoutY(62.5);
-		
-		
-		Image leftBottom = new Image(getClass().getResourceAsStream("/Images/bottomleft.png"));
-		ImageView leftBotomView = new ImageView(leftBottom);
-		leftBotomView.setFitWidth(62.5);
-		leftBotomView.setFitHeight(62.5);
-		leftBotomView.setLayoutX(0);
-		leftBotomView.setLayoutY(125);
-		
-		Image midBottom = new Image(getClass().getResourceAsStream("/Images/bottom.png"));
-		ImageView midBottomView = new ImageView(midBottom);
-		midBottomView.setFitWidth(62.5);
-		midBottomView.setFitHeight(62.5);
-		midBottomView.setLayoutX(62.5);
-		midBottomView.setLayoutY(125);
-		
-		Image midBottomRight = new Image(getClass().getResourceAsStream("/Images/bottomright.png"));
-		ImageView midBottomRightView = new ImageView(midBottomRight);
-		midBottomRightView.setFitWidth(62.5);
-		midBottomRightView.setFitHeight(62.5);
-		midBottomRightView.setLayoutX(125);
-		midBottomRightView.setLayoutY(125);
-		
-		Image horizontalBottom = new Image(getClass().getResourceAsStream("/Images/verticalendbottom.png"));
-		ImageView horizontalBottomView = new ImageView(horizontalBottom);
-		horizontalBottomView.setFitWidth(62.5);
-		horizontalBottomView.setFitHeight(62.5);
-		horizontalBottomView.setLayoutX(187.5);
-		horizontalBottomView.setLayoutY(125);
-		
-		
-		Image verticalLeft = new Image(getClass().getResourceAsStream("/Images/horizontalendleft.png"));
-		ImageView verticalLeftView = new ImageView(verticalLeft);
-		verticalLeftView.setFitWidth(62.5);
-		verticalLeftView.setFitHeight(62.5);
-		verticalLeftView.setLayoutX(0);
-		verticalLeftView.setLayoutY(187.5);
-		
-		Image verticalMid = new Image(getClass().getResourceAsStream("/Images/horizontalmiddle.png"));
-		ImageView verticalMidView = new ImageView(verticalMid);
-		verticalMidView.setFitWidth(62.5);
-		verticalMidView.setFitHeight(62.5);
-		verticalMidView.setLayoutX(62.5);
-		verticalMidView.setLayoutY(187.5);
-		
-		Image verticalRight = new Image(getClass().getResourceAsStream("/Images/horizontalendright.png"));
-		ImageView verticalRightView = new ImageView(verticalRight);
-		verticalRightView.setFitWidth(62.5);
-		verticalRightView.setFitHeight(62.5);
-		verticalRightView.setLayoutX(125);
-		verticalRightView.setLayoutY(187.5);
-		
-		Image lot = new Image(getClass().getResourceAsStream("/Images/lot.png"));
-		ImageView lotView = new ImageView(lot);
-		lotView.setFitWidth(62.5);
-		lotView.setFitHeight(62.5);
-		lotView.setLayoutX(187.5);
-		lotView.setLayoutY(187.5);
-		
-		Image treeFirst = new Image(getClass().getResourceAsStream("/Images/tree1.png"));
-		ImageView treeFirstView = new ImageView(treeFirst);
-		treeFirstView.setFitWidth(62.5);
-		treeFirstView.setFitHeight(62.5);
-		treeFirstView.setLayoutX(0);
-		treeFirstView.setLayoutY(250);
-		
-		Image treeSecond = new Image(getClass().getResourceAsStream("/Images/tree2.png"));
-		ImageView treeSecondView = new ImageView(treeSecond);
-		treeSecondView.setFitWidth(62.5);
-		treeSecondView.setFitHeight(62.5);
-		treeSecondView.setLayoutX(62.5);
-		treeSecondView.setLayoutY(250);
-		
-		Image treeThird = new Image(getClass().getResourceAsStream("/Images/tree3.png"));
-		ImageView treeThirdView = new ImageView(treeThird);
-		treeThirdView.setFitWidth(62.5);
-		treeThirdView.setFitHeight(62.5);
-		treeThirdView.setLayoutX(125);
-		treeThirdView.setLayoutY(250);
-		
-		Image rockFirst = new Image(getClass().getResourceAsStream("/Images/rock1.png"));
-		ImageView rockFirstView = new ImageView(rockFirst);
-		rockFirstView.setFitWidth(62.5);
-		rockFirstView.setFitHeight(62.5);
-		rockFirstView.setLayoutX(187.5);
-		rockFirstView.setLayoutY(250);
-		
-		Image artilleryTower = new Image(getClass().getResourceAsStream("/Images/artillerytower.png"));
-		ImageView artilleryTowerView = new ImageView(artilleryTower);
-		artilleryTowerView.setFitWidth(62.5);
-		artilleryTowerView.setFitHeight(62.5);
-		artilleryTowerView.setLayoutX(0);
-		artilleryTowerView.setLayoutY(312.5);
-		
-		Image mageTower = new Image(getClass().getResourceAsStream("/Images/magetower.png"));
-		ImageView mageTowerView = new ImageView(mageTower);
-		mageTowerView.setFitWidth(62.5);
-		mageTowerView.setFitHeight(62.5);
-		mageTowerView.setLayoutX(62.5);
-		mageTowerView.setLayoutY(312.5);
-		
-		Image house = new Image(getClass().getResourceAsStream("/Images/house.png"));
-		ImageView houseView = new ImageView(house);
-		houseView.setFitWidth(62.5);
-		houseView.setFitHeight(62.5);
-		houseView.setLayoutX(125);
-		houseView.setLayoutY(312.5);	
-		
-		Image rockSecond = new Image(getClass().getResourceAsStream("/Images/rock2.png"));
-		ImageView rockSecondView = new ImageView(rockSecond);
-		rockSecondView.setFitWidth(62.5);
-		rockSecondView.setFitHeight(62.5);
-		rockSecondView.setLayoutX(187.5);
-		rockSecondView.setLayoutY(312.5);
-		
-		Image hugeTower = new Image(getClass().getResourceAsStream("/Images/hugetower.png"));
-		ImageView hugeTowerView = new ImageView(hugeTower);
-		hugeTowerView.setFitWidth(125);
-		hugeTowerView.setFitHeight(125);
-		hugeTowerView.setLayoutX(0);
-		hugeTowerView.setLayoutY(375);	
-		
-		Image archerTower = new Image(getClass().getResourceAsStream("/Images/archertower.png"));
-		ImageView archerTowerView = new ImageView(archerTower);
-		archerTowerView.setFitWidth(62.5);
-		archerTowerView.setFitHeight(62.5);
-		archerTowerView.setLayoutX(125);
-		archerTowerView.setLayoutY(375);	
-		
-		Image well = new Image(getClass().getResourceAsStream("/Images/house.png"));
-		ImageView wellView = new ImageView(well);
-		wellView.setFitWidth(62.5);
-		wellView.setFitHeight(62.5);
-		wellView.setLayoutX(187.5);
-		wellView.setLayoutY(375);	
-		
-		Image houseSecond = new Image(getClass().getResourceAsStream("/Images/house2.png"));
-		ImageView houseSecondView = new ImageView(houseSecond);
-		houseSecondView.setFitWidth(62.5);
-		houseSecondView.setFitHeight(62.5);
-		houseSecondView.setLayoutX(125);
-		houseSecondView.setLayoutY(437.5);
-		
-		Image wood = new Image(getClass().getResourceAsStream("/Images/wood.png"));
-		ImageView woodView = new ImageView(wood);
-		woodView.setFitWidth(62.5);
-		woodView.setFitHeight(62.5);
-		woodView.setLayoutX(187.5);
-		woodView.setLayoutY(437.5);
+		ImageView topBot = createTileImageView(topbottom, 0, 0);
+		ImageView topMid = createTileImageView(topmid, 62.5, 0);
+		ImageView topRight = createTileImageView(topright, 125, 0);
+		ImageView horizontalTop = createTileImageView(horizontalTopEnd, 187.5, 0);
+		ImageView midL = createTileImageView(midLeft, 0, 62.5);
+		ImageView grassView = createTileImageView(grass, 62.5, 62.5);
+		ImageView midRightView = createTileImageView(midRight, 125, 62.5);
+		ImageView horizontalMidView = createTileImageView(horizontalMid, 187.5, 62.5);
+		ImageView leftBotomView = createTileImageView(leftBottom, 0, 125);
+		ImageView midBottomView = createTileImageView(midBottom, 62.5, 125);
+		ImageView midBottomRightView = createTileImageView(midBottomRight, 125, 125);
+		ImageView horizontalBottomView = createTileImageView(horizontalBottom, 187.5, 125);
+		ImageView verticalLeftView = createTileImageView(verticalLeft, 0, 187.5);
+		ImageView verticalMidView = createTileImageView(verticalMid, 62.5, 187.5);
+		ImageView verticalRightView = createTileImageView(verticalRight, 125, 187.5);
+		ImageView lotView = createTileImageView(lot, 187.5, 187.5);
+		ImageView treeFirstView = createTileImageView(treeFirst, 0, 250);
+		ImageView treeSecondView = createTileImageView(treeSecond, 62.5, 250);
+		ImageView treeThirdView = createTileImageView(treeThird, 125, 250);
+		ImageView rockFirstView = createTileImageView(rockFirst, 187.5, 250);
+		ImageView artilleryTowerView = createTileImageView(artilleryTower, 0, 312.5);
+		ImageView mageTowerView = createTileImageView(mageTower, 62.5, 312.5);
+		ImageView houseView = createTileImageView(house, 125, 312.5);
+		ImageView rockSecondView = createTileImageView(rockSecond, 187.5, 312.5);
+		ImageView castleView = createTileImageView(castle, 0, 375);
+		castleView.setFitHeight(125);
+		castleView.setFitWidth(125);
+		ImageView archerTowerView = createTileImageView(archerTower, 125, 375);
+		ImageView wellView = createTileImageView(well, 187.5, 375);
+		ImageView houseSecondView = createTileImageView(houseSecond, 125, 437.5);
+		ImageView woodView = createTileImageView(wood, 187.5, 437.5);
 
-		sideBar.getChildren().addAll(topBot,topMid, topRight,horizontalTop,midL,grassView,midRightView,horizontalMidView,leftBotomView,midBottomView,midBottomRightView,horizontalBottomView,verticalLeftView,verticalMidView,verticalRightView,lotView,treeFirstView,treeSecondView, treeThirdView,rockFirstView, artilleryTowerView,mageTowerView,houseView,rockSecondView,hugeTowerView, archerTowerView,wellView,houseSecondView,woodView);
-		
-        
-		for (int i = 0; i < 20; i++) {
-	        for (int j = 0; j < 4; j++) {
-	            double x = j * 62.5;
-	            double y = i * 62.5;
 
-	            Pane sideBarBorderDash = new Pane();
-	            sideBarBorderDash.setPrefSize(62.5, 62.5);
-	            sideBarBorderDash.setStyle("-fx-border-style: dashed; -fx-border-width: 0.8; -fx-border-color: black;");
-	            sideBarBorderDash.setLayoutX(x);
-	            sideBarBorderDash.setLayoutY(y);
-
-	            sideBar.getChildren().add(sideBarBorderDash);
-	        }
-	    }
+		sideBar.getChildren().addAll(topBot,topMid, topRight,horizontalTop,midL,grassView,midRightView,horizontalMidView,leftBotomView,midBottomView,midBottomRightView,horizontalBottomView,verticalLeftView,verticalMidView,verticalRightView,lotView,treeFirstView,treeSecondView, treeThirdView,rockFirstView, artilleryTowerView,mageTowerView,houseView,rockSecondView,castleView, archerTowerView,wellView,houseSecondView,woodView);
 		
+
+		Pane dashedLineSide = dashedLines(20,4,62.5,62.5);
+		dashedLineSide.setPickOnBounds(false);
+		dashedLineSide.setMouseTransparent(true);
+		sideBar.getChildren().add(dashedLineSide);
+		
+		highlightEffect();
+		
+
         biggerSideBar.getChildren().addAll(exitBar,optionBar,sideBar);
         
         
 		return biggerSideBar;
 	}
 	
-	private void eventController(ImageView image) {
-			
+	private ImageView createTileImageView(AssetImage assetImage, double x, double y) {
+		ImageView view = new ImageView(assetImage);
+		sizingImage(view);
+		view.setLayoutX(x);
+		view.setLayoutY(y);
+		view.setPickOnBounds(true);
+		view.setUserData(assetImage.getName()); 
+		eventProcessor(view);
+		return view;
 	}
+	
+	private void sizingImage(ImageView image) {
+		image.setFitHeight(62.5);
+		image.setFitWidth(62.5);
+	}
+	
+	private void eventProcessor(ImageView image) { //anlayana
+		image.setOnMousePressed(event -> {
+			String tileName = (String) image.getUserData();
+			Image originalImage = new Image(getClass().getResourceAsStream("/Images/" + tileName + ".png"));
+			draggingClone = new ImageView(originalImage);
+			draggingClone.setUserData(image.getUserData());
+	        draggingClone.setFitWidth(image.getFitWidth());
+	        draggingClone.setFitHeight(image.getFitHeight());
+	        draggingClone.setLayoutX(event.getSceneX() - image.getFitWidth() / 2);
+	        draggingClone.setLayoutY(event.getSceneY() - image.getFitHeight() / 2);
+	        draggingLayer.getChildren().add(draggingClone);
+	    });
+
+		image.setOnMouseDragged(event -> {
+	        if (draggingClone != null) {
+	            draggingClone.setLayoutX(event.getSceneX() - draggingClone.getFitWidth() / 2);
+	            draggingClone.setLayoutY(event.getSceneY() - draggingClone.getFitHeight() / 2);
+	        }
+	    });
+
+		image.setOnMouseReleased(event -> {
+	        if (draggingClone != null) {
+	        	//getting our mouse's coordinates
+	        	double mouseX = event.getSceneX();
+	        	double mouseY = event.getSceneY();
+	        	
+	        	
+	        	for(Node node : mapForEditor.getChildren()) {
+	        		if (node instanceof ImageView) {	 
+	        	        ImageView tile = (ImageView) node;
+	        	        
+	        	        Bounds bounds = tile.localToScene(tile.getBoundsInLocal());
+	        	        System.out.println(bounds);
+	        	        
+	        	        if (bounds.contains(mouseX, mouseY)) {
+	        	        	 double centerX = bounds.getMinX() + bounds.getWidth() / 2;
+	                         double centerY = bounds.getMinY() + bounds.getHeight() / 2;
+	                         System.out.println(centerX);
+	                         System.out.println(centerY);
+
+	                         draggingClone.setFitHeight(70);
+	                         draggingClone.setFitWidth(70);
+
+	                         draggingClone.setLayoutX(centerX - draggingClone.getFitWidth() / 2);
+	                         draggingClone.setLayoutY(centerY - draggingClone.getFitHeight() / 2);
+	                         
+
+	                         double cellX = draggingClone.getLayoutX();
+	                         double cellY = draggingClone.getLayoutY();
+
+	                         
+	                         for (int dx = 0; dx <= 70; dx++) {
+	                        	    for (int dy = 0; dy <= 70; dy++) {
+	                        	        double tx = cellX - dx;
+	                        	        double ty = cellY - dy;
+	                        	        editedMap.getChildren().removeIf(cImage -> {
+	                        	            if (!(cImage instanceof ImageView)) return false;
+	                        	            double tileX = cImage.getLayoutX();
+	                        	            double tileY = cImage.getLayoutY();
+	                        	            return tileX == tx && tileY == ty;
+	                        	        });
+	                        	    }
+	                        	}
+	                         String tileName = (String) draggingClone.getUserData();
+	                         
+	                         if(tileName.equals("castle")) {
+	                        	 
+	                        	 mapEditorController.forcePlaceCastle((int)(draggingClone.getLayoutX()/70),(int)(draggingClone.getLayoutY()/70));
+	     	            		 draggingClone.setFitHeight(140);
+		                         draggingClone.setFitWidth(140);
+	     	            		editedMap.getChildren().add(draggingClone);
+	     	            		
+	     	            		break;
+	     	            	 }
+	     	            	 if(tileName.equals("lot")) {
+	     	            		mapEditorController.forcePlaceLot((int)(draggingClone.getLayoutX()/70),(int)(draggingClone.getLayoutY()/70));
+	     	            		 
+	     	            	 }
+	     	            	 else {
+	     	            		mapEditorController.forcePlaceTile(tileName, (int)(draggingClone.getLayoutX()/70),(int)(draggingClone.getLayoutY()/70));
+	     	            	 }
+	     	            
+	                         if(tileName.equals("grass")) {
+	                        	 editedMap.getChildren().remove(draggingClone);
+	                        	 mapEditorController.removeTile((int)(draggingClone.getLayoutX()/70),(int)(draggingClone.getLayoutY()/70));
+	                        	 mapEditorController.forcePlaceTile("grass",(int)(draggingClone.getLayoutX()/70),(int)(draggingClone.getLayoutY()/70));
+	                         }
+	                         else {
+	                        	 editedMap.getChildren().add(draggingClone);
+	                        	 
+	                         }
+	                         break;
+	        	        }
+	        		}
+	        		
+	        	}
+	        	
+	            draggingLayer.getChildren().remove(draggingClone);
+	            draggingClone = null;
+	            System.out.println(editedMap.getChildren());
+	            mapEditorController.printMap();
+
+	           
+	        }
+	    });
+	}
+	private void highlightEffect() {
+		for(Node node : sideBar.getChildren()) {
+			if(node instanceof ImageView) {
+				ImageView tile = (ImageView) node;
+				String tileName = (String) tile.getUserData();
+				
+				tile.setOnMouseEntered(e->{
+					tile.setImage(new Image(getClass().getResourceAsStream("/Images/Highlighted/" + tileName +".png" )));
+				});
+				
+				tile.setOnMouseExited(e->{
+					tile.setImage(new Image(getClass().getResourceAsStream("/Images/" + tileName +".png" )));
+				});
+				
+			}
+		}
+	}
+	private class AssetImage extends Image{
+		private String name;
+		
+		public AssetImage(String name, Object source) {
+			super(source.getClass().getResourceAsStream("/Images/"+name+ ".png"));
+			System.out.println(source.getClass());
+			this.name = name;
+			
+		}
+
+		public String getName() {
+			return name;
+		}
+		
+	}	
+	
 
 }
+

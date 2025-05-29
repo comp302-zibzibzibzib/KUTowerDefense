@@ -93,7 +93,7 @@ public class MainMenuScene {
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
 			MainMenuController.startNewGame("SUS map");
-			app.startGame();
+			app.showMapEditor();
 		} else if (event.getSource() == optionsButton) {
 			GameOptionsController.initializeGameOptions();
 			app.showOptionsMenu(new StackPane());

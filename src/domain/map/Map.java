@@ -36,6 +36,9 @@ public class Map implements Serializable {
 		
 		initializeTileMap();
 	}
+	public Map(int height, int width) {
+		this(null, height, width);
+	}
 	
 	//Starting tile must be somewhere at the bottom end ending tile must be somewhere on the top
 	//Types of these tiles are PATH, isWalkable = 1
@@ -136,6 +139,7 @@ public class Map implements Serializable {
 		for (int i = 0; i < map.height; i++) {
 			for (int j = 0; j < map.width; j++) {
 				System.out.print(map.tileMap[i][j].type.toString());
+				System.out.print(map.tileMap[i][j].type.getClass());
 			}
 			System.out.print("\n");
 		}

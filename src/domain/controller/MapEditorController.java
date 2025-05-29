@@ -1,11 +1,17 @@
 package domain.controller;
 
+import java.util.HashMap;
+import java.util.Set;
+import java.util.*;
+
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.map.DecorativeType;
+import domain.map.Location;
 import domain.map.Lot;
 import domain.map.Map;
 import domain.map.MapEditor;
+import domain.map.PathTile;
 import domain.map.PathType;
 import domain.map.Tile;
 import domain.map.TileType;
@@ -14,14 +20,33 @@ import domain.services.Utilities;
 import domain.tower.TowerFactory;
 
 public class MapEditorController {
+	private Map forcedMap;
 	private static MapEditor mapEditor;
 	private static Player player = Player.getInstance();
 	private static PlayModeManager playModeManager = PlayModeManager.getInstance();
 	private static MapEditorController instance;
+	private static HashMap<String, PathType> paths = new HashMap<String, PathType>();
+	private static HashMap<String, TowerType> towers = new HashMap<String, TowerType>();
+	private static HashMap<String, DecorativeType> decoratives = new HashMap<String, DecorativeType>();
+	private static PathType[] pathSet = PathType.values(); 
+	private static DecorativeType[] decorativesSet = DecorativeType.values();
+	private static TowerType[] towersSet = TowerType.values();
 	
 	private MapEditorController() {
-		Map currentMap = playModeManager.getCurrentMap();
-		mapEditor = new MapEditor(currentMap);
+		forcedMap = new Map(9,16);
+		//Map currentMap = playModeManager.getCurrentMap();
+		mapEditor = new MapEditor(forcedMap);
+		
+		for(PathType path : pathSet) {
+			paths.put(path.getAssetName(), path);
+		}
+		for(TowerType tower : towersSet) {
+			towers.put(tower.getAssetName(), tower);
+		}
+		for(DecorativeType decorative : decorativesSet) {
+			decoratives.put(decorative.getAssetName(), decorative);
+		}
+		
 	}
 	
 	public static void resetMap() {
@@ -30,7 +55,7 @@ public class MapEditorController {
 	}
 	
 	public static MapEditorController getInstance() {
-		if (instance == null) return new MapEditorController();
+		if (instance == null) instance = new MapEditorController(); 
 		return instance;
 	}
 	
@@ -45,7 +70,6 @@ public class MapEditorController {
 	public void createMageTower(int x, int y) {
 		if (player.getGold() < TowerFactory.costMage) return;
 
-		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.TOWER, TowerType.MAGE, y, x);
 		player.updateGold(-TowerFactory.costMage);
 	}
@@ -65,6 +89,55 @@ public class MapEditorController {
 		mapEditor.removeTile(y, x);
 		player.updateGold((int) (((Lot)tileToRemove).getTower().getCost() * 0.6));
 	}
+	
+	public void forcePlaceTile(String name, int x, int y) {
+		mapEditor.removeTile(y, x);
+		PathType pathType = paths.get(name);
+		TowerType towerType = towers.get(name);
+		DecorativeType decorativeType = decoratives.get(name);
+		
+		if (pathType != null){
+			mapEditor.placeTile(TileType.PATH,pathType, y, x);
+
+		}
+		else if (towerType != null) {
+			mapEditor.placeTile(TileType.TOWER, towerType, y, x);
+
+		}
+		else if(decorativeType != null) {
+			mapEditor.placeTile(TileType.DECORATIVES,decorativeType, y, x);
+		}
+		else {
+			mapEditor.placeTile(TileType.GRASS, y, x);
+		}
+		
+	}
+	
+	public void forcePlaceCastle(int x, int y) {
+		mapEditor.removeTile(y, x);
+		mapEditor.placeTile(TileType.CASTLE,y,x);
+	}
+	
+	
+	public void forcePlaceLot(int x, int y) {
+		mapEditor.removeTile(y, x);
+		mapEditor.placeTile(TileType.LOT,y,x);
+	}
+	
+	public void removeTile(int x, int y) {
+		mapEditor.removeTile(y, x);
+	}
+	
+	public void printMap() {
+		Map.printMap(forcedMap);
+	}
+	public boolean validateMap() {
+		return mapEditor.isValidMap();
+	}
+	public void saveMap() {
+		Utilities.writeMap(forcedMap);
+	}
+	
 	
 	public static void createStaticMap1() {
 		Map map = new Map("Pre-Built Map", 9, 16);
