@@ -72,19 +72,20 @@ public class Map implements Serializable {
 	// DEPRICATED CONSTRUCTOR!!!
 	public Map(String mapName, PathTile startingTile, PathTile endingTile, int height, int width) {
 		this(mapName, height, width); // Default constructor
-		if (true) return; // DEPRICATED BELOW!!!
-		
+		if (true) return; // This is to trick the compiler so we don't have to delete the code below but also never use it
+		// DEPRICATED BELOW!!!
+
 		Tile prevStart = tileMap[(int)startingTile.location.yCoord][(int)startingTile.location.xCoord];
 		Tile prevEnd = tileMap[(int)endingTile.location.yCoord][(int)endingTile.location.xCoord];
 		//Ensure that both starting and ending tiles are of type PATH
 		if (startingTile.getType() != TileType.PATH || endingTile.getType() != TileType.PATH) return; // Raise an invalid argument exception?
-		
+
 		this.startingTile = (startingTile.location.yCoord == height-1) ? startingTile : null; //Display an error message in UI???
-		this.endingTile = (endingTile.location.yCoord == 0) ? endingTile : null; 
-		
+		this.endingTile = (endingTile.location.yCoord == 0) ? endingTile : null;
+
 		tileMap[(int)startingTile.location.yCoord][(int)startingTile.location.xCoord] = this.startingTile;
 		tileMap[(int)endingTile.location.yCoord][(int)endingTile.location.xCoord] = this.endingTile;
-		
+
 		startingTile.setLocation(prevStart.location);
 		endingTile.setLocation(prevEnd.location);
 	}
@@ -120,20 +121,6 @@ public class Map implements Serializable {
 		return true;
     }
 
-	public void resetTowers() {
-		for (Tower tower : towerList) {
-			tower.setTarget(null);
-		}
-	}
-
-	public List<PathTile> getPath() {
-		if (path == null) setPath();
-		return path;
-	}
-
-	public void setPath() {
-		this.path = Utilities.findPath(this);
-	}
 	/**
 	 * Initializes map to empty grass tile map
 	 */
@@ -159,11 +146,29 @@ public class Map implements Serializable {
 			y += Tile.tileLength * 0.5;
 		}	
 	}
+
+	public void resetTowers() {
+		// EFFECTS: Unsets all the targets of the towers currently present on the map
+		for (Tower tower : towerList) {
+			tower.setTarget(null);
+		}
+	}
+
+	public List<PathTile> getPath() {
+		if (path == null) setPath();
+		return path;
+	}
+
+	public void setPath() {
+		this.path = Utilities.findPath(this);
+	}
+
 	public PathTile getStartingTile() {
 		return startingTile;
 	}
 
 	public void setStartingTile(PathTile startingTile) {
+		// EFFECTS: If the given tile is correctly on the edge of the map, it is set as the starting tile
 		if(startingTile == null) {
 			this.startingTile = null;
 			return;
@@ -196,6 +201,7 @@ public class Map implements Serializable {
 	}
 
 	public void setEndingTile(PathTile endingTile) {
+		// EFFECTS: If the tile is correctly on the edge of the map, it is set as the ending tile
 		if(endingTile == null) {
 			this.endingTile = null;
 			return;
@@ -228,6 +234,8 @@ public class Map implements Serializable {
 		}
 	}
 	public static int[] locationToTileMap(Location location) {
+		// REQUIRES: location is not out of bounds from the map
+		// EFFECTS: Returns the tile map index corresponding to a domain Location coordinate
 		int x;
 		int y;
 		
