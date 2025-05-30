@@ -104,8 +104,14 @@ public abstract class Enemy {
 
 		Projectile.killProjectiles(this);
 	}
-	
+
+	// Tests written by Bedirhan Sakaoğlu
 	public void updateEnemy(long deltaTime) {
+		// REQUIRES: deltaTime is in units of one nanosecond i.e. 10^-9 of a second
+		// MODIFIES: Location of this enemy, the current path index of this enemy, the direction this enemy is facing,
+		//     		 slowdown cooldown of this enemy
+		// EFFECTS: Moves this enemy towards the path tile in the path array on the current path index, updates path
+		// 			index if the path is already reached, ends slow down effects if the timer is over
 		if(PlayModeManager.getInstance().getGameSpeed() == 0) return;
 		
 		double deltaSecond = deltaTime/1_000_000_000.0; //if causing problems can be removed
@@ -116,6 +122,7 @@ public abstract class Enemy {
 			endSlowDown();
 		}
 
+		if (!initialized) return;
 		double displacement = (this.speed * PlayModeManager.getInstance().getGameSpeed()) * deltaSecond; //get displacement
 		
 		PathTile nextTile = path.get(pathIndex+1); //get the location of next tile's centre
