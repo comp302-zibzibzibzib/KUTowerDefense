@@ -8,6 +8,16 @@ import domain.services.Utilities;
 import domain.tower.Tower;
 
 public class Map implements Serializable {
+	// Overview: This class represents game world in which towers can be placed on lots, enemies move through a path
+	// and projectiles go towards enemies
+	//Map objects can be saved and changed through the Map Editor
+	//A typical map consists 16x9 tiles which at least 4 of them are lot tiles, a starting tile at the bottom of the map, an ending tile at the top of the Map
+	// and a single connected series of pathTiles that start from the starting tile and end at ending tile
+
+	//Abstract Invariant: Starting and Ending tiles Must not be the same, starting tile is bottom of the map
+	//ending tile is at the top of the map, single connected lines of path tiles connect starting and ending tiles
+	//4 lot tiles must exist
+
 	private static final long serialVersionUID = 1L;
 	private List<Tower> towerList = new ArrayList<>();
 
@@ -20,25 +30,34 @@ public class Map implements Serializable {
 	public int width;
 	
 	private List<PathTile> path;
-	
-	public void resetTowers() {
-		for (Tower tower : towerList) {
-			tower.setTarget(null);
-		}
-	}
+	public Tile[][] tileMap; //THE REP
 
-	public List<PathTile> getPath() {
-		if (path == null) setPath();
-		return path;
-	}
+	//Representation Invariant:
+	// mapName != null
+	// height > 0 && width > 0
+	// staringTile != endingTile
+	// path.get(0) == startingTile
+	// path(path.size() - 1) == endingTile
+	// each path tile is only connected to two other tiles (except starting and ending tiles)
+	// top row of tileMap[][] must contain EndingTile &&
+	// bottom row of tileMap[][] must contain StartingTile
+	// Empty lotCount >= 4)
+	//
+ 	//
+	//Abstraction Function:
+	//AF(this) = a Map where:
+	// it has a mapName
+	// height and width must be higher than 1
+	// the start tile is located at tileMap[height - 1][x] for some x in between [0, 1, 2... ,width-1]
+	// the end tile is located at grid[0][y] for some y in between [0, 1, 2... ,width-1]
+    // there are at least 4 empty lot tiles
+    // there is a unique sequence of adjacent (N/S/E/W) pathTiles that form an unbranching path
+    // connecting the start and end tile
 
-	public void setPath() {
-		this.path = Utilities.findPath(this);
-	}
-	public Tile[][] tileMap;
-	
-	//Default map with all grass tiles
+
+	//constructors
 	public Map(String mapName, int height, int width) {
+		//EFFECTS: Creates default map with all grass tiles
 		this.mapName = mapName;
 		this.height = height;
 		this.width = width;
@@ -67,7 +86,66 @@ public class Map implements Serializable {
 		startingTile.setLocation(prevStart.location);
 		endingTile.setLocation(prevEnd.location);
 	}
-	
+
+	//methods
+	public boolean repOK(){
+		//copy of MapEditor.isValidMap()
+        if( height < 1 || width < 1 || mapName == null){
+			return false;
+		}
+
+		if(startingTile.equals(endingTile)){
+			return false;
+		}
+
+		List<PathTile> path = this.getPath();
+		if(path == null){
+			return false;
+		}
+
+		if (!path.get(0).equals(startingTile) || !path.get(path.size() - 1).equals(endingTile)){
+			return false;
+		}
+
+		int[] ds = locationToTileMap(endingTile.getLocation());
+		if (ds[0] != 0) return false;
+
+		int[] de = locationToTileMap(startingTile.getLocation());
+		if (de[0] != height - 1) return false;
+
+		int towerlessLotCount = 0;
+
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				if (tileMap[i][j].getType() == TileType.LOT) {
+					Lot l = (Lot) tileMap[i][j];
+					if (l.isEmpty()){
+						towerlessLotCount++;
+					}
+				}
+			}
+		}
+		if (towerlessLotCount < 4){
+			return false;
+		}
+
+		return true;
+    }
+
+	public void resetTowers() {
+		for (Tower tower : towerList) {
+			tower.setTarget(null);
+		}
+	}
+
+	public List<PathTile> getPath() {
+		if (path == null) setPath();
+		return path;
+	}
+
+	public void setPath() {
+		this.path = Utilities.findPath(this);
+	}
 	/**
 	 * Initializes map to empty grass tile map
 	 */
