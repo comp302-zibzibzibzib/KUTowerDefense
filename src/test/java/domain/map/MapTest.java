@@ -1,8 +1,6 @@
 package domain.map;
 
 import domain.tower.ArcherTower;
-import domain.tower.Tower;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -45,15 +43,6 @@ class MapTest {
     }
 
     @Test
-    void repOK() { // checks whether repOK correctly validates map
-        boolean truth = me.isValidMap(); // checks whether path is correct and empty lot count is more than or equal to 4
-        if (map.mapName == null || map.height < 1 || map.width < 1){ //checks whether height and width is more than 1 and mapName exits
-            truth = false;
-        }
-        assert (truth == map.repOK());
-    }
-
-    @Test
     void placeATreeTileOnGrass() {
         Tile firstTile = map.tileMap[0][6];
 
@@ -67,6 +56,7 @@ class MapTest {
         assertEquals(TileType.DECORATIVES, secondTile.type);
         assertInstanceOf(DecorativeTile.class, secondTile);
         assertEquals(DecorativeType.TREE1, ((DecorativeTile) secondTile).getDecorativeType());
+        assertTrue(map.repOK());
     }
 
     @Test
@@ -82,6 +72,7 @@ class MapTest {
 
         // First tile should be the same
         assertEquals(firstTile, secondTile);
+        assertTrue(map.repOK());
     }
 
     @Test
@@ -112,6 +103,7 @@ class MapTest {
         // Check if house is still there
         assertEquals(firstTile, secondTile);
         assertNull(((Lot)secondTile).getTower());
+        assertTrue(map.repOK());
     }
 
     @Test
@@ -135,6 +127,7 @@ class MapTest {
         assertNotEquals(castleLeftDown, castleLeftDown2);
         assertNotEquals(castleRightDown, castleRightDown2);
         assertNotEquals(castleRightUp, castleRightUp2);
+        assertTrue(map.repOK());
     }
 
     @Test
@@ -149,5 +142,6 @@ class MapTest {
 
         assertFalse(me.isValidMap());
         assertNull(((PathTile)pathDown).getUp());
+        assertTrue(map.repOK());
     }
 }

@@ -2,6 +2,7 @@ package domain.map;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import domain.services.Utilities;
@@ -90,28 +91,26 @@ public class Map implements Serializable {
 	//methods
 	public boolean repOK(){
 		//copy of MapEditor.isValidMap()
-        if( height < 1 || width < 1 || mapName == null){
+        if (height < 1 || width < 1 || mapName == null){
 			return false;
 		}
 
-		if(startingTile.equals(endingTile)){
-			return false;
+		if (startingTile != null && endingTile != null) {
+			if(startingTile.equals(endingTile)){
+				return false;
+			}
+
+			int[] ds = locationToTileMap(endingTile.getLocation());
+			if (ds[0] != 0) return false;
+
+			int[] de = locationToTileMap(startingTile.getLocation());
+			if (de[0] != height - 1) return false;
 		}
 
-		List<PathTile> path = this.getPath();
-		if(path == null){
-			return false;
+		List<PathTile> path = Utilities.findPath(this);
+		if (path != null) {
+			if (path.get(0) != startingTile || path.get(path.size() - 1) != endingTile) return false;
 		}
-
-		if (!path.get(0).equals(startingTile) || !path.get(path.size() - 1).equals(endingTile)){
-			return false;
-		}
-
-		int[] ds = locationToTileMap(endingTile.getLocation());
-		if (ds[0] != 0) return false;
-
-		int[] de = locationToTileMap(startingTile.getLocation());
-		if (de[0] != height - 1) return false;
 
 		int towerlessLotCount = 0;
 
