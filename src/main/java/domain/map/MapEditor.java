@@ -68,7 +68,9 @@ public class MapEditor implements Serializable {
 			tileToPlace = new Tile(type, newTileLocation);
 			if (type.equals(TileType.LOT)) {
 				lotCount++; // Special case: Increment lotCount for lot tiles (requirement for a valid map)
+				map.setLotCount(lotCount);
 				Lot lot = new Lot(newTileLocation); // IMPORTANT: Need some kind of wrapping to access the methods of LOT in-game, alternative implementations are welcomed.
+				lot.originallyEmpty(true);
 				tileToPlace = lot;
 			}
 
@@ -185,6 +187,7 @@ public class MapEditor implements Serializable {
 			Lot lot;
 			if (existingTile.getType() != TileType.LOT) {
 				lot = new Lot(existingTile.getLocation());
+				lot.originallyEmpty(false);
 			} else lot = (Lot) existingTile;
 
 	        lot.placeTower(tower,tType); 
@@ -287,9 +290,13 @@ public class MapEditor implements Serializable {
 				// When tower is removed a lot remains, since towers are normally placed on top of lots
 				lot.removeTower();
 				lotCount++;
+				map.setLotCount(lotCount);
 			}
 			else {
-				if(currentTile.type == TileType.LOT) lotCount--;
+				if(currentTile.type == TileType.LOT) {
+					lotCount--;
+					map.setLotCount(lotCount);
+				}
 				map.tileMap[y][x] = new Tile(currentTile.location); // Replace with grass tile
 			}
 

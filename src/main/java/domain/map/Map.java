@@ -29,7 +29,8 @@ public class Map implements Serializable {
 	
 	public int height;
 	public int width;
-	
+
+	private int lotCount = 0;
 	private List<PathTile> path;
 	public Tile[][] tileMap; //THE REP
 
@@ -112,19 +113,7 @@ public class Map implements Serializable {
 			if (path.get(0) != startingTile || path.get(path.size() - 1) != endingTile) return false;
 		}
 
-		int towerlessLotCount = 0;
-
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				if (tileMap[i][j].getType() == TileType.LOT) {
-					Lot l = (Lot) tileMap[i][j];
-					if (l.isEmpty()){
-						towerlessLotCount++;
-					}
-				}
-			}
-		}
-		if (towerlessLotCount < 4){
+		if (lotCount < 4){
 			return false;
 		}
 
@@ -246,6 +235,14 @@ public class Map implements Serializable {
 		y = (int) ((location.getYCoord() - Tile.tileLength * 0.5) / Tile.tileLength);
 		
 		return new int[]{y, x};
+	}
+
+	public int getLotCount() {
+		return lotCount;
+	}
+
+	public void setLotCount(int value) {
+		lotCount = value;
 	}
 }
 

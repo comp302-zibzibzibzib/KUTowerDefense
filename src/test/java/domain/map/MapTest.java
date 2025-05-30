@@ -89,6 +89,7 @@ class MapTest {
         // Check if the tower is there
         assertInstanceOf(Lot.class, secondTile);
         assertInstanceOf(ArcherTower.class, ((Lot)secondTile).getTower());
+        assertTrue(map.repOK());
     }
 
     @Test
