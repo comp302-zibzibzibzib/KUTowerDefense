@@ -55,13 +55,9 @@
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.10</version>
+                <version>0.0.8</version>
                 <configuration>
                     <mainClass>ui.KuTowerDefenseA</mainClass>
-                    <modules>
-            			<module>javafx.controls</module>
-            			<module>javafx.fxml</module>
-        			</modules>
                 </configuration>
             </plugin>
             
