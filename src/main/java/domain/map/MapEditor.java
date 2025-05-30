@@ -23,7 +23,7 @@ public class MapEditor implements Serializable {
 
 	public void placeTile(TileType type, int height, int width) {
 		try {
-			if (type == TileType.PATH || type == TileType.TOWER) {
+			if (type == TileType.PATH || type == TileType.TOWER || type == TileType.DECORATIVES) {
 			    System.out.println("Error: Wrong method. Use the correct placeTile overload!");
 			    return;
 			}
@@ -165,7 +165,7 @@ public class MapEditor implements Serializable {
 	        Tile existingTile = map.tileMap[y][x];
 
 	        // Check if trying to place a Tower on something other than a Lot
-	        if (existingTile != null && existingTile.getType() != TileType.GRASS) {
+	        if (existingTile != null && existingTile.getType() != TileType.GRASS && existingTile.getType() != TileType.LOT) {
 				System.out.println("Error: Cannot place tile on top of another tile. Remove it first.");
 				return; // Cancel placement
 			}
@@ -182,7 +182,11 @@ public class MapEditor implements Serializable {
 	        tower.setLocation(existingTile.getLocation());
 
 	        // Place the Tower inside the Lot
-	        Lot lot = new Lot(existingTile.getLocation());
+			Lot lot;
+			if (existingTile.getType() != TileType.LOT) {
+				lot = new Lot(existingTile.getLocation());
+			} else lot = (Lot) existingTile;
+
 	        lot.placeTower(tower,tType); 
 	        lot.setType(TileType.TOWER); 
 
@@ -279,8 +283,9 @@ public class MapEditor implements Serializable {
 			} 
 			else if (currentTile.type == TileType.TOWER) {
 				map.removeTower(((Lot) currentTile).getTower());
-				Lot lot = new Lot(currentTile.getLocation());
-				map.tileMap[y][x] = lot; // When tower is removed a lot remains, since towers are normally placed on top of lots
+				Lot lot = (Lot) map.tileMap[y][x];
+				// When tower is removed a lot remains, since towers are normally placed on top of lots
+				lot.removeTower();
 				lotCount++;
 			}
 			else {
@@ -298,7 +303,7 @@ public class MapEditor implements Serializable {
 		if (isStartingTilePlaced && isEndingTilePlaced && map.getStartingTile() != null
 				&& map.getEndingTile() != null) {
 			List<PathTile> reachablePath = Utilities.findPath(map);
-
+			if (reachablePath == null) return false;
 			//Ensure that there is a connected path and, first tile and last tiles are starting and ending tiles respectively. (Should work if A* is implemented correctly)
 			if(reachablePath.get(0).equals(map.getStartingTile()) && reachablePath.get(reachablePath.size()-1).equals(map.getEndingTile())) {
 				//Ensure that there are at least four tiles with empty lots
