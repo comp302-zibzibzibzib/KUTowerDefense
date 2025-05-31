@@ -61,8 +61,8 @@ public class MapEditorController {
 	public void removeTower(int x, int y) {
 		Tile tileToRemove = playModeManager.getCurrentMap().tileMap[y][x];
 		if (tileToRemove.getType() != TileType.TOWER) return;
-		mapEditor.removeTile(y, x);
 		player.updateGold((int) (((Lot)tileToRemove).getTower().getCost() * 0.6));
+		mapEditor.removeTile(y, x);
 	}
 	
 	public static void createStaticMap1() {

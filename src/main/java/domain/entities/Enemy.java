@@ -179,6 +179,9 @@ public abstract class Enemy {
 	public double getHitPoints() {
 		return hitPoints;
 	}
+	public void setHitPoint(double hp) {
+		this.hitPoints = hp;
+	}
 
 	public void updateHitPoints(double damage) {
 		this.hitPoints -= damage;

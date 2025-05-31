@@ -283,8 +283,7 @@ public class MapEditor implements Serializable {
 			} 
 			else if (currentTile.type == TileType.TOWER) {
 				map.removeTower(((Lot) currentTile).getTower());
-				Lot lot = (Lot) map.tileMap[y][x];
-				// When tower is removed a lot remains, since towers are normally placed on top of lots
+				Lot lot = (Lot) map.tileMap[y][x]; // When tower is removed a lot remains, since towers are normally placed on top of lots
 				lot.removeTower();
 				lotCount++;
 			}

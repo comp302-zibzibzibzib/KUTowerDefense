@@ -94,6 +94,9 @@ public class Projectile implements Serializable{
 	public Location getLocation() {
 		return location;
 	}
+	public void setLocation(Location location) {
+		this.location = location;
+	}
 	
 	public Enemy getTarget() {
 		return target;
