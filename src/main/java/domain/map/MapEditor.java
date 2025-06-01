@@ -21,6 +21,23 @@ public class MapEditor implements Serializable {
 		PlayModeManager.getInstance().setCurrentMap(map);
 	}
 
+	//Test written by Haydar Arda Subasi
+	//@Requires: TileType Enum declaring what kind of tile is going to be placed
+	// integers declaring the place of the new tile from tileMap[height][width]
+	// TileType must be CASTLE or LOT
+	// if TileType is LOT 0 <= height < map.height && 0 <= width < map.width
+	// If TileType is CASTLE 0 <= height < map.height - 1 && 0 <= width < map.width - 1
+	// If TileType is LOT tile the tile at map.tileMap[height][width] must be a grass tile
+	// If TileType is CASTLE, the tiles at map.tileMap[height][width], map.tileMap[height+1][width], map.tileMap[height][width+1], map.tileMap[height+1][width+1]
+	// must be grass tiles
+	//
+	//@Modifies:
+	// modifies this.map.tileMap[][] if placement is valid
+	//
+	//@Effects:
+	// Replaces the tile at map.tileMap[height][width] with a new LOT tile if TileType is LOT
+	// Replaces the tiles at map.tileMap[height][width], map.tileMap[height+1][width], map.tileMap[height][width+1], map.tileMap[height+1][width+1]
+	// with CASTLE tiles if TileType is CASTLE
 	public void placeTile(TileType type, int height, int width) {
 		try {
 			if (type == TileType.PATH || type == TileType.TOWER || type == TileType.DECORATIVES) {
@@ -43,6 +60,7 @@ public class MapEditor implements Serializable {
 			if (type.equals(TileType.CASTLE)) {
 				if (!(x >= 0 && y >= 0 && x + 1 < map.width && y + 1 < map.height)) {
 					System.out.println("Error: Please enter a valid location for Castle!"); // Invalid positions for Castle
+					return;
 				}
 				if (map.tileMap[y][x].type != TileType.GRASS || map.tileMap[y][x + 1].type != TileType.GRASS
 						|| map.tileMap[y + 1][x].type != TileType.GRASS
