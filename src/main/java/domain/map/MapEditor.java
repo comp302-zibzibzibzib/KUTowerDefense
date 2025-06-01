@@ -220,7 +220,7 @@ public class MapEditor implements Serializable {
 
             map.tileMap[y][x] = tile;
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Error: Array index out of bounds while placing tower!");
+            System.out.println("Error: Array index out of bounds while placing decorative :d!");
         }
     }
 
@@ -331,4 +331,5 @@ public class MapEditor implements Serializable {
 			Utilities.writeMap(map);
 		}
 	}
+
 }

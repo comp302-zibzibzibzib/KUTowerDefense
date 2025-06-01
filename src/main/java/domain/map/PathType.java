@@ -52,4 +52,5 @@ public enum PathType {
 	public String getAssetName() {
 		return assetName;
 	}
+	
 }

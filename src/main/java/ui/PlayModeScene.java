@@ -277,13 +277,13 @@ public class PlayModeScene extends AnimationTimer {
 			for(int j = 0; j < width;j++) {
 				assetName = PlayModeController.getAssetName(j, i);
 				
-				if (assetName.equals("hugetower")) {
+				if (assetName.equals("castle")) {
 					if (j + 1 < width && i + 1 < height) {
 						String r = PlayModeController.getAssetName(j + 1, i);
 						String d = PlayModeController.getAssetName(j, i + 1);
 						String dr = PlayModeController.getAssetName(j + 1, i + 1);
 
-						if (r.equals("hugetower") && d.equals("hugetower") && dr.equals("hugetower")) {
+						if (r.equals("castle") && d.equals("castle") && dr.equals("castle")) {
 							castleMaker(map, i, j);
 							continue; 
 						}
