@@ -11,11 +11,10 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -23,11 +22,11 @@ import javafx.scene.text.FontWeight;
 // However if they don't save the options won't persist for other runs, as expected
 public class OptionScene {
 	private static final String SPRITE_PATH = "/Images/HUD/";
-	
+
 	private KuTowerDefenseA app;
 	private VBox vbox;
 	private Scene scene;
-	
+
 	private Image buttonBlue = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb.png"));
 	private Image buttonPressed = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb_pressed.png"));
 	private Image buttonDisabled = new Image(getClass().getResourceAsStream(SPRITE_PATH + "disableb.png"));
@@ -35,37 +34,40 @@ public class OptionScene {
 	private Image buttonHover = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb.png"));
 	private Image buttonHover3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb3.png"));
 	private Image buttonBlue3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb3.png"));
-	
+
 	private class OptionHBoxInt extends HBox {
 		Label label;
 		Label value;
 		Button increment;
 		Button decrement;
-		
+
 		public Supplier<Integer> getter;
 		public Consumer<Integer> setter;
-		
+
 		public OptionHBoxInt(String text, Supplier<Integer> getter, Consumer<Integer> setter, int min, int max, int incrementAmount) {
 			this.getter = getter;
 			this.setter = setter;
 			createOption(text, getter, setter, min, max, incrementAmount);
 		}
-		
+
 		private void createOption(String text, Supplier<Integer> getter, Consumer<Integer> setter, int min, int max, int incrementAmount) {
 			label = new Label(text);
 			value = new Label(String.valueOf(getter.get()));
 			StackPane labelPane = createLabelStackPane(buttonBlue3, label, 20);
 			StackPane valuePane = createLabelStackPane(buttonBlue3, value, 30);
-			
+
 			increment = new Button();
 			increment.setBackground(null);
 			StackPane incrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label(">"), 30, 50);
 			increment.setGraphic(incrementPane);
+			configureButton(increment);
+
 			decrement = new Button();
 			decrement.setBackground(null);
 			StackPane decrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label("<"), 30, 50);
 			decrement.setGraphic(decrementPane);
-			
+			configureButton(decrement);
+
 			increment.setOnAction(e -> {
 				int current = getter.get();
 				if (current + incrementAmount <= max) {
@@ -73,7 +75,7 @@ public class OptionScene {
 					value.setText(String.valueOf(getter.get()));
 				}
 			});
-			
+
 			decrement.setOnAction(e -> {
 				int current = getter.get();
 				if (current - incrementAmount >= min) {
@@ -81,47 +83,51 @@ public class OptionScene {
 					value.setText(String.valueOf(getter.get()));
 				}
 			});
-			
+
 			this.getChildren().addAll(labelPane, decrement, valuePane, increment);
-			
+
 			this.setAlignment(Pos.CENTER);
 		}
-		
+
 		public Label getValueLabel() {
 			return value;
 		}
 	}
-	
+
 	private class OptionHBoxDouble extends HBox {
 		Label label;
 		Label value;
 		Button increment;
 		Button decrement;
-		
+
 		public Supplier<Double> getter;
 		public Consumer<Double> setter;
-		
+
 		public OptionHBoxDouble(String text, Supplier<Double> getter, Consumer<Double> setter, double min, double max, double incrementAmount) {
 			this.getter = getter;
 			this.setter = setter;
 			createOption(text, getter, setter, min, max, incrementAmount);
+			setMaxWidth(Double.MAX_VALUE);
 		}
-		
+
 		private void createOption(String text, Supplier<Double> getter, Consumer<Double> setter, double min, double max, double incrementAmount) {
 			label = new Label(text);
 			value = new Label(String.valueOf(getter.get()));
 			StackPane labelPane = createLabelStackPane(buttonBlue3, label, 20);
 			StackPane valuePane = createLabelStackPane(buttonBlue3, value, 30);
-			
+
 			increment = new Button();
 			increment.setBackground(null);
 			StackPane incrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label(">"), 30, 50);
 			increment.setGraphic(incrementPane);
+			configureButton(increment);
+
 			decrement = new Button();
 			decrement.setBackground(null);
 			StackPane decrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label("<"), 30, 50);
 			decrement.setGraphic(decrementPane);
-			
+			configureButton(decrement);
+
 			increment.setOnAction(e -> {
 				double current = getter.get();
 				if (current + incrementAmount <= max) {
@@ -129,7 +135,7 @@ public class OptionScene {
 					value.setText(String.valueOf(getter.get()));
 				}
 			});
-			
+
 			decrement.setOnAction(e -> {
 				double current = getter.get();
 				if (current - incrementAmount >= min) {
@@ -137,16 +143,19 @@ public class OptionScene {
 					value.setText(String.valueOf(getter.get()));
 				}
 			});
-			
+
 			this.getChildren().addAll(labelPane, decrement, valuePane, increment);
 			this.setAlignment(Pos.CENTER);
+
+			setHgrow(label, Priority.ALWAYS);
+			label.setMaxWidth(Double.MAX_VALUE);
 		}
-		
+
 		public Label getValueLabel() {
 			return value;
 		}
 	}
-	
+
 	public OptionScene(KuTowerDefenseA app, StackPane root) {
 		this.app = app;
 		initializeScene(root);
@@ -155,64 +164,80 @@ public class OptionScene {
 	public Scene getScene() {
 		return scene;
 	}
-	
+
+	private void configureButton(Button button) {
+		StackPane graphic = (StackPane) button.getGraphic();
+		button.setStyle("-fx-background-color: transparent; -fx-padding: 0;");
+		button.setBackground(Background.EMPTY);
+		button.setPickOnBounds(false);
+		button.prefWidthProperty().bind(graphic.widthProperty());
+		button.prefHeightProperty().bind(graphic.heightProperty());
+		button.minWidthProperty().bind(graphic.widthProperty());
+		button.minHeightProperty().bind(graphic.heightProperty());
+		button.maxWidthProperty().bind(graphic.widthProperty());
+		button.maxHeightProperty().bind(graphic.heightProperty());
+	}
+
 	private StackPane createButtonStackPane(Image image, Image hoverImage, Image clickedImage, Label label, int fontSize, int width) {
 		ImageView view = new ImageView(image);
 		view.setFitHeight(50);
-	    view.setFitWidth(width);
-	    
-	    Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
-	    label.setFont(font);
-	    
-	    StackPane pane = new StackPane();
-	    pane.getChildren().addAll(view, label);
-	    
-	    label.setTranslateY(-5);
-	    
-	    pane.setOnMouseEntered(e -> { view.setImage(hoverImage); });
-	    pane.setOnMouseExited(e -> { view.setImage(image); });
-	    
-	    pane.setOnMousePressed(e -> { view.setImage(clickedImage); });
-	    pane.setOnMouseReleased(e -> { 
-	    	if (pane.isHover()) {
-	    		view.setImage(hoverImage); 
-	    	} else {
-	    		view.setImage(image); 
-	    	}
-	    });
-	    
-	    return pane;
+		view.setFitWidth(width);
+
+		Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
+		label.setFont(font);
+
+		StackPane pane = new StackPane();
+		pane.getChildren().addAll(view, label);
+
+		label.setTranslateY(-5);
+
+		pane.setOnMouseEntered(e -> { view.setImage(hoverImage); });
+		pane.setOnMouseExited(e -> { view.setImage(image); });
+
+		pane.setOnMousePressed(e -> { view.setImage(clickedImage); });
+		pane.setOnMouseReleased(e -> {
+			if (pane.isHover()) {
+				view.setImage(hoverImage);
+			} else {
+				view.setImage(image);
+			}
+		});
+
+		pane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+
+		return pane;
 	}
-	
+
 	private StackPane createLabelStackPane(Image image, Label label, int fontSize) {
 		ImageView view = new ImageView(image);
 		view.setFitHeight(50);
-	    view.setFitWidth(150);
-	    
-	    Font font = Font.font("Calibri", fontSize);
-	    label.setFont(font);
-	    
-	    StackPane pane = new StackPane();
-	    pane.getChildren().addAll(view, label);
-	    
-	    label.setTranslateY(-5);
-	    
-	    return pane;
+		view.setFitWidth(150);
+
+		Font font = Font.font("Calibri", fontSize);
+		label.setFont(font);
+
+		StackPane pane = new StackPane();
+		pane.getChildren().addAll(view, label);
+
+		label.setTranslateY(-5);
+
+		return pane;
 	}
-	
+
 	private void initializeScene(StackPane root) {
 		Image backgroundImage = new Image(getClass().getResourceAsStream("/Images/options_background.png"));
-        ImageView backgroundView = new ImageView(backgroundImage);
-        
-        backgroundView.setPreserveRatio(false);
-        backgroundView.fitWidthProperty().bind(root.widthProperty());
-        backgroundView.fitHeightProperty().bind(root.heightProperty());
-        
-		
+		ImageView backgroundView = new ImageView(backgroundImage);
+
+		backgroundView.setPreserveRatio(false);
+		backgroundView.fitWidthProperty().bind(root.widthProperty());
+		backgroundView.fitHeightProperty().bind(root.heightProperty());
+
+
 		vbox = new VBox(5);
 		vbox.setAlignment(Pos.CENTER);
 		vbox.setPadding(new Insets(20));
-		
+		vbox.setFillWidth(true);
+
 		GameOptionsController.initializeGameOptions();
 		vbox.getChildren().add(new OptionHBoxInt("Player Lives", () -> GameOptionsController.getStartingLives(),
 				val -> GameOptionsController.setStartingLives(val), 10, 50, 5));
@@ -222,14 +247,15 @@ public class OptionScene {
 				val -> GameOptionsController.setEnemySpeed(val), 1.0, 10.0, 1.0));
 		vbox.getChildren().add(new OptionHBoxInt("Wave Number", () -> GameOptionsController.getNumberOfWaves(),
 				val -> GameOptionsController.setNumberOfWaves(val), 2, 20, 1));
-		
+
 		Button saveButton = new Button();
 		saveButton.setBackground(null);
 		saveButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Save"), 20, 100));
 		saveButton.setOnAction(e -> {
 			GameOptionsController.saveOptions();
 		});
-		
+		configureButton(saveButton);
+
 		Button resetButton = new Button();
 		resetButton.setBackground(null);
 		resetButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Reset"), 20, 100));
@@ -248,18 +274,36 @@ public class OptionScene {
 				}
 			}
 		});
-		
+		configureButton(resetButton);
+
 		Button mainMenuButton = new Button();
 		mainMenuButton.setBackground(null);
 		mainMenuButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Main Menu"), 20, 150));
 		mainMenuButton.setOnAction(e -> {
 			app.showMainMenu(new StackPane());
 		});
-		
-		vbox.getChildren().addAll(saveButton, resetButton, mainMenuButton);
-		
-		root.getChildren().addAll(backgroundView, vbox);
-		
-		scene = new Scene(root, app.getPrimaryStage().getWidth(), app.getPrimaryStage().getHeight() - 27);
+		configureButton(mainMenuButton);
+
+		vbox.setFillWidth(true);
+		ScrollPane scrollPane = new ScrollPane(vbox);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+		HBox buttonsBox = new HBox(resetButton, saveButton, mainMenuButton);
+		buttonsBox.setAlignment(Pos.BOTTOM_CENTER);
+		buttonsBox.setSpacing(20);
+		buttonsBox.setPadding(new Insets(10, 0, 20, 0));
+
+		VBox fullLayout = new VBox();
+		fullLayout.setSpacing(10);
+		fullLayout.getChildren().addAll(scrollPane, buttonsBox);
+		VBox.setVgrow(scrollPane, Priority.ALWAYS);
+
+		root.getChildren().addAll(backgroundView, fullLayout);
+
+		scene = new Scene(root, app.getPrimaryStage().getWidth(), app.getPrimaryStage().getHeight());
+		//scene.getStylesheets().add(getClass().getResource("/ui/styles/style.css").toExternalForm());
 	}
 }

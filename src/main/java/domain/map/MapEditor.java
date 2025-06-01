@@ -331,5 +331,4 @@ public class MapEditor implements Serializable {
 			Utilities.writeMap(map);
 		}
 	}
-
 }
