@@ -85,10 +85,14 @@ public abstract class Tower implements Serializable {
     	            lastTarget = e;
    	        	}
    	    	}
+
    	    }
 		target = lastTarget;
     }
-    
+    //@Requires: time difference between each update call in seconds (a nanosecond value must be divided by 10^9)
+	//@Modifies: this towers timeSinceLastShot and the enemy it targets if there is change from targetEnemy()
+	//@Effects: Increases timeSinceLastShot by dt and resets it if its above firePeriod and
+	// if there is an enemy the tower can target and timeSinceLastShot >= firePeriod creates the projectile the tower will fire
     public Projectile update(double dt) {
 		targetEnemy();
         timeSinceLastShot += dt; //Tracks how much time has passed since last creation
