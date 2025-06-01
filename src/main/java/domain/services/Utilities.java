@@ -40,9 +40,16 @@ public final class Utilities {
 	/**
 	 * 
 	 * @param map
-	 * @return Returns a List of PathTile objects sorted from starting tile to ending tile of given map 
+	 * Tests written by Begüm Bıçakcı
+	 * @return Returns a List of PathTile objects sorted from starting tile to ending tile of given map
+	 * @author Bedirhan Sakaoğlu
 	 */
 	public static List<PathTile> findPath(Map map) {
+		// REQUIRES: requires nothing.
+		// MODIFIES: modifies nothing.
+		// EFFECTS: returns a list containing path tiles from map.start to map.end if the given map has a valid path,
+		//			else returns null.
+
 		// MAL BEDO YANLIŞ YAPMIŞ VİSİT İŞARETLE
 		PathTile start = map.startingTile;
 		PathTile end = map.endingTile;
