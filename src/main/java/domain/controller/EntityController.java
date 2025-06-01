@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
+import domain.entities.Effect;
 import domain.entities.Enemy;
 import domain.entities.Goblin;
 import domain.entities.Group;
@@ -140,6 +141,10 @@ class MovementTimer extends AnimationTimer {
             }
 		}
 		
+		List<Effect> effectList = new ArrayList<Effect>(Effect.getEffects());
+		for (Effect effect : effectList) {
+			effect.updateEffect(deltaTime);    		
+		}		
 		if (Enemy.getAllEnemies().isEmpty()) {
 			stop();
 			return;

@@ -18,9 +18,10 @@ public class Effect {
 	
 	}
 	
-	public void updateEffect(double dt) {
+	public void updateEffect(long dt) {
+		double deltaSecond = dt/1_000_000_000.0; 
 		if(PlayModeManager.getInstance().getGameSpeed() == 0) return;
-		timeSinceCreation += dt;
+		timeSinceCreation += deltaSecond;
 		if (timeSinceCreation >= 1.0) {
 			effects.remove(this);
 		}
