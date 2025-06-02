@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import domain.controller.GameOptionsController;
-import domain.kutowerdefense.GameOptions;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -228,15 +227,7 @@ public class OptionScene {
 	}
 
 	private void addDiscreteOptions(Pane pane) {
-//		pane.getChildren().clear();
-//		pane.getChildren().add(new OptionDiscrete<Integer>("Player Lives", GameOptionsController::getStartingLives,
-//				GameOptionsController::setStartingLives, 10, 50, 5));
-//		pane.getChildren().add(new OptionDiscrete<Integer>("Starting Gold", GameOptionsController::getStartingGold,
-//				GameOptionsController::setStartingGold, 100, 400, 50));
-//		pane.getChildren().add(new OptionDiscrete<Double>("Enemy Speed", GameOptionsController::getEnemySpeed,
-//				GameOptionsController::setEnemySpeed, 1.0, 10.0, 1.0));
-//		pane.getChildren().add(new OptionDiscrete<Integer>("Wave Number", GameOptionsController::getNumberOfWaves,
-//				GameOptionsController::setNumberOfWaves, 2, 20, 1));
+		// temporarily unavailable
 	}
 
 	private void addSliderOptions(Pane pane) {
@@ -256,13 +247,13 @@ public class OptionScene {
 			if (constraints[0] instanceof Integer) {
 				option = new OptionSlider<Integer>(name, () -> {
                     try {
-                        return (Integer) field.get(GameOptions.getInstance());
+                        return (Integer) field.get(GameOptionsController.options());
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
                 }, (Integer val) -> {
                     try {
-						field.set(GameOptions.getInstance(), val);
+						field.set(GameOptionsController.options(), val);
                     } catch (IllegalAccessException e) {
                         throw new RuntimeException(e);
                     }
@@ -270,13 +261,13 @@ public class OptionScene {
 			} else if (constraints[0] instanceof Double){
 				option = new OptionSlider<Double>(name, () -> {
 					try {
-						return (Double) field.get(GameOptions.getInstance());
+						return (Double) field.get(GameOptionsController.options());
 					} catch (IllegalAccessException e) {
 						throw new RuntimeException(e);
 					}
 				}, (Double val) -> {
 					try {
-						field.set(GameOptions.getInstance(), val);
+						field.set(GameOptionsController.options(), val);
 					} catch (IllegalAccessException e) {
 						throw new RuntimeException(e);
 					}
@@ -287,16 +278,6 @@ public class OptionScene {
 				pane.getChildren().add(option);
 			}
 		}
-
-
-//		pane.getChildren().add(new OptionSlider<Integer>("Player Lives", GameOptionsController::getStartingLives,
-//				GameOptionsController::setStartingLives, 10, 50, 5));
-//		pane.getChildren().add(new OptionSlider<Integer>("Starting Gold", GameOptionsController::getStartingGold,
-//				GameOptionsController::setStartingGold, 100, 400, 50));
-//		pane.getChildren().add(new OptionSlider<Double>("Enemy Speed", GameOptionsController::getEnemySpeed,
-//				GameOptionsController::setEnemySpeed, 1.0, 10.0, 1.0));
-//		pane.getChildren().add(new OptionSlider<Integer>("Wave Number", GameOptionsController::getNumberOfWaves,
-//				GameOptionsController::setNumberOfWaves, 2, 20, 1));
 	}
 
 	private void initializeScene(StackPane root) {

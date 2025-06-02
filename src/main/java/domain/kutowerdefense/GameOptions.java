@@ -36,7 +36,7 @@ public class GameOptions implements Serializable {
 	private int knightReward;
 
 	// Projectiles
-	private double arrowDagame;
+	private double arrowDamage;
 	private double artilleryDamage;
 	private double spellDamage;
 	private double aoeRange;
@@ -116,7 +116,7 @@ public class GameOptions implements Serializable {
 		knightSpeed = 3.0;
 		knightReward = 20;
 
-		arrowDagame = 5.0;
+		arrowDamage = 5.0;
 		artilleryDamage = 20.0;
 		spellDamage = 10.0;
 
@@ -278,12 +278,12 @@ public class GameOptions implements Serializable {
 		this.knightReward = knightReward;
 	}
 
-	public double getArrowDagame() {
-		return arrowDagame;
+	public double getArrowDamage() {
+		return arrowDamage;
 	}
 
-	public void setArrowDagame(double arrowDagame) {
-		this.arrowDagame = arrowDagame;
+	public void setArrowDamage(double arrowDamage) {
+		this.arrowDamage = arrowDamage;
 	}
 
 	public double getArtilleryDamage() {

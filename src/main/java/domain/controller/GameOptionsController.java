@@ -40,7 +40,7 @@ public class GameOptionsController {
 		optionRanges.put("Knight Reward", new Number[]{10, 100, 1});
 		optionRanges.put("Arrow Damage", new Number[]{5.0, 15.0, 1.0});
 		optionRanges.put("Artillery Damage", new Number[]{25.0, 40.0, 1.0});
-		optionRanges.put("Spell Damage", new Number[]{15.0, 25.0, 5.0});
+		optionRanges.put("Spell Damage", new Number[]{15.0, 25.0, 1.0});
 		optionRanges.put("AOE Range", new Number[]{0.5, 3.0, 0.5});
 		optionRanges.put("Archer Cost", new Number[]{10, 200, 5});
 		optionRanges.put("Artillery Cost", new Number[]{10, 300, 5});
@@ -107,5 +107,9 @@ public class GameOptionsController {
 
 	public static HashMap<String, Field> getOptionFieldMap() {
 		return fieldMap;
+	}
+
+	public static GameOptions options() {
+		return GameOptions.getInstance();
 	}
 }
