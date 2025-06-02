@@ -1,6 +1,7 @@
 package ui;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -21,10 +22,11 @@ import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
-// If player exits menu without saving the options still persist during runtime Need Fix
-// However if they don't save the options won't persist for other runs, as expected
 public class OptionScene {
 	private static final String SPRITE_PATH = "/Images/HUD/";
+
+	private final List<String> optionCategories = Arrays.asList("Spawning", "Player", "Enemies", "Projectile", "Towers");
+	private final List<Integer> titleIndicies = Arrays.asList(0, 10, 12, 18, 22);
 
 	private KuTowerDefenseA app;
 	private VBox vbox;
@@ -37,6 +39,7 @@ public class OptionScene {
 	private Image buttonHover = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb.png"));
 	private Image buttonHover3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb3.png"));
 	private Image buttonBlue3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb3.png"));
+	private Image blueRibbon = new Image(getClass().getResourceAsStream(SPRITE_PATH + "ribbon_blue.png"));
 
 	private abstract static class Option<T extends Number> extends HBox {
 		Label nameLabel;
@@ -239,6 +242,13 @@ public class OptionScene {
 	private void addSliderOptions(Pane pane) {
 		pane.getChildren().clear();
 		for (String name : GameOptionsController.getOptionNames()) {
+			int index = GameOptionsController.getOptionNames().indexOf(name);
+			if (titleIndicies.contains(index)) {
+				int titleIndex = titleIndicies.indexOf(index);
+				StackPane titlePane = createLabelStackPane(blueRibbon, new Label(optionCategories.get(titleIndex)), 20, 150);
+				pane.getChildren().add(titlePane);
+			}
+
 			final Number[] constraints = GameOptionsController.getOptionConstraints(name);
 			Field field = GameOptionsController.getGameOptionField(name);
 			field.setAccessible(true);

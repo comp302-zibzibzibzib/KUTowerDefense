@@ -11,41 +11,43 @@ public class GameOptions implements Serializable {
     private static final long serialVersionUID = 1L;
     private static GameOptions instance;
 
+	// Spawning
 	private int numberOfWaves;
 	private int maxGroupPerWave;
 	private int minGroupPerWave;
 	private int maxEnemiesPerGroup;
 	private int minEnemiesPerGroup;
+	private double knightPercentage;
+	private double goblinPercentage;
 	private double waveDelay;
 	private double groupDelay;
 	private double enemyDelay;
 
-	private double knightPercentage;
-	private double goblinPercentage;
-
+	// Player
 	private int startingPlayerGold;
     private int startingPlayerLives;
 
+	// Enemies
 	private double goblinHealth;
 	private double goblinSpeed;
 	private int golbinReward;
-
 	private double knightHealth;
 	private double knightSpeed;
 	private int knightReward;
 
+	// Projectiles
 	private double arrowDagame;
 	private double artilleryDamage;
 	private double spellDamage;
+	private double aoeRange;
 
+	// Towers
 	private int archerCost;
 	private int artilleryCost;
 	private int mageCost;
-
 	private double archerRange;
 	private double artilleryRange;
 	private double mageRange;
-	private double aoeRange;
     
     public static GameOptions getDefaultOptions() {
     	return new GameOptions();

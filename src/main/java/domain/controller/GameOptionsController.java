@@ -14,8 +14,8 @@ public class GameOptionsController {
 	private static final List<String> optionNames = Arrays.asList("Wave Number", "Max Group per Wave",
 			"Min Group per Wave", "Max Enemies per Group", "Min Enemies per Group", "Wave Delay", "Group Delay", "Enemy Delay",
 			"Knight Percentage", "Goblin Percentage", "Player Gold", "Player Lives", "Goblin Health", "Goblin Speed", "Goblin Reward",
-			"Knight Health", "Knight Speed", "Knight Reward", "Arrow Damage", "Artillery Damage", "Spell Damage", "Archer Cost",
-			"Artillery Cost", "Mage Cost", "Archer Range", "Artillery Range", "Mage Range", "AOE Range");
+			"Knight Health", "Knight Speed", "Knight Reward", "Arrow Damage", "Artillery Damage", "Spell Damage", "AOE Range",
+			"Archer Cost", "Artillery Cost", "Mage Cost", "Archer Range", "Artillery Range", "Mage Range");
 
 	private static final HashMap<String, Number[]> optionRanges = new HashMap<>();
 
@@ -41,13 +41,13 @@ public class GameOptionsController {
 		optionRanges.put("Arrow Damage", new Number[]{5.0, 15.0, 1.0});
 		optionRanges.put("Artillery Damage", new Number[]{25.0, 40.0, 1.0});
 		optionRanges.put("Spell Damage", new Number[]{15.0, 25.0, 5.0});
+		optionRanges.put("AOE Range", new Number[]{0.5, 3.0, 0.5});
 		optionRanges.put("Archer Cost", new Number[]{10, 200, 5});
 		optionRanges.put("Artillery Cost", new Number[]{10, 300, 5});
 		optionRanges.put("Mage Cost", new Number[]{10, 400, 5});
 		optionRanges.put("Archer Range", new Number[]{1.0, 10.0, 0.1});
 		optionRanges.put("Artillery Range", new Number[]{1.0, 10.0, 0.1});
 		optionRanges.put("Mage Range", new Number[]{1.0, 10.0, 0.1});
-		optionRanges.put("AOE Range", new Number[]{0.5, 3.0, 0.5});
 	}
 
 	private static final HashMap<String, Field> fieldMap = new HashMap<>();
