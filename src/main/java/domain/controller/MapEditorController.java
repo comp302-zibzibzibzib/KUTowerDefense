@@ -16,6 +16,7 @@ import domain.map.PathType;
 import domain.map.Tile;
 import domain.map.TileType;
 import domain.map.TowerType;
+import domain.services.Utilities;
 import domain.tower.TowerFactory;
 
 public class MapEditorController {
@@ -33,8 +34,8 @@ public class MapEditorController {
 	
 	private MapEditorController() {
 		forcedMap = new Map(9,16);
-		//Map currentMap = playModeManager.getCurrentMap();
-		mapEditor = new MapEditor(forcedMap);
+		Map currentMap = playModeManager.getCurrentMap();
+		mapEditor = new MapEditor(currentMap);
 		
 		for(PathType path : pathSet) {
 			paths.put(path.getAssetName(), path);
@@ -85,8 +86,8 @@ public class MapEditorController {
 	public void removeTower(int x, int y) {
 		Tile tileToRemove = playModeManager.getCurrentMap().tileMap[y][x];
 		if (tileToRemove.getType() != TileType.TOWER) return;
-		mapEditor.removeTile(y, x);
 		player.updateGold((int) (((Lot)tileToRemove).getTower().getCost() * 0.6));
+		mapEditor.removeTile(y, x);
 	}
 	
 	public void forcePlaceTile(String name, int x, int y) {

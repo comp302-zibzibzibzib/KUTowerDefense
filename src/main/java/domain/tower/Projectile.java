@@ -16,6 +16,7 @@ public class Projectile implements Serializable{
 	private int id;
 
 	protected double damage;
+	protected double angle;
 	protected AttackType attackType;
 	protected Enemy target;
 	protected Location location;
@@ -46,6 +47,9 @@ public class Projectile implements Serializable{
 
 		double xUnit = deltaX / distance;
 		double yUnit = deltaY / distance;
+
+		double angleRadians = Math.atan2(yUnit, xUnit);
+		angle = Math.toDegrees(angleRadians);
 
 		location.xCoord += xUnit * displacement;
 		location.yCoord += yUnit * displacement;
@@ -127,5 +131,9 @@ public class Projectile implements Serializable{
 
 	public static void resetProjectiles() {
 		projectiles = new ArrayList<Projectile>();
+	}
+
+	public double getAngle() {
+		return angle;
 	}
 }

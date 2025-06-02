@@ -47,7 +47,7 @@ class SpawnerLoopTimer extends AnimationTimer {
             return;
         }
 
-        double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
+        double deltaTime = (double) (now - lastUpdate) / 1_000_000_000.0;
         lastUpdate = now;
         
         totalElapsed += deltaTime * PlayModeManager.getInstance().getGameSpeed();
@@ -92,21 +92,6 @@ class SpawnerLoopTimer extends AnimationTimer {
             }
         }
     }
-    
-    private void testFunctionality() {
-    	PlayModeManager man = PlayModeManager.getInstance();
-    	
-    	boolean passed = true;
-    	for (Enemy enemy : Enemy.getAllEnemies()) {
-			if (!enemy.getLocation().equals(man.getCurrentMap().getStartingTile().getLocation())
-					&& enemy.isInitialized()) {
-				passed = false;
-				break;
-			}
-		}
-    	if (passed) System.out.println("Initialization Test - PASSED!");
-		else System.out.println("Initialization Test - PASSED!");
-    }
 }
 
 class MovementTimer extends AnimationTimer {
@@ -134,10 +119,6 @@ class MovementTimer extends AnimationTimer {
 			if (!enemy.isInitialized()) continue;
 
 			enemy.updateEnemy(deltaTime);
-			
-			if(enemy.getPathIndex() == Enemy.path.size()-1) {
-            	System.out.printf("Enemy %d: Reached End%n", enemy.getEnemyID());
-            }
 		}
 		
 		if (Enemy.getAllEnemies().isEmpty()) {

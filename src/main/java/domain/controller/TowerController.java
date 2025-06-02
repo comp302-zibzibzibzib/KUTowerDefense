@@ -74,6 +74,10 @@ public class TowerController {
 		return Projectile.getProjectiles().get(i).getLocation().getYCoord();
 	}
 
+	public static double getProjectileAngle(int i) {
+		return Projectile.getProjectiles().get(i).getAngle();
+	}
+
 	public static void startTowerLogic() {
 		towerLoop.start();
 		Projectile.resetProjectiles();

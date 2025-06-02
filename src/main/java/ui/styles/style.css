@@ -1,9 +1,0 @@
-node.setStyle(
-    "-fx-background-repeat: no-repeat;" +
-    "-fx-background-size: contain;" +
-    "-fx-background-color: lightblue;" +
-    "-fx-border-color: lightgray;" +
-    "-fx-border-width: 1px;" +
-    "-fx-min-height: 30px;" +
-    "-fx-min-width: 20px;"
-);

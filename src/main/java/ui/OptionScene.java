@@ -1,10 +1,12 @@
 package ui;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import domain.controller.GameOptionsController;
+import domain.kutowerdefense.GameOptions;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -12,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -35,86 +38,77 @@ public class OptionScene {
 	private Image buttonHover3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "hoverb3.png"));
 	private Image buttonBlue3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb3.png"));
 
-	private class OptionHBoxInt extends HBox {
-		Label label;
-		Label value;
-		Button increment;
-		Button decrement;
+	private abstract static class Option<T extends Number> extends HBox {
+		Label nameLabel;
+		Label valueLabel;
 
-		public Supplier<Integer> getter;
-		public Consumer<Integer> setter;
-
-		public OptionHBoxInt(String text, Supplier<Integer> getter, Consumer<Integer> setter, int min, int max, int incrementAmount) {
-			this.getter = getter;
-			this.setter = setter;
-			createOption(text, getter, setter, min, max, incrementAmount);
-		}
-
-		private void createOption(String text, Supplier<Integer> getter, Consumer<Integer> setter, int min, int max, int incrementAmount) {
-			label = new Label(text);
-			value = new Label(String.valueOf(getter.get()));
-			StackPane labelPane = createLabelStackPane(buttonBlue3, label, 20);
-			StackPane valuePane = createLabelStackPane(buttonBlue3, value, 30);
-
-			increment = new Button();
-			increment.setBackground(null);
-			StackPane incrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label(">"), 30, 50);
-			increment.setGraphic(incrementPane);
-			configureButton(increment);
-
-			decrement = new Button();
-			decrement.setBackground(null);
-			StackPane decrementPane = createButtonStackPane(buttonBlue, buttonHover, buttonPressed, new Label("<"), 30, 50);
-			decrement.setGraphic(decrementPane);
-			configureButton(decrement);
-
-			increment.setOnAction(e -> {
-				int current = getter.get();
-				if (current + incrementAmount <= max) {
-					setter.accept(current + incrementAmount);
-					value.setText(String.valueOf(getter.get()));
-				}
-			});
-
-			decrement.setOnAction(e -> {
-				int current = getter.get();
-				if (current - incrementAmount >= min) {
-					setter.accept(current - incrementAmount);
-					value.setText(String.valueOf(getter.get()));
-				}
-			});
-
-			this.getChildren().addAll(labelPane, decrement, valuePane, increment);
-
-			this.setAlignment(Pos.CENTER);
-		}
+		public Consumer<T> setter;
+		public Supplier<T> getter;
 
 		public Label getValueLabel() {
-			return value;
+			return valueLabel;
 		}
 	}
 
-	private class OptionHBoxDouble extends HBox {
-		Label label;
-		Label value;
+	private class OptionSlider<T extends Number> extends Option<T> {
+		Slider slider;
+		boolean isResetting = false;
+
+		public OptionSlider(String name, Supplier<T> getter, Consumer<T> setter, T min, T max, T step) {
+			setSpacing(10);
+			setAlignment(Pos.CENTER);
+			setPadding(new Insets(5));
+
+			this.setter = setter;
+			this.getter = getter;
+
+			nameLabel = new Label(name);
+
+			if (step instanceof Integer) {
+				valueLabel = new Label(String.valueOf(getter.get()));
+			} else if (step instanceof Double) {
+				valueLabel = new Label(String.format("%.1f", getter.get().doubleValue()));
+			}
+
+			StackPane nameStack = createLabelStackPane(buttonBlue3, nameLabel, 15, 200);
+			StackPane valueStack = createLabelStackPane(buttonBlue3, valueLabel, 25, 100);
+
+			slider = new Slider(min.doubleValue(), max.doubleValue(), getter.get().doubleValue());
+			slider.setMajorTickUnit(step.doubleValue());
+			slider.setMinorTickCount(0);
+			slider.setShowTickMarks(true);
+
+			slider.valueProperty().addListener((obs, oldVal, newVal) -> {
+				if (isResetting) return; // JavaFX hates me and I hate her back
+				double roundedValue = Math.round(newVal.doubleValue() / step.doubleValue()) * step.doubleValue();
+				if (step instanceof Integer) {
+					setter.accept((T) Integer.valueOf((int) roundedValue));
+					valueLabel.setText(String.valueOf((int) roundedValue));
+				} else if (step instanceof Double) {
+					setter.accept((T) Double.valueOf(roundedValue));
+					valueLabel.setText(String.format("%.1f", getter.get().doubleValue()));
+				}
+			});
+
+			getChildren().addAll(nameStack, valueStack, slider);
+		}
+	}
+
+	private class OptionDiscrete<T extends Number> extends Option<T> {
 		Button increment;
 		Button decrement;
 
-		public Supplier<Double> getter;
-		public Consumer<Double> setter;
-
-		public OptionHBoxDouble(String text, Supplier<Double> getter, Consumer<Double> setter, double min, double max, double incrementAmount) {
+		public OptionDiscrete(String text, Supplier<T> getter, Consumer<T> setter, T min, T max, T incrementAmount) {
 			this.getter = getter;
 			this.setter = setter;
 			createOption(text, getter, setter, min, max, incrementAmount);
-			setMaxWidth(Double.MAX_VALUE);
 		}
 
-		private void createOption(String text, Supplier<Double> getter, Consumer<Double> setter, double min, double max, double incrementAmount) {
-			label = new Label(text);
-			value = new Label(String.valueOf(getter.get()));
-			StackPane labelPane = createLabelStackPane(buttonBlue3, label, 20);
-			StackPane valuePane = createLabelStackPane(buttonBlue3, value, 30);
+		private void createOption(String text, Supplier<T> getter, Consumer<T> setter, T min, T max, T incrementAmount) {
+			nameLabel = new Label(text);
+			valueLabel = new Label(String.valueOf(getter.get()));
+			StackPane labelPane = createLabelStackPane(buttonBlue3, nameLabel, 15, 200);
+			StackPane valuePane = createLabelStackPane(buttonBlue3, valueLabel, 25, 150);
 
 			increment = new Button();
 			increment.setBackground(null);
@@ -129,30 +123,34 @@ public class OptionScene {
 			configureButton(decrement);
 
 			increment.setOnAction(e -> {
-				double current = getter.get();
-				if (current + incrementAmount <= max) {
-					setter.accept(current + incrementAmount);
-					value.setText(String.valueOf(getter.get()));
+				T current = getter.get();
+				if (current.doubleValue() + incrementAmount.doubleValue() <= max.doubleValue()) {
+					if (current instanceof Integer) {
+						setter.accept((T) Integer.valueOf(current.intValue() + incrementAmount.intValue()));
+						valueLabel.setText(String.valueOf(getter.get()));
+					} else if (current instanceof Double) {
+						setter.accept((T) Double.valueOf(current.doubleValue() + incrementAmount.doubleValue()));
+						valueLabel.setText(String.valueOf(getter.get()));
+					}
 				}
 			});
 
 			decrement.setOnAction(e -> {
-				double current = getter.get();
-				if (current - incrementAmount >= min) {
-					setter.accept(current - incrementAmount);
-					value.setText(String.valueOf(getter.get()));
+				T current = getter.get();
+				if (current.doubleValue() - incrementAmount.doubleValue() >= min.doubleValue()) {
+					if (current instanceof Integer) {
+						setter.accept((T) Integer.valueOf(current.intValue() - incrementAmount.intValue()));
+						valueLabel.setText(String.valueOf(getter.get()));
+					} else if (current instanceof Double) {
+						setter.accept((T) Double.valueOf(current.doubleValue() - incrementAmount.doubleValue()));
+						valueLabel.setText(String.valueOf(getter.get()));
+					}
 				}
 			});
 
 			this.getChildren().addAll(labelPane, decrement, valuePane, increment);
+
 			this.setAlignment(Pos.CENTER);
-
-			setHgrow(label, Priority.ALWAYS);
-			label.setMaxWidth(Double.MAX_VALUE);
-		}
-
-		public Label getValueLabel() {
-			return value;
 		}
 	}
 
@@ -185,6 +183,7 @@ public class OptionScene {
 
 		Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
 		label.setFont(font);
+		label.setStyle("-fx-text-fill: black;");
 
 		StackPane pane = new StackPane();
 		pane.getChildren().addAll(view, label);
@@ -208,13 +207,14 @@ public class OptionScene {
 		return pane;
 	}
 
-	private StackPane createLabelStackPane(Image image, Label label, int fontSize) {
+	private StackPane createLabelStackPane(Image image, Label label, int fontSize, int width) {
 		ImageView view = new ImageView(image);
 		view.setFitHeight(50);
-		view.setFitWidth(150);
+		view.setFitWidth(width);
 
-		Font font = Font.font("Calibri", fontSize);
+		Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
 		label.setFont(font);
+		label.setStyle("-fx-text-fill: black;");
 
 		StackPane pane = new StackPane();
 		pane.getChildren().addAll(view, label);
@@ -222,6 +222,71 @@ public class OptionScene {
 		label.setTranslateY(-5);
 
 		return pane;
+	}
+
+	private void addDiscreteOptions(Pane pane) {
+//		pane.getChildren().clear();
+//		pane.getChildren().add(new OptionDiscrete<Integer>("Player Lives", GameOptionsController::getStartingLives,
+//				GameOptionsController::setStartingLives, 10, 50, 5));
+//		pane.getChildren().add(new OptionDiscrete<Integer>("Starting Gold", GameOptionsController::getStartingGold,
+//				GameOptionsController::setStartingGold, 100, 400, 50));
+//		pane.getChildren().add(new OptionDiscrete<Double>("Enemy Speed", GameOptionsController::getEnemySpeed,
+//				GameOptionsController::setEnemySpeed, 1.0, 10.0, 1.0));
+//		pane.getChildren().add(new OptionDiscrete<Integer>("Wave Number", GameOptionsController::getNumberOfWaves,
+//				GameOptionsController::setNumberOfWaves, 2, 20, 1));
+	}
+
+	private void addSliderOptions(Pane pane) {
+		pane.getChildren().clear();
+		for (String name : GameOptionsController.getOptionNames()) {
+			final Number[] constraints = GameOptionsController.getOptionConstraints(name);
+			Field field = GameOptionsController.getGameOptionField(name);
+			field.setAccessible(true);
+			OptionSlider option = null;
+			if (constraints[0] instanceof Integer) {
+				option = new OptionSlider<Integer>(name, () -> {
+                    try {
+                        return (Integer) field.get(GameOptions.getInstance());
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, (Integer val) -> {
+                    try {
+						field.set(GameOptions.getInstance(), val);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, (Integer) constraints[0], (Integer) constraints[1], (Integer) constraints[2]);
+			} else if (constraints[0] instanceof Double){
+				option = new OptionSlider<Double>(name, () -> {
+					try {
+						return (Double) field.get(GameOptions.getInstance());
+					} catch (IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+				}, (Double val) -> {
+					try {
+						field.set(GameOptions.getInstance(), val);
+					} catch (IllegalAccessException e) {
+						throw new RuntimeException(e);
+					}
+				}, (Double) constraints[0], (Double) constraints[1], (Double) constraints[2]);
+			}
+
+			if (option != null) {
+				pane.getChildren().add(option);
+			}
+		}
+
+
+//		pane.getChildren().add(new OptionSlider<Integer>("Player Lives", GameOptionsController::getStartingLives,
+//				GameOptionsController::setStartingLives, 10, 50, 5));
+//		pane.getChildren().add(new OptionSlider<Integer>("Starting Gold", GameOptionsController::getStartingGold,
+//				GameOptionsController::setStartingGold, 100, 400, 50));
+//		pane.getChildren().add(new OptionSlider<Double>("Enemy Speed", GameOptionsController::getEnemySpeed,
+//				GameOptionsController::setEnemySpeed, 1.0, 10.0, 1.0));
+//		pane.getChildren().add(new OptionSlider<Integer>("Wave Number", GameOptionsController::getNumberOfWaves,
+//				GameOptionsController::setNumberOfWaves, 2, 20, 1));
 	}
 
 	private void initializeScene(StackPane root) {
@@ -239,18 +304,12 @@ public class OptionScene {
 		vbox.setFillWidth(true);
 
 		GameOptionsController.initializeGameOptions();
-		vbox.getChildren().add(new OptionHBoxInt("Player Lives", () -> GameOptionsController.getStartingLives(),
-				val -> GameOptionsController.setStartingLives(val), 10, 50, 5));
-		vbox.getChildren().add(new OptionHBoxInt("Starting Gold", () -> GameOptionsController.getStartingGold(),
-				val -> GameOptionsController.setStartingGold(val), 100, 400, 50));
-		vbox.getChildren().add(new OptionHBoxDouble("Enemy Speed", () -> GameOptionsController.getEnemySpeed(),
-				val -> GameOptionsController.setEnemySpeed(val), 1.0, 10.0, 1.0));
-		vbox.getChildren().add(new OptionHBoxInt("Wave Number", () -> GameOptionsController.getNumberOfWaves(),
-				val -> GameOptionsController.setNumberOfWaves(val), 2, 20, 1));
+		addSliderOptions(vbox);
 
 		Button saveButton = new Button();
 		saveButton.setBackground(null);
-		saveButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Save"), 20, 100));
+		saveButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3,
+								new Label("Save"), 20, 100));
 		saveButton.setOnAction(e -> {
 			GameOptionsController.saveOptions();
 		});
@@ -258,19 +317,26 @@ public class OptionScene {
 
 		Button resetButton = new Button();
 		resetButton.setBackground(null);
-		resetButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Reset"), 20, 100));
+		resetButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3,
+								new Label("Reset"), 20, 100));
 		resetButton.setOnAction(e -> {
 			GameOptionsController.resetOptions();
 			List<Node> vboxNodes = vbox.getChildren();
 			for(Node node : vboxNodes) {
-				if (node instanceof OptionHBoxInt) {
-					OptionHBoxInt hbox = (OptionHBoxInt) node;
-					Label value = hbox.getValueLabel();
-					value.setText(String.valueOf(hbox.getter.get()));
-				} else if (node instanceof OptionHBoxDouble) {
-					OptionHBoxDouble hbox = (OptionHBoxDouble) node;
-					Label value = hbox.getValueLabel();
-					value.setText(String.valueOf(hbox.getter.get()));
+				if (node instanceof Option) {
+					Option option = (Option) node;
+					Label value = option.getValueLabel();
+					value.setText(String.valueOf(option.getter.get()));
+					if (option instanceof OptionSlider optSlider) {
+                        if (optSlider.getter.get() instanceof Integer) {
+							value.setText(String.valueOf(optSlider.getter.get()));
+						} else if (optSlider.getter.get() instanceof Double) {
+							value.setText(String.format("%.1f", ((Double) optSlider.getter.get()).doubleValue()));
+						}
+						optSlider.isResetting = true; // Sneaky workaround because JavaFX has broken code?
+						optSlider.slider.setValue(((Number)optSlider.getter.get()).doubleValue());
+						optSlider.isResetting = false;
+					}
 				}
 			}
 		});
@@ -278,7 +344,8 @@ public class OptionScene {
 
 		Button mainMenuButton = new Button();
 		mainMenuButton.setBackground(null);
-		mainMenuButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Main Menu"), 20, 150));
+		mainMenuButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3,
+								new Label("Main Menu"), 20, 150));
 		mainMenuButton.setOnAction(e -> {
 			app.showMainMenu(new StackPane());
 		});
@@ -287,23 +354,31 @@ public class OptionScene {
 		vbox.setFillWidth(true);
 		ScrollPane scrollPane = new ScrollPane(vbox);
 		scrollPane.setFitToWidth(true);
-		scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+		scrollPane.setStyle("""
+		-fx-background-color: transparent;
+		-fx-background: transparent;
+		-fx-control-inner-background: transparent;
+		""");
 		scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 		scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-		HBox buttonsBox = new HBox(resetButton, saveButton, mainMenuButton);
-		buttonsBox.setAlignment(Pos.BOTTOM_CENTER);
-		buttonsBox.setSpacing(20);
-		buttonsBox.setPadding(new Insets(10, 0, 20, 0));
+		HBox resetAndSaveButtons = new HBox(resetButton, saveButton);
+		resetAndSaveButtons.setAlignment(Pos.BOTTOM_CENTER);
+		resetAndSaveButtons.setSpacing(20);
+		resetAndSaveButtons.setPadding(new Insets(10, 0, 5, 0));
+
+		VBox bottomVBox = new VBox(resetAndSaveButtons, mainMenuButton);
+		bottomVBox.setAlignment(Pos.BOTTOM_CENTER);
+		bottomVBox.setPadding(new Insets(0,0,10,0));
 
 		VBox fullLayout = new VBox();
 		fullLayout.setSpacing(10);
-		fullLayout.getChildren().addAll(scrollPane, buttonsBox);
+		fullLayout.getChildren().addAll(scrollPane, bottomVBox);
 		VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
 		root.getChildren().addAll(backgroundView, fullLayout);
 
 		scene = new Scene(root, app.getPrimaryStage().getWidth(), app.getPrimaryStage().getHeight());
-		//scene.getStylesheets().add(getClass().getResource("/ui/styles/style.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/styles/optionsStyle.css").toExternalForm());
 	}
 }

@@ -22,6 +22,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -218,11 +219,18 @@ public class PlayModeScene extends AnimationTimer {
 	}
 
 	private class ProjectileView extends StackPane {
-		public ProjectileView() {
-			Circle circle = new Circle();
-			circle.setRadius(10.0);
+		Rectangle rect;
 
-			this.getChildren().add(circle);
+		public ProjectileView() {
+			rect = new Rectangle();
+			rect.setWidth(30.0);
+			rect.setHeight(10.0);
+
+			this.getChildren().add(rect);
+		}
+
+		public void setRotation(double angle) {
+			rect.setRotate(angle);
 		}
 	}
 	
@@ -246,6 +254,7 @@ public class PlayModeScene extends AnimationTimer {
 		Scene scene = new Scene(stack);
 		return scene;
 	}
+
 	private Pane grassRender() {
 		Pane map = new Pane();
 		double renderScale = 16;
@@ -782,6 +791,7 @@ public class PlayModeScene extends AnimationTimer {
 			ProjectileView projView = projectileViews.get(id);
 			projView.setLayoutX(x * 16 - projView.getWidth()/2);
 			projView.setLayoutY(y * 16 - projView.getHeight()/2);
+			projView.setRotation(TowerController.getProjectileAngle(i));
 		}
 
 		projectileViews.entrySet().removeIf(entry -> {
