@@ -5,13 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
 
 import domain.kutowerdefense.GameOptions;
 import domain.map.Location;
@@ -23,7 +18,8 @@ import domain.map.TileType;
 public final class Utilities {
 	private static final String MAP_FILE_PATH = "Data/Maps/";
 	private static final String OPTIONS_FILE_PATH = "Data/Options/";
-	
+	public static final Random globalRNG = new Random();
+
 	/**
 	 * Comparator for the priority queue used in findPath
 	 */

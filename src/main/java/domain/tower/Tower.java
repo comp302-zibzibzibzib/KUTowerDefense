@@ -12,7 +12,8 @@ import domain.services.Utilities;
 
 public abstract class Tower implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+	private static final double FREEZE_DURATION = 4.0;
+
 	protected int cost;
 	protected int upgradeCost;
     protected int level;
@@ -21,6 +22,9 @@ public abstract class Tower implements Serializable {
     protected AttackType attackType;
     protected Enemy target;
     protected Location location;
+
+	protected boolean isFrozen;
+	protected double timeSinceFrozen;
 
 	private double timeSinceLastShot;
 	private double firePeriod;
@@ -88,22 +92,34 @@ public abstract class Tower implements Serializable {
    	    }
 		target = lastTarget;
     }
-    
-    public Projectile update(double dt) {
+
+	public Projectile update(double dt) {
+
 		targetEnemy();
-        timeSinceLastShot += dt; //Tracks how much time has passed since last creation
+		timeSinceLastShot += dt; //Tracks how much time has passed since last creation
+
+		if(isFrozen) {
+			this.timeSinceFrozen += dt;
+			if(this.timeSinceFrozen < FREEZE_DURATION) {
+				return null;
+			}
+			else {
+				isFrozen = false;
+				timeSinceFrozen = 0.0;
+			}
+		}
 		//Projectile creation period
-        //If not enough time has passed does not create another projectile
-        if (timeSinceLastShot < firePeriod || target == null) {
-            return null;
-        }
-        //Allocates target if is in range
-        //Resets the time (enough time has passed) 
-        timeSinceLastShot = 0;
-        //Creates projectile based on attack type of the tower
+		//If not enough time has passed does not create another projectile
+		if (timeSinceLastShot < firePeriod || target == null) {
+			return null;
+		}
+		//Allocates target if is in range
+		//Resets the time (enough time has passed)
+		timeSinceLastShot = 0;
+		//Creates projectile based on attack type of the tower
 		//IMPORTANT: Location of the projectile is the same
 		//as the location of the tower at creation, add offset if convenient
-        return createProjectile();
+		return createProjectile();
     }
     
 	public int getUpgradeCost() {
