@@ -1,5 +1,7 @@
 package domain.entities;
 
+import domain.kutowerdefense.GameOptions;
+import domain.kutowerdefense.Player;
 import domain.map.Location;
 import domain.map.Tile;
 import domain.services.Utilities;
@@ -61,6 +63,12 @@ public class Knight extends Enemy {
 		timeSinceSlowedDown = 0;
 		slowedDown = false;
 		determineSpeed();
+	}
+
+	@Override
+	public void killEnemy() {
+		Player.getInstance().updateGold(GameOptions.getInstance().getKnightReward());
+		super.killEnemy();
 	}
 
 	private void speedUp() {

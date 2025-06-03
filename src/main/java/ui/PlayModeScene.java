@@ -1,10 +1,7 @@
 package ui;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 
 import domain.controller.*;
@@ -37,7 +34,9 @@ public class PlayModeScene extends AnimationTimer {
 	private MapEditorController mapEditorController = MapEditorController.getInstance();
 	private Pane rootPane;
 	private Pane enemyPane;
+	private Pane goldBagPane;
 	private Pane overlayPane;
+	private Pane hudPane;
 	private Group removeSelection = null;
 
 	private Image archerButtonImage  = new Image(getClass().getResourceAsStream("/Images/archerbutton.png"));
@@ -63,7 +62,7 @@ public class PlayModeScene extends AnimationTimer {
 	private Map<Integer, Integer> enemyFrameIndicies = new HashMap<Integer, Integer>();
 	private Map<String, List<Image>> enemyAnimations = new HashMap<>();
 	private Map<Integer, ProjectileView> projectileViews = new HashMap<>();
-	private int frameCounter = 0;
+	private Map<Integer, GoldBagView> goldBags = new HashMap<>();
 
 	private double totalElapsed = 0;
 	private long lastUpdate = 0;
@@ -233,10 +232,62 @@ public class PlayModeScene extends AnimationTimer {
 			rect.setRotate(angle);
 		}
 	}
+
+	private class GoldBagView extends ImageView {
+		public static final ArrayList<Image> frames = new ArrayList<>();
+		public static final double FRAME_DURATION = 0.15;
+
+		private int frameIndex;
+		private int id;
+		private double timeSinceLastFrame;
+		public GoldBagView(int id) {
+			super();
+			this.id = id;
+			frameIndex = 0;
+			timeSinceLastFrame = 0;
+			setImage(frames.get(frameIndex));
+			setFitHeight(128);
+			setFitWidth(128);
+
+			setOnMouseClicked(event -> {
+				EntityController.pickUpBag(id);
+				goldBagPane.getChildren().remove(this);
+			});
+		}
+
+		private void nextFrame() {
+			setImage(frames.get(++frameIndex));
+			timeSinceLastFrame = 0;
+		}
+
+		public void updateBag(double deltaTime) {
+			timeSinceLastFrame += deltaTime;
+			if (timeSinceLastFrame >= FRAME_DURATION && frameIndex < frames.size() - 1) {
+				nextFrame();
+			}
+
+			double x = EntityController.getGoldBagX(id);
+			double y = EntityController.getGoldBagY(id);
+			setLayoutX(x * 16 - getFitWidth()/2);
+			setLayoutY(y * 16 - getFitHeight()/2);
+
+			if (EntityController.isGoldBagFlashing(id)) {
+				double timeSinceCreation = EntityController.getGoldBagTime(id);
+				setVisible(Math.sin(10 * timeSinceCreation) > 0);
+			}
+		}
+	}
 	
 
 	public PlayModeScene(KuTowerDefenseA app) {
 		this.app = app;
+
+		if (!GoldBagView.frames.isEmpty()) return;
+		for (int i = 1; i <= 7; i++) {
+			String name = "/Images/goldbag/goldbag" + i + ".png";
+			Image frame = new Image(getClass().getResourceAsStream(name));
+			GoldBagView.frames.add(frame);
+		}
 	}
 	
 	public Scene getScene() {
@@ -244,10 +295,14 @@ public class PlayModeScene extends AnimationTimer {
 		rootPane = renderMap();
 		enemyPane = new Pane();
 		enemyPane.setMouseTransparent(true);
+		goldBagPane = new Pane();
+		goldBagPane.setPickOnBounds(false);
 		overlayPane = new Pane();
 		overlayPane.setPickOnBounds(false);
-		pauseResumeButton();
-		StackPane stack = new StackPane(rootPane, enemyPane, overlayPane);
+		hudPane = new Pane();
+		hudPane.setPickOnBounds(false);
+		pauseResumeMenuButtons();
+		StackPane stack = new StackPane(rootPane, enemyPane, goldBagPane, overlayPane, hudPane);
 		this.start();
 		
 		playerStatsPutter();
@@ -507,7 +562,7 @@ public class PlayModeScene extends AnimationTimer {
 			parent.getChildren().add(mageTile);
 			
 			System.out.print(PlayerController.getPlayerGold());
-			System.out.println("mmmmm");
+			System.out.println("mmmmm"); //mmmm
 
 	    });
 	    mageButton.setOnMouseEntered(e -> { mageButtonView.setImage(hoverMage); });
@@ -687,8 +742,8 @@ public class PlayModeScene extends AnimationTimer {
         infoView1.setLayoutY(0);
        
         Label coin = new Label(String.format("%d", PlayerController.getPlayerGold()));
-        Label lives = new Label(String.format("%d/%d", PlayerController.getPlayerLives(),GameOptionsController.getStartingLives()));
-        Label waves = new Label(String.format("%d/%d", PlayerController.getWaveNumber(),GameOptionsController.getNumberOfWaves()));
+        Label lives = new Label(String.format("%d/%d", PlayerController.getPlayerLives(),GameOptionsController.getOption("Player Lives")));
+        Label waves = new Label(String.format("%d/%d", PlayerController.getWaveNumber(),GameOptionsController.getOption("Wave Number")));
         
         
         coin.setLayoutX(80);
@@ -699,7 +754,8 @@ public class PlayModeScene extends AnimationTimer {
 
         waves.setLayoutX(80);
         waves.setLayoutY(107);
-        
+
+		// 							Yippeeee comic sans
         Font font = Font.font("Comic Sans MS",FontWeight.BOLD,FontPosture.REGULAR, 18);  
         coin.setFont(font);
         lives.setFont(font);
@@ -711,26 +767,26 @@ public class PlayModeScene extends AnimationTimer {
         
         Consumer<Integer> goldAction = (val) -> coin.setText(String.format("%d", PlayerController.getPlayerGold()));
         Consumer<Integer> livesAction = (val) -> lives.setText(String.format("%d/%d", PlayerController.getPlayerLives(),
-        																		GameOptionsController.getStartingLives()));
+        																		GameOptionsController.getOption("Player Lives")));
         Consumer<Integer> wavesAction = (val) -> waves.setText(String.format("%d/%d", PlayerController.getWaveNumber(), 
-        																		GameOptionsController.getNumberOfWaves()));
+        																		GameOptionsController.getOption("Wave Number")));
         
         PlayerController.addGoldListener(goldAction);
         PlayerController.addLivesListener(livesAction);
         PlayerController.addWaveNumberListener(wavesAction);
         
         Group statCoin = playerStats(coinView, infoView1,coin);
-        overlayPane.getChildren().addAll(statCoin);
+        hudPane.getChildren().addAll(statCoin);
 
         infoView2.setLayoutX(50);
         infoView2.setLayoutY(50);
         Group statHealth = playerStats(heartImageView, infoView2,lives);
-        overlayPane.getChildren().addAll(statHealth);
+        hudPane.getChildren().addAll(statHealth);
 
         infoView3.setLayoutX(50);
         infoView3.setLayoutY(100);
         Group statWave = playerStats(waveView, infoView3,waves);
-        overlayPane.getChildren().addAll(statWave);
+        hudPane.getChildren().addAll(statWave);
 	}
 	
 	private Group playerStats(ImageView image, ImageView info, Label label) {
@@ -739,6 +795,7 @@ public class PlayModeScene extends AnimationTimer {
         
         
 	}
+
 	private void loadEnemyFrames() {
 		List<Image> warriorFrames = new ArrayList<>();
 		List<Image> goblinFrames = new ArrayList<>();
@@ -766,10 +823,9 @@ public class PlayModeScene extends AnimationTimer {
 		}
 		
 		double deltaTime = (arg0 - lastUpdate)/1_000_000_000.0;
+		deltaTime *= PlayModeController.getGameSpeed();
 		lastUpdate = arg0;
 		totalElapsed += deltaTime;
-		
-		frameCounter++;
         
 		int addFrame = 0;
 		if (totalElapsed >= 0.1) {
@@ -844,12 +900,11 @@ public class PlayModeScene extends AnimationTimer {
 	    }
 
 		// Bring every enemy stack to front from top to down so that the most down enemy is always drawn on top
-		ArrayList<Integer> enemyIdList = EntityController.getEnemyIDsRenderSort();
+		List<Integer> enemyIdList = EntityController.getEnemyIDsRenderSort();
 		for (int id : enemyIdList) {
 			EnemyStack es = enemyStacks.get(id);
 			es.toFront();
 		}
-		
 		
 		if (rangeCircle != null) {
 			rangeCircle.toFront();
@@ -864,9 +919,44 @@ public class PlayModeScene extends AnimationTimer {
 	        }
 	        return false;
 		});
+
+		// Add any new gold bags
+		boolean newBag = false;
+		for (int id : EntityController.getGoldBagIDs()) {
+			if (!goldBags.containsKey(id)) {
+				GoldBagView gbv = new GoldBagView(id);
+				goldBags.put(id, gbv);
+				goldBagPane.getChildren().add(gbv);
+			}
+		}
+
+		// Remove expired gold bags
+		goldBags.entrySet().removeIf(entry -> {
+			int id = entry.getKey();
+			if (EntityController.isGoldBagDead(id)) {
+				goldBagPane.getChildren().remove(entry.getValue());
+				return true;
+			}
+			return false;
+		});
+
+		// Update gold bag renders
+		for (int id : goldBags.keySet()) {
+			double x = EntityController.getGoldBagX(id);
+			double y = EntityController.getGoldBagY(id);
+
+			GoldBagView gbv = goldBags.get(id);
+			gbv.updateBag(deltaTime);
+		}
+
+		List<Integer> goldBagIdList = EntityController.getGoldBagsIDsRenderSort();
+		for (int id : goldBagIdList) {
+			GoldBagView gbv = goldBags.get(id);
+			gbv.toFront();
+		}
 	}
 
-	private void pauseResumeButton() {
+	private void pauseResumeMenuButtons() {
 		ImageView gearView = new ImageView(gearButtonImage);
 		ImageView accelerateView = new ImageView(accelerateButtonImage);
 		ImageView pauseView = new ImageView(pauseButtonImage);
@@ -884,6 +974,7 @@ public class PlayModeScene extends AnimationTimer {
 
 		
 		gearView.setOnMouseClicked(e->{
+			stop();
 			MainMenuController.cleanupSession();
 			app.showMainMenu(new StackPane());
 		});
@@ -941,6 +1032,6 @@ public class PlayModeScene extends AnimationTimer {
 			}
 		});
 		
-		overlayPane.getChildren().addAll(hbox);
+		hudPane.getChildren().addAll(hbox);
 	}
 }

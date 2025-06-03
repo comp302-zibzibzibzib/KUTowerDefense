@@ -25,7 +25,7 @@ public class OptionScene {
 	private static final String SPRITE_PATH = "/Images/HUD/";
 
 	private final List<String> optionCategories = Arrays.asList("Spawning", "Player", "Enemies", "Projectile", "Towers");
-	private final List<Integer> titleIndicies = Arrays.asList(0, 10, 12, 18, 22);
+	private final List<Integer> titleIndicies = Arrays.asList(0, 10, 12, 19, 23);
 
 	private KuTowerDefenseA app;
 	private VBox vbox;

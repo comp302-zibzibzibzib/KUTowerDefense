@@ -2,6 +2,7 @@ package domain.entities;
 
 import java.util.*;
 
+import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.map.Location;
@@ -73,14 +74,17 @@ public abstract class Enemy {
 		}
 	}
 	
-	public void killEnemy() { //VALUE IS RANDOM FOR NOW, MUST BE ABLE TO CHANGE IN OPTIONS
+	public void killEnemy() {
 		if (!initialized) return;
+		// Minus 0.001 so 0.0 is not counted | When chance is zero prevents from spawning
+		if (Utilities.globalRNG.nextDouble() - 0.001 <= GameOptions.getInstance().getGoldBagChance()) {
+			GoldBagFactory.createGoldBag(new Location(location));
+		}
+		// Adding gold reward is overriden in Knight and Goblin
 		cleanupEnemy();
-		Player.getInstance().setGold(Player.getInstance().getGold() + 25);
 	}
-	
-	//need some way to store when the enemy got slowed down
-	public void slowDown() { //slow down by 20% when hit by lvl2 mage tower
+
+	public void slowDown() { // Slow down by 20% when hit by lvl2 mage tower
 		timeSinceSlowedDown = 0;
 		if(!slowedDown) {
 			speed *= 0.8;
@@ -88,13 +92,13 @@ public abstract class Enemy {
 		}
 	}
 	
-	public void endSlowDown() { //return to normal speed
+	public void endSlowDown() { // Return to normal speed
 		timeSinceSlowedDown = 0;
 		speed = defaultSpeed;
 		slowedDown = false;
 	}
 	
-	//3% chance to reset back to start when hit by mage tower, can be put somewhere else
+	// 3% chance to reset back to start when hit by mage tower, can be put somewhere else
 	public void resetPosition() { 
 		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
 		double startX = startLocation.xCoord;
@@ -115,13 +119,15 @@ public abstract class Enemy {
 		if(PlayModeManager.getInstance().getGameSpeed() == 0) return;
 
 		// Handle slowed down logic
+		deltaTime = deltaTime * PlayModeManager.getInstance().getGameSpeed();
+
 		if (slowedDown) timeSinceSlowedDown += deltaTime;
 		if (timeSinceSlowedDown >= 4.0) {
 			endSlowDown();
 		}
 
 		if (!initialized) return;
-		double displacement = (this.speed * PlayModeManager.getInstance().getGameSpeed()) * deltaTime; //get displacement
+		double displacement = this.speed * deltaTime; //get displacement
 		
 		PathTile nextTile = path.get(pathIndex+1); //get the location of next tile's centre
 		

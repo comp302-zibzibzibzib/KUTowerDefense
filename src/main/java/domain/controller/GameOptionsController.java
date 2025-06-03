@@ -17,7 +17,7 @@ public class GameOptionsController {
 	public static final List<String> optionNames = Arrays.asList("Wave Number", "Max Group per Wave",
 			"Min Group per Wave", "Max Enemies per Group", "Min Enemies per Group", "Wave Delay", "Group Delay", "Enemy Delay",
 			"Knight Percentage", "Goblin Percentage", "Player Gold", "Player Lives", "Goblin Health", "Goblin Speed", "Goblin Reward",
-			"Knight Health", "Knight Speed", "Knight Reward", "Arrow Damage", "Artillery Damage", "Spell Damage", "AOE Range",
+			"Knight Health", "Knight Speed", "Knight Reward", "Gold Bag Chance", "Arrow Damage", "Artillery Damage", "Spell Damage", "AOE Range",
 			"Archer Cost", "Artillery Cost", "Mage Cost", "Archer Range", "Artillery Range", "Mage Range");
 
 	public static HashMap<String, Number[]> optionRanges;
@@ -55,6 +55,7 @@ public class GameOptionsController {
 		consumerMap.put("Knight Health", options::setKnightHealth);
 		consumerMap.put("Knight Speed", options::setKnightSpeed);
 		consumerMap.put("Knight Reward", options::setKnightReward);
+		consumerMap.put("Gold Bag Chance", options::setGoldBagChance);
 		consumerMap.put("Arrow Damage", options::setArrowDamage);
 		consumerMap.put("Artillery Damage", options::setArtilleryDamage);
 		consumerMap.put("Spell Damage", options::setSpellDamage);
@@ -85,6 +86,7 @@ public class GameOptionsController {
 		supplierMap.put("Knight Health", options::getKnightHealth);
 		supplierMap.put("Knight Speed", options::getKnightSpeed);
 		supplierMap.put("Knight Reward", options::getKnightReward);
+		supplierMap.put("Gold Bag Chance", options::getGoldBagChance);
 		supplierMap.put("Arrow Damage", options::getArrowDamage);
 		supplierMap.put("Artillery Damage", options::getArtilleryDamage);
 		supplierMap.put("Spell Damage", options::getSpellDamage);
@@ -115,6 +117,7 @@ public class GameOptionsController {
 		optionRanges.put("Knight Health", new Number[]{40.0, 100.0, 5.0});
 		optionRanges.put("Knight Speed", new Number[]{2.0, 4.0, 0.1});
 		optionRanges.put("Knight Reward", new Number[]{10, 100, 1});
+		optionRanges.put("Gold Bag Chance", new Number[]{0.0, 1.0, 0.01});
 		optionRanges.put("Arrow Damage", new Number[]{5.0, 15.0, 1.0});
 		optionRanges.put("Artillery Damage", new Number[]{25.0, 40.0, 1.0});
 		optionRanges.put("Spell Damage", new Number[]{15.0, 25.0, 1.0});
@@ -142,17 +145,21 @@ public class GameOptionsController {
 	public static List<String> getOptionNames() {
 		return optionNames;
 	}
-	
-	public static int getStartingLives() {
-		return options.getStartingPlayerLives();
+
+	// LOOKUP THE NAME OF THE OPTION YOU WANT TO SET IT'S ABOVE
+	public static void setOption(String name, Number value) {
+		Consumer<Number> setter = consumerMap.get(name);
+		if (setter != null) {
+			setter.accept(value);
+		}
 	}
-	
-	public static int getStartingGold() {
-		return options.getStartingPlayerGold();
-	}
-	
-	public static int getNumberOfWaves() {
-		return options.getNumberOfWaves();
+
+	// LOOKUP THE NAME OF THE OPTION YOU WANT TO GET IT'S ABOVE
+	public static Number getOption(String name) {
+		Supplier<Number> getter = supplierMap.get(name);
+		if (getter != null) {
+			return getter.get();
+		} else return null;
 	}
 	
 	public static void saveOptions() {

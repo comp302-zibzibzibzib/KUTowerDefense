@@ -34,6 +34,7 @@ public class GameOptions implements Serializable {
 	private double knightHealth;
 	private double knightSpeed;
 	private int knightReward;
+	private double goldBagChance;
 
 	// Projectiles
 	private double arrowDamage;
@@ -115,6 +116,8 @@ public class GameOptions implements Serializable {
 		knightHealth = 80.0;
 		knightSpeed = 3.0;
 		knightReward = 20;
+
+		goldBagChance = 0.2;
 
 		arrowDamage = 5.0;
 		artilleryDamage = 20.0;
@@ -204,6 +207,10 @@ public class GameOptions implements Serializable {
 
 	public int getKnightReward() {
 		return knightReward;
+	}
+
+	public double getGoldBagChance() {
+		return goldBagChance;
 	}
 
 	public double getArrowDamage() {
@@ -317,6 +324,10 @@ public class GameOptions implements Serializable {
 
 	public void setKnightReward(Number knightReward) {
 		this.knightReward = knightReward.intValue();
+	}
+
+	public void setGoldBagChance(Number goldBagChance) {
+		this.goldBagChance = goldBagChance.doubleValue();
 	}
 
 	public void setArrowDamage(Number arrowDamage) {

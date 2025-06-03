@@ -51,7 +51,7 @@ public class Boss extends Enemy{
     }
 
     @Override
-    public void updateEnemy(long deltaTime) {
+    public void updateEnemy(double deltaTime) {
         super.updateEnemy(deltaTime);
         this.timeSinceLastFreezeAttempt += deltaTime;
         if(this.timeSinceLastFreezeAttempt >= freezeAttemptInterval) {

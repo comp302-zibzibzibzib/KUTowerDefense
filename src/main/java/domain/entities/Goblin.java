@@ -1,5 +1,7 @@
 package domain.entities;
 
+import domain.kutowerdefense.GameOptions;
+import domain.kutowerdefense.Player;
 import domain.map.Location;
 import domain.tower.AttackType;
 
@@ -25,5 +27,11 @@ public class Goblin extends Enemy {
 		double reducedDamage = damage;
 		if (attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) reducedDamage = (1 - spellDamageReduction) * reducedDamage;
 		super.hitEnemy(reducedDamage, attackType);
+	}
+
+	@Override
+	public void killEnemy() {
+		Player.getInstance().updateGold(GameOptions.getInstance().getGolbinReward());
+		super.killEnemy();
 	}
 }

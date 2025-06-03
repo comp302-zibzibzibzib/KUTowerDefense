@@ -3,13 +3,11 @@ package domain.controller;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import domain.entities.Enemy;
-import domain.entities.Goblin;
-import domain.entities.Group;
-import domain.entities.Knight;
-import domain.entities.Wave;
+import domain.entities.*;
 import domain.kutowerdefense.PlayModeManager;
 import domain.map.PathTile;
 import javafx.animation.AnimationTimer;
@@ -111,7 +109,7 @@ class MovementTimer extends AnimationTimer {
 			return;
 		}
 		
-		long deltaTime = (now - lastUpdate);
+		double deltaTime = (double) (now - lastUpdate) / 1_000_000_000;
 		lastUpdate = now;
 		
 		List<Enemy> enemyList = new ArrayList<Enemy>(Enemy.getAllEnemies());
@@ -120,7 +118,9 @@ class MovementTimer extends AnimationTimer {
 
 			enemy.updateEnemy(deltaTime);
 		}
-		
+
+        GoldBag.bagUpdate(deltaTime);
+
 		if (Enemy.getAllEnemies().isEmpty()) {
 			stop();
 			return;
@@ -174,7 +174,7 @@ public class EntityController {
     	return Enemy.getActiveEnemies().size();
     }
 
-    public static ArrayList<Integer> getEnemyIDsRenderSort() {
+    public static List<Integer> getEnemyIDsRenderSort() {
         Comparator<Enemy> comparator = new Comparator<Enemy>() {
             @Override
             public int compare(Enemy o1, Enemy o2) {
@@ -187,10 +187,7 @@ public class EntityController {
         ArrayList<Enemy> enemyList = new ArrayList<>(Enemy.getActiveEnemies());
         enemyList.sort(comparator);
 
-        ArrayList<Integer> ids = new ArrayList<>();
-        for (Enemy enemy : enemyList) {
-            ids.add(enemy.getEnemyID());
-        }
+        List<Integer> ids = enemyList.stream().map(Enemy::getEnemyID).collect(Collectors.toList());
 
         return ids;
     }
@@ -221,6 +218,7 @@ public class EntityController {
     	if (gameLoop != null) gameLoop.stop();
     	if (moveTimer != null) moveTimer.stop();
         resetEnemies();
+        GoldBag.resetBags();
     }
 
     public static void resetEnemies() {
@@ -238,5 +236,55 @@ public class EntityController {
     public static boolean isEnemySlowedDown(int i) {
         Enemy enemy = Enemy.getActiveEnemies().get(i);
         return enemy.isSlowedDown();
+    }
+
+    public static boolean isGoldBagDead(int id) {
+        return !GoldBag.getGoldBags().containsKey(id);
+    }
+
+    public static int getNumberOfGoldBags() {
+        return GoldBag.getGoldBags().size();
+    }
+
+    public static ArrayList<Integer> getGoldBagIDs() {
+        return new ArrayList<Integer>(GoldBag.getGoldBags().keySet());
+    }
+
+    public static double getGoldBagX(int id) {
+        return GoldBag.getGoldBag(id).getLocation().xCoord;
+    }
+
+    public static double getGoldBagY(int id) {
+        return GoldBag.getGoldBag(id).getLocation().yCoord;
+    }
+
+    public static double getGoldBagTime(int id) {
+        return GoldBag.getGoldBag(id).getTimeSinceCreation();
+    }
+
+    public static boolean isGoldBagFlashing(int id) {
+        return GoldBag.getGoldBag(id).getTimeSinceCreation() >= 7.0;
+    }
+
+    public static void pickUpBag(int id) {
+        GoldBag.getGoldBag(id).pickUpBag();
+    }
+
+    public static List<Integer> getGoldBagsIDsRenderSort() {
+        Comparator<GoldBag> comparator = new Comparator<GoldBag>() {
+            @Override
+            public int compare(GoldBag o1, GoldBag o2) {
+                if (o1.getLocation().yCoord < o2.getLocation().yCoord) return -1;
+                else if (o1.getLocation().yCoord > o2.getLocation().yCoord) return 1;
+                return 0;
+            }
+        };
+
+        List<GoldBag> goldBags = new ArrayList<>(GoldBag.getGoldBags().values());
+        goldBags.sort(comparator);
+
+        List<Integer> goldBagIDs = goldBags.stream().map(GoldBag::getId).collect(Collectors.toList());
+
+        return goldBagIDs;
     }
 }

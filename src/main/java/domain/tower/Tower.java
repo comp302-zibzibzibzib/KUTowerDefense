@@ -94,7 +94,7 @@ public abstract class Tower implements Serializable {
     }
 
 	public Projectile update(double dt) {
-
+		dt = dt * PlayModeManager.getInstance().getGameSpeed();
 		targetEnemy();
 		timeSinceLastShot += dt; //Tracks how much time has passed since last creation
 
@@ -181,5 +181,9 @@ public abstract class Tower implements Serializable {
     public int getCost() {
     	return cost;
     }
+
+	public void setIsFrozen(boolean value) {
+		isFrozen = value;
+	}
 }
 
