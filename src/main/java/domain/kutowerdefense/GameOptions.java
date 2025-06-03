@@ -118,7 +118,7 @@ public class GameOptions implements Serializable {
 
 		arrowDamage = 5.0;
 		artilleryDamage = 20.0;
-		spellDamage = 10.0;
+		spellDamage = 15.0;
 
 		archerCost = 150;
 		artilleryCost = 350;
@@ -129,10 +129,6 @@ public class GameOptions implements Serializable {
 		mageRange = 6.0;
 		aoeRange = 3.0;
     }
-
-	public static void setInstance(GameOptions instance) {
-		GameOptions.instance = instance;
-	}
 
 	public int getNumberOfWaves() {
 		return numberOfWaves;
@@ -146,215 +142,224 @@ public class GameOptions implements Serializable {
 		return maxGroupPerWave;
 	}
 
-	public void setMaxGroupPerWave(int maxGroupPerWave) {
-		this.maxGroupPerWave = maxGroupPerWave;
-	}
-
 	public int getMinGroupPerWave() {
 		return minGroupPerWave;
-	}
-
-	public void setMinGroupPerWave(int minGroupPerWave) {
-		this.minGroupPerWave = minGroupPerWave;
 	}
 
 	public int getMaxEnemiesPerGroup() {
 		return maxEnemiesPerGroup;
 	}
 
-	public void setMaxEnemiesPerGroup(int maxEnemiesPerGroup) {
-		this.maxEnemiesPerGroup = maxEnemiesPerGroup;
-	}
-
 	public int getMinEnemiesPerGroup() {
 		return minEnemiesPerGroup;
-	}
-
-	public void setMinEnemiesPerGroup(int minEnemiesPerGroup) {
-		this.minEnemiesPerGroup = minEnemiesPerGroup;
 	}
 
 	public double getWaveDelay() {
 		return waveDelay;
 	}
 
-	public void setWaveDelay(double waveDelay) {
-		this.waveDelay = waveDelay;
-	}
-
 	public double getGroupDelay() {
 		return groupDelay;
-	}
-
-	public void setGroupDelay(double groupDelay) {
-		this.groupDelay = groupDelay;
 	}
 
 	public double getEnemyDelay() {
 		return enemyDelay;
 	}
 
-	public void setEnemyDelay(double enemyDelay) {
-		this.enemyDelay = enemyDelay;
-	}
-
 	public double getKnightPercentage() {
 		return knightPercentage;
-	}
-
-	public void setKnightPercentage(double knightPercentage) {
-		this.knightPercentage = knightPercentage;
 	}
 
 	public double getGoblinPercentage() {
 		return goblinPercentage;
 	}
 
-	public void setGoblinPercentage(double goblinPercentage) {
-		this.goblinPercentage = goblinPercentage;
-	}
-
 	public int getStartingPlayerGold() {
 		return startingPlayerGold;
-	}
-
-	public void setStartingPlayerGold(int startingPlayerGold) {
-		this.startingPlayerGold = startingPlayerGold;
 	}
 
 	public int getStartingPlayerLives() {
 		return startingPlayerLives;
 	}
 
-	public void setStartingPlayerLives(int startingPlayerLives) {
-		this.startingPlayerLives = startingPlayerLives;
-	}
-
 	public double getGoblinHealth() {
 		return goblinHealth;
-	}
-
-	public void setGoblinHealth(double goblinHealth) {
-		this.goblinHealth = goblinHealth;
 	}
 
 	public double getGoblinSpeed() {
 		return goblinSpeed;
 	}
 
-	public void setGoblinSpeed(double goblinSpeed) {
-		this.goblinSpeed = goblinSpeed;
-	}
-
 	public int getGolbinReward() {
 		return golbinReward;
-	}
-
-	public void setGolbinReward(int golbinReward) {
-		this.golbinReward = golbinReward;
 	}
 
 	public double getKnightHealth() {
 		return knightHealth;
 	}
 
-	public void setKnightHealth(double knightHealth) {
-		this.knightHealth = knightHealth;
-	}
-
 	public double getKnightSpeed() {
 		return knightSpeed;
-	}
-
-	public void setKnightSpeed(double knightSpeed) {
-		this.knightSpeed = knightSpeed;
 	}
 
 	public int getKnightReward() {
 		return knightReward;
 	}
 
-	public void setKnightReward(int knightReward) {
-		this.knightReward = knightReward;
-	}
-
 	public double getArrowDamage() {
 		return arrowDamage;
-	}
-
-	public void setArrowDamage(double arrowDamage) {
-		this.arrowDamage = arrowDamage;
 	}
 
 	public double getArtilleryDamage() {
 		return artilleryDamage;
 	}
 
-	public void setArtilleryDamage(double artilleryDamage) {
-		this.artilleryDamage = artilleryDamage;
-	}
-
 	public double getSpellDamage() {
 		return spellDamage;
-	}
-
-	public void setSpellDamage(double spellDamage) {
-		this.spellDamage = spellDamage;
 	}
 
 	public int getArcherCost() {
 		return archerCost;
 	}
 
-	public void setArcherCost(int archerCost) {
-		this.archerCost = archerCost;
-	}
-
 	public int getArtilleryCost() {
 		return artilleryCost;
-	}
-
-	public void setArtilleryCost(int artilleryCost) {
-		this.artilleryCost = artilleryCost;
 	}
 
 	public int getMageCost() {
 		return mageCost;
 	}
 
-	public void setMageCost(int mageCost) {
-		this.mageCost = mageCost;
-	}
-
 	public double getArcherRange() {
 		return archerRange;
-	}
-
-	public void setArcherRange(double archerRange) {
-		this.archerRange = archerRange;
 	}
 
 	public double getArtilleryRange() {
 		return artilleryRange;
 	}
 
-	public void setArtilleryRange(double artilleryRange) {
-		this.artilleryRange = artilleryRange;
-	}
-
 	public double getMageRange() {
 		return mageRange;
-	}
-
-	public void setMageRange(double mageRange) {
-		this.mageRange = mageRange;
 	}
 
 	public double getAoeRange() {
 		return aoeRange;
 	}
 
-	public void setAoeRange(double aoeRange) {
-		this.aoeRange = aoeRange;
+	// Below is for controller use
+	public void setNumberOfWaves(Number numberOfWaves) {
+		this.numberOfWaves = numberOfWaves.intValue();
+	}
+
+	public void setMaxGroupPerWave(Number maxGroupPerWave) {
+		this.maxGroupPerWave = maxGroupPerWave.intValue();
+	}
+
+	public void setMinGroupPerWave(Number minGroupPerWave) {
+		this.minGroupPerWave = minGroupPerWave.intValue();
+	}
+
+	public void setMaxEnemiesPerGroup(Number maxEnemiesPerGroup) {
+		this.maxEnemiesPerGroup = maxEnemiesPerGroup.intValue();
+	}
+
+	public void setMinEnemiesPerGroup(Number minEnemiesPerGroup) {
+		this.minEnemiesPerGroup = minEnemiesPerGroup.intValue();
+	}
+
+	public void setWaveDelay(Number waveDelay) {
+		this.waveDelay = waveDelay.doubleValue();
+	}
+
+	public void setGroupDelay(Number groupDelay) {
+		this.groupDelay = groupDelay.doubleValue();
+	}
+
+	public void setEnemyDelay(Number enemyDelay) {
+		this.enemyDelay = enemyDelay.doubleValue();
+	}
+
+	public void setKnightPercentage(Number knightPercentage) {
+		this.knightPercentage = knightPercentage.doubleValue();
+	}
+
+	public void setGoblinPercentage(Number goblinPercentage) {
+		this.goblinPercentage = goblinPercentage.doubleValue();
+	}
+
+	public void setStartingPlayerGold(Number startingPlayerGold) {
+		this.startingPlayerGold = startingPlayerGold.intValue();
+	}
+
+	public void setStartingPlayerLives(Number startingPlayerLives) {
+		this.startingPlayerLives = startingPlayerLives.intValue();
+	}
+
+	public void setGoblinHealth(Number goblinHealth) {
+		this.goblinHealth = goblinHealth.doubleValue();
+	}
+
+	public void setGoblinSpeed(Number goblinSpeed) {
+		this.goblinSpeed = goblinSpeed.doubleValue();
+	}
+
+	public void setGolbinReward(Number golbinReward) {
+		this.golbinReward = golbinReward.intValue();
+	}
+
+	public void setKnightHealth(Number knightHealth) {
+		this.knightHealth = knightHealth.doubleValue();
+	}
+
+	public void setKnightSpeed(Number knightSpeed) {
+		this.knightSpeed = knightSpeed.doubleValue();
+	}
+
+	public void setKnightReward(Number knightReward) {
+		this.knightReward = knightReward.intValue();
+	}
+
+	public void setArrowDamage(Number arrowDamage) {
+		this.arrowDamage = arrowDamage.doubleValue();
+	}
+
+	public void setArtilleryDamage(Number artilleryDamage) {
+		this.artilleryDamage = artilleryDamage.doubleValue();
+	}
+
+	public void setSpellDamage(Number spellDamage) {
+		this.spellDamage = spellDamage.doubleValue();
+	}
+
+	public void setArcherCost(Number archerCost) {
+		this.archerCost = archerCost.intValue();
+	}
+
+	public void setArtilleryCost(Number artilleryCost) {
+		this.artilleryCost = artilleryCost.intValue();
+	}
+
+	public void setMageCost(Number mageCost) {
+		this.mageCost = mageCost.intValue();
+	}
+
+	public void setArcherRange(Number archerRange) {
+		this.archerRange = archerRange.doubleValue();
+	}
+
+	public void setArtilleryRange(Number artilleryRange) {
+		this.artilleryRange = artilleryRange.doubleValue();
+	}
+
+	public void setMageRange(Number mageRange) {
+		this.mageRange = mageRange.doubleValue();
+	}
+
+	public void setAoeRange(Number aoeRange) {
+		this.aoeRange = aoeRange.doubleValue();
+	}
+
+	public static void nullifyOptions() {
+		instance = null;
 	}
 }

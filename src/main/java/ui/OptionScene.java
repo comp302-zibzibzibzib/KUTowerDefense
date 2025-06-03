@@ -241,39 +241,9 @@ public class OptionScene {
 			}
 
 			final Number[] constraints = GameOptionsController.getOptionConstraints(name);
-			Field field = GameOptionsController.getGameOptionField(name);
-			field.setAccessible(true);
-			OptionSlider option = null;
-			if (constraints[0] instanceof Integer) {
-				option = new OptionSlider<Integer>(name, () -> {
-                    try {
-                        return (Integer) field.get(GameOptionsController.options());
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }, (Integer val) -> {
-                    try {
-						field.set(GameOptionsController.options(), val);
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    }
-                }, (Integer) constraints[0], (Integer) constraints[1], (Integer) constraints[2]);
-			} else if (constraints[0] instanceof Double){
-				option = new OptionSlider<Double>(name, () -> {
-					try {
-						return (Double) field.get(GameOptionsController.options());
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
-					}
-				}, (Double val) -> {
-					try {
-						field.set(GameOptionsController.options(), val);
-					} catch (IllegalAccessException e) {
-						throw new RuntimeException(e);
-					}
-				}, (Double) constraints[0], (Double) constraints[1], (Double) constraints[2]);
-			}
 
+			OptionSlider option = new OptionSlider(name, GameOptionsController.getSupplier(name),
+							GameOptionsController.getConsumer(name), constraints[0], constraints[1], constraints[2]);
 			if (option != null) {
 				pane.getChildren().add(option);
 			}
@@ -338,6 +308,7 @@ public class OptionScene {
 		mainMenuButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3,
 								new Label("Main Menu"), 20, 150));
 		mainMenuButton.setOnAction(e -> {
+			GameOptionsController.nullifyOptions();
 			app.showMainMenu(new StackPane());
 		});
 		configureButton(mainMenuButton);
