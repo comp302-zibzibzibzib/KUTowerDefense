@@ -30,7 +30,7 @@ public class GameOptions implements Serializable {
 	// Enemies
 	private double goblinHealth;
 	private double goblinSpeed;
-	private int golbinReward;
+	private int goblinReward;
 	private double knightHealth;
 	private double knightSpeed;
 	private int knightReward;
@@ -111,7 +111,7 @@ public class GameOptions implements Serializable {
 
 		goblinHealth = 50.0;
 		goblinSpeed = 6.0;
-		golbinReward = 10;
+		goblinReward = 10;
 
 		knightHealth = 80.0;
 		knightSpeed = 3.0;
@@ -193,8 +193,8 @@ public class GameOptions implements Serializable {
 		return goblinSpeed;
 	}
 
-	public int getGolbinReward() {
-		return golbinReward;
+	public int getGoblinReward() {
+		return goblinReward;
 	}
 
 	public double getKnightHealth() {
@@ -288,10 +288,12 @@ public class GameOptions implements Serializable {
 
 	public void setKnightPercentage(Number knightPercentage) {
 		this.knightPercentage = knightPercentage.doubleValue();
+		this.goblinPercentage = 1 - this.knightPercentage;
 	}
 
 	public void setGoblinPercentage(Number goblinPercentage) {
 		this.goblinPercentage = goblinPercentage.doubleValue();
+		this.knightPercentage = 1 - this.goblinPercentage;
 	}
 
 	public void setStartingPlayerGold(Number startingPlayerGold) {
@@ -310,8 +312,8 @@ public class GameOptions implements Serializable {
 		this.goblinSpeed = goblinSpeed.doubleValue();
 	}
 
-	public void setGolbinReward(Number golbinReward) {
-		this.golbinReward = golbinReward.intValue();
+	public void setGoblinReward(Number goblinReward) {
+		this.goblinReward = goblinReward.intValue();
 	}
 
 	public void setKnightHealth(Number knightHealth) {

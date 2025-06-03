@@ -36,7 +36,7 @@ public class GoldBag {
 		initY = location.yCoord;
 		yVelocity = -bagSpeed;
 		int direction = (Utilities.globalRNG.nextBoolean()) ? -1 : 1;
-		xVelocity = direction * bagSpeed;
+		xVelocity = 2 * direction * bagSpeed;
 	}
 
 	public void pickUpBag() { //removes bag from map adds gold to player

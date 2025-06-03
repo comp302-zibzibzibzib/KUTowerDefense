@@ -1,7 +1,7 @@
 package ui;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -40,6 +40,8 @@ public class OptionScene {
 	private Image buttonBlue3 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb3.png"));
 	private Image blueRibbon = new Image(getClass().getResourceAsStream(SPRITE_PATH + "ribbon_blue.png"));
 
+	private HashMap<String, Option> optionMap = new HashMap<>();
+
 	private abstract static class Option<T extends Number> extends HBox {
 		Label nameLabel;
 		Label valueLabel;
@@ -69,7 +71,7 @@ public class OptionScene {
 			if (step instanceof Integer) {
 				valueLabel = new Label(String.valueOf(getter.get()));
 			} else if (step instanceof Double) {
-				valueLabel = new Label(String.format("%.1f", getter.get().doubleValue()));
+				valueLabel = new Label(String.format("%.2f", getter.get().doubleValue()));
 			}
 
 			StackPane nameStack = createLabelStackPane(buttonBlue3, nameLabel, 15, 200);
@@ -88,7 +90,20 @@ public class OptionScene {
 					valueLabel.setText(String.valueOf((int) roundedValue));
 				} else if (step instanceof Double) {
 					setter.accept((T) Double.valueOf(roundedValue));
-					valueLabel.setText(String.format("%.1f", getter.get().doubleValue()));
+					valueLabel.setText(String.format("%.2f", getter.get().doubleValue()));
+				}
+
+				if (name.equals("Knight Percentage") || name.equals("Goblin Percentage")) {
+					OptionSlider<Double> optionSlider = (name.equals("Knight Percentage")) ?
+							(OptionSlider<Double>) optionMap.get("Goblin Percentage") :
+							(OptionSlider<Double>) optionMap.get("Knight Percentage");
+
+					double value = optionSlider.getter.get();
+					optionSlider.valueLabel.setText(String.format("%.2f", value));
+
+					optionSlider.isResetting = true;
+					optionSlider.slider.setValue(value);
+					optionSlider.isResetting = false;
 				}
 			});
 
@@ -246,6 +261,7 @@ public class OptionScene {
 							GameOptionsController.getConsumer(name), constraints[0], constraints[1], constraints[2]);
 			if (option != null) {
 				pane.getChildren().add(option);
+				optionMap.put(name, option);
 			}
 		}
 	}

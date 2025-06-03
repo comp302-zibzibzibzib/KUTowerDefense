@@ -3,9 +3,6 @@ package domain.controller;
 import domain.kutowerdefense.GameOptions;
 import domain.services.Utilities;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +48,7 @@ public class GameOptionsController {
 		consumerMap.put("Player Lives", options::setStartingPlayerLives);
 		consumerMap.put("Goblin Health", options::setGoblinHealth);
 		consumerMap.put("Goblin Speed", options::setGoblinSpeed);
-		consumerMap.put("Goblin Reward", options::setGolbinReward);
+		consumerMap.put("Goblin Reward", options::setGoblinReward);
 		consumerMap.put("Knight Health", options::setKnightHealth);
 		consumerMap.put("Knight Speed", options::setKnightSpeed);
 		consumerMap.put("Knight Reward", options::setKnightReward);
@@ -82,7 +79,7 @@ public class GameOptionsController {
 		supplierMap.put("Player Lives", options::getStartingPlayerLives);
 		supplierMap.put("Goblin Health", options::getGoblinHealth);
 		supplierMap.put("Goblin Speed", options::getGoblinSpeed);
-		supplierMap.put("Goblin Reward", options::getGolbinReward);
+		supplierMap.put("Goblin Reward", options::getGoblinReward);
 		supplierMap.put("Knight Health", options::getKnightHealth);
 		supplierMap.put("Knight Speed", options::getKnightSpeed);
 		supplierMap.put("Knight Reward", options::getKnightReward);

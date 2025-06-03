@@ -83,7 +83,7 @@ public class MainMenuScene {
 		Image image = new Image(getClass().getResourceAsStream("/Images/MainMenuImage.png"));
 		ImageView mv = new ImageView(image);
 		
-		mv.setPreserveRatio(true);
+		mv.setPreserveRatio(false);
 		mv.fitWidthProperty().bind(root.widthProperty());
         mv.fitHeightProperty().bind(root.heightProperty());
         

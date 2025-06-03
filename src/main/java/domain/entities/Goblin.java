@@ -31,7 +31,7 @@ public class Goblin extends Enemy {
 
 	@Override
 	public void killEnemy() {
-		Player.getInstance().updateGold(GameOptions.getInstance().getGolbinReward());
+		Player.getInstance().updateGold(GameOptions.getInstance().getGoblinReward());
 		super.killEnemy();
 	}
 }
