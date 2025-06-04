@@ -560,6 +560,7 @@ public class MapEditorScene {
 					//updating the ui
 					draggingLayer.getChildren().remove(draggingClone);
 					draggingClone = null;
+					highlightBox.setVisible(false);
 					mapEditorController.printMap();
 					return;
 				}
