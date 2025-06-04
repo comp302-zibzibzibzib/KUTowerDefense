@@ -70,7 +70,7 @@ public class PlayModeController {
 			}
 			
 			else if(tile.getType().equals(TileType.CASTLE)) {
-				name ="hugetower";
+				name ="castle";
 			}
 			
 			else if(tile.getType().equals(TileType.TOWER)) {

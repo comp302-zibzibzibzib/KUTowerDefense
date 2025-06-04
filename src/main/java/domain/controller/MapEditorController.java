@@ -137,7 +137,9 @@ public class MapEditorController {
 	public void saveMap() {
 		Utilities.writeMap(forcedMap);
 	}
-	
+	public void getTile(int x, int y){
+
+	}
 	
 	public static void createStaticMap1() {
 		Map map = new Map("Pre-Built Map", 9, 16);
