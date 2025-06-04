@@ -2,7 +2,7 @@
 
 // Enumeration to differentiate between different shapes of path tiles
 public enum PathType {
-	HORIZONTAL_MIDDLE(" HM", new boolean[] {false, false, true, true}, "horizontalmiddle" ,new double[] {0, -0.15}),
+	HORIZONTAL_MIDDLE(" HM", new boolean[] {false, false, true, true}, "horizontalmiddle"),
 	HORIZONTAL_END_LEFT("HEL", new boolean[] {false, false, false, true}, "horizontalendleft"),
 	HORIZONTAL_END_RIGHT("HER", new boolean[] {false, false, true, false},"horizontalendright"),
 	VERTICAL_MIDDLE(" VM", new boolean[] {true, true, false, false}, "verticalmiddle"), 
@@ -15,7 +15,12 @@ public enum PathType {
 	BOTTOMRIGHT("BTR", new boolean[] {true, false, true, false},"bottomright", new double[] {-0.20, -0.20}),
 	BOTTOMLEFT("BTL", new boolean[] {true, false, false, true},"bottomleft", new double[] {0.20, -0.20}),
 	TOPLEFT("TPL", new boolean[] {false, true, false, true},"topleft", new double[] {0.20, 0.20}),
-	TOPRIGHT("TPR", new boolean[] {false, true, true, false},"topright", new double[] {-0.20, 0.20});
+	TOPRIGHT("TPR", new boolean[] {false, true, true, false},"topright", new double[] {-0.20, 0.20}),
+	TJUNCNOLEFT("JNL", new boolean[] {true, true, false, true}, "top"),
+	TJUNCNORIGHT("JNR", new boolean[] {true, true, true, false}, "top"),
+	TJUNCNOTOP("JNT", new boolean[] {false, true, true, true}, "top"),
+	TJUNCNOBOTTOM("JNB", new boolean[] {true, false, true, true}, "top"),
+	CROSSJUNCTION("JCR", new boolean[] {true, true, true, true}, "top");
 	
 	private String str;
 	private boolean[] neighbourBool; // {up, down, left, right}

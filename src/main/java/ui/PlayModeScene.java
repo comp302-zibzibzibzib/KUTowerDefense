@@ -273,7 +273,8 @@ public class PlayModeScene extends AnimationTimer {
 
 			if (EntityController.isGoldBagFlashing(id)) {
 				double timeSinceCreation = EntityController.getGoldBagTime(id);
-				setVisible(Math.sin(10 * timeSinceCreation) > 0);
+				double opacity = (Math.sin(10 * timeSinceCreation) > 0) ? 1.0 : 0.0;
+				setOpacity(opacity);
 			}
 		}
 	}
@@ -623,6 +624,10 @@ public class PlayModeScene extends AnimationTimer {
         deleteButtonView.setFitWidth(40);
         deleteButtonView.setFitHeight(40);
 
+		ImageView upgradeButtonView = new ImageView(archerButtonImage);
+		upgradeButtonView.setFitWidth(40);
+		upgradeButtonView.setFitHeight(40);
+
         Button deleteButton = new Button();
         deleteButton.setGraphic(deleteButtonView);
         deleteButton.setBackground(null);
@@ -635,6 +640,11 @@ public class PlayModeScene extends AnimationTimer {
             deleteButton.setLayoutX(centerX - 27);
             deleteButton.setLayoutY(centerY - 80);
         }
+
+		Button upgradeButton = new Button();
+		upgradeButton.setGraphic(upgradeButtonView);
+		upgradeButton.setBackground(null);
+		upgradeButton.setPrefSize(40, 40);
 
         deleteButton.setOnMouseClicked(event -> {
             removeCircle(removeSelection);

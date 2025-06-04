@@ -96,7 +96,7 @@ public class MainMenuScene {
 	
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
-			MainMenuController.startNewGame("Pre-Built Map 2");
+			MainMenuController.startNewGame("Multiple Way Map");
 			app.startGame();
 		} else if (event.getSource() == mapEditorButton) {
 			// Begüm buraya bir şeyler yazar mısın pls

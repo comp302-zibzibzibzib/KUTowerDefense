@@ -1,23 +1,28 @@
 package domain.entities;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
+import domain.controller.PlayModeController;
 import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.map.Location;
 import domain.map.PathTile;
 import domain.map.Tile;
+import domain.map.Map;
 import domain.services.Utilities;
 import domain.tower.AttackType;
 import domain.tower.Projectile;
 
 public abstract class Enemy {
-	private static final Random random = new Random();
+	private static final double GAUSSIAN_MEAN = 0.0;
+	private static final double GAUSSIAN_STANDARD_DEVIATION = 10.0;
 
 	public static ArrayList<Enemy> enemies = new ArrayList<>();
 	public static ArrayList<Enemy> activeEnemies = new ArrayList<>();
-	public static List<PathTile> path = new ArrayList<PathTile>();
+	public List<PathTile> path;
+	public List<double[]> pathOffsets = new ArrayList<>();
 	private static int numberOfEnemies = 0; // Not active enemy number just the total amount created during runtime
 	protected double hitPoints;
 	protected final double totalHitPoints;
@@ -31,6 +36,7 @@ public abstract class Enemy {
 	private boolean initialized = false;
 	
 	private double[] direction = new double[] {0.0, 0.0};
+	private double[] gaussianNoise = new double[] {0.0, 0.0};
 
 	double timeSinceSlowedDown = 0.0;
 
@@ -49,11 +55,20 @@ public abstract class Enemy {
 		enemies.add(this);
 	}
 
-	public void initialize(Location location) {
-		setLocation(location);
+	public void initialize() {
 		initialized = true;
 		activeEnemies.add(this);
 		setPath();
+		setPathOffsets();
+		updateGaussianNoise();
+		double[] offset = Map.getEdgeTargetOffset(path.getFirst());
+
+		Location startLocation = getPath().getFirst().getLocation();
+		double startX = startLocation.xCoord + offset[0] * Tile.tileLength;	// Offset x
+		double startY = startLocation.yCoord + offset[1] * Tile.tileLength; // Offset y
+		Location actualStartLocation = new Location(startX, startY);
+
+		setLocation(actualStartLocation);
 	}
 	
 	protected void hitPlayer() {
@@ -64,7 +79,7 @@ public abstract class Enemy {
 
 	public void hitEnemy(double damage, AttackType attackType) {
 		if (attackType == AttackType.SLOW_SPELL) slowDown();
-		if ((attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) && random.nextDouble() <= 0.03) {
+		if ((attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) && Utilities.globalRNG.nextDouble() <= 1) {
 			resetPosition();
 			return;
 		}
@@ -99,11 +114,15 @@ public abstract class Enemy {
 	}
 	
 	// 3% chance to reset back to start when hit by mage tower, can be put somewhere else
-	public void resetPosition() { 
-		Location startLocation = PlayModeManager.getInstance().getCurrentMap().getStartingTile().getLocation();
-		double startX = startLocation.xCoord;
-		double startY = startLocation.yCoord + 1.0 * Tile.tileLength;
-        this.location = new Location(startX, startY);
+	public void resetPosition() {
+		double[] offset = Map.getEdgeTargetOffset(path.getFirst());
+
+		Location startLocation = getPath().getFirst().getLocation();
+		double startX = startLocation.xCoord + offset[0] * Tile.tileLength;	// Offset x
+		double startY = startLocation.yCoord + offset[1] * Tile.tileLength; // Offset y
+		Location actualStartLocation = new Location(startX, startY);
+		setLocation(actualStartLocation);
+
 		this.pathIndex = 0;
 
 		Projectile.killProjectiles(this);
@@ -131,13 +150,11 @@ public abstract class Enemy {
 		
 		PathTile nextTile = path.get(pathIndex+1); //get the location of next tile's centre
 		
-		double[] tileOffset = null;
-		if (pathIndex+1 == path.size()-1) 
-			tileOffset = new double[] {0.0, -1}; // Enemy has to move further up if next is end tile
-		else tileOffset = nextTile.getPathType().getPathOffsetPercentage();
+		double[] tileOffset = pathOffsets.get(pathIndex+1);
+		double[] offset = new double[] {tileOffset[0] + gaussianNoise[0], tileOffset[1] + gaussianNoise[1]};
 		
-		double nextX = nextTile.getLocation().xCoord + tileOffset[0] * Tile.tileLength;
-		double nextY = nextTile.getLocation().yCoord + tileOffset[1] * Tile.tileLength;
+		double nextX = nextTile.getLocation().xCoord + offset[0] * Tile.tileLength;
+		double nextY = nextTile.getLocation().yCoord + offset[1] * Tile.tileLength;
 		
 		double distance = Utilities.euclideanDistance(this.location, new Location(nextX, nextY)); //get distance
 		
@@ -175,7 +192,7 @@ public abstract class Enemy {
 		if (pathIndex+2 >= path.size()) return;
 		
 		PathTile tile2 = path.get(pathIndex+2);
-		double[] offset2 = tile2.getPathType().getPathOffsetPercentage();
+		double[] offset2 = pathOffsets.get(pathIndex+2);
 		
 		double nextX2 = tile2.getLocation().xCoord + offset2[0] * Tile.tileLength;
 		double nextY2 = tile2.getLocation().yCoord + offset2[1] * Tile.tileLength;
@@ -185,6 +202,21 @@ public abstract class Enemy {
 		if (distance2 < distance) {
 			this.pathIndex++;
         }
+	}
+
+	private void updateGaussianNoise() {
+		gaussianNoise = new double[] {0.0, 0.0};
+		int signX = Utilities.globalRNG.nextBoolean() ? 1 : -1;
+		int signY = Utilities.globalRNG.nextBoolean() ? 1 : -1;
+		gaussianNoise[0] = signX * boundedGaussian();
+		gaussianNoise[1] = signY * boundedGaussian();
+	}
+
+	private static double boundedGaussian() {
+		double noise = Utilities.globalRNG.nextGaussian(GAUSSIAN_MEAN, GAUSSIAN_STANDARD_DEVIATION);
+		noise = Math.max(-1, Math.min(1, noise));
+
+		return noise / 10.0;
 	}
 	
 	public double getHitPoints() {
@@ -226,8 +258,18 @@ public abstract class Enemy {
 		return pathIndex;
 	}
 	
-	public static void setPath() {
-		path = PlayModeManager.getInstance().getCurrentMap().getPath();
+	public void setPath() {
+		Map map = PlayModeManager.getInstance().getCurrentMap();
+		HashMap<PathTile, List<PathTile>> pathMap = map.getPathMap();
+		List<java.util.Map.Entry<PathTile, List<PathTile>>> nonNullPaths = pathMap.entrySet().stream().filter(
+				c -> c.getValue() != null).toList();
+		int index = Utilities.globalRNG.nextInt(nonNullPaths.size());
+		PathTile start = nonNullPaths.get(index).getKey();
+		path = pathMap.get(start);
+	}
+
+	public void setPathOffsets() {
+		pathOffsets = PlayModeManager.getInstance().getCurrentMap().getOffsetMap().get(path.getFirst());
 	}
 	
 	public boolean isInitialized() {
@@ -243,7 +285,7 @@ public abstract class Enemy {
 	protected static int getID() {
 		return numberOfEnemies++;
 	}
-	
+
 	public int getEnemyID() {
 		return enemyID;
 	}
@@ -274,5 +316,9 @@ public abstract class Enemy {
 
   	public boolean isSlowedDown() {
 		return slowedDown;
+	}
+
+	public List<PathTile> getPath() {
+		return path;
 	}
 }

@@ -34,7 +34,7 @@ class MovementTimer extends AnimationTimer {
 		
 		List<Enemy> enemyList = new ArrayList(Enemy.getAllEnemies());
 		for (Enemy enemy : enemyList) {
-			if(enemy.getPathIndex() == Enemy.path.size()-2) {
+			if(enemy.getPathIndex() == enemy.path.size()-2) {
 				//System.out.println();
 			}
 			enemy.updateEnemy(deltaTime);
@@ -47,7 +47,7 @@ class MovementTimer extends AnimationTimer {
                 totalTimeElapsed ++;
             }
             
-            if(enemy.getPathIndex() == Enemy.path.size()-1) {
+            if(enemy.getPathIndex() == enemy.path.size()-1) {
             	System.out.printf("Enemy has reaced end in: %f seconds\n",totalTimeElapsed);
             	System.out.println("reached End");
             }
@@ -70,7 +70,7 @@ public class MovementTest extends Application {
 	
 	@Override
 	public void start(Stage arg0) throws Exception {
-		StackPane root = new StackPane();
+		/*StackPane root = new StackPane();
         Scene scene = new Scene(root, 400, 400);
         
         arg0.setScene(scene);
@@ -97,8 +97,8 @@ public class MovementTest extends Application {
         MainMenuController.startNewGame("map1");
         
         Enemy goblin = GoblinFactory.getInstance().createEnemy();
-        goblin.initialize(man.getCurrentMap().getStartingTile().getLocation());
+        goblin.initialize(man.getCurrentMap().getStartingTiles().getLocation());
         timer = new MovementTimer();
-        timer.start();
+        timer.start();*/
 	}
 }

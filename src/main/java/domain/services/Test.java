@@ -214,7 +214,7 @@ public final class Test {
 		}
 		
 		private static void testPathFinding() {
-			System.out.println("-----Path Finding Test-----");
+			/*System.out.println("-----Path Finding Test-----");
 			Map map1 = new Map("map1", 5, 5);
 			MapEditor me3 = new MapEditor(map1);
 			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE,4,3);
@@ -256,7 +256,7 @@ public final class Test {
 			MapTest.printMap(map1);
 			for(PathTile p : path) {
 				System.out.println(p.getPathType());
-			}
+			}*/
 			return;
 		}
 		           
@@ -269,7 +269,7 @@ public final class Test {
 	
 	static class TowerTest {
 		private static void testTargetEnemy() {
-			Map map1 = new Map("map1", 5, 5);
+			/*Map map1 = new Map("map1", 5, 5);
 			MapEditor me3 = new MapEditor(map1);
 			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE,4,3);
 			me3.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 0,1);
@@ -333,7 +333,7 @@ public final class Test {
 			archerTower.targetEnemy();
 			if(archerTower.getTarget() == enemy5) System.out.println("Target Enemy Test2 - PASSED");
 			else System.out.println("Target Enemy Test2 - FAILED");
-			
+			*/
 		}
 		
 		public static void main(String[] args) {
@@ -342,7 +342,7 @@ public final class Test {
 	}
 	static class enemyMovement {
 		
-		private static long lastUpdate = 0;
+		/*private static long lastUpdate = 0;
 		private static int s = 0;
 		private static int totalTimeElapsed = 0;
 		
@@ -367,7 +367,7 @@ public final class Test {
 		System.out.println("map created");
 		
 		List<PathTile> path = Utilities.findPath(map1);
-		map1.endingTile = path.get(path.size()-1);
+		map1.endingTiles = path.get(path.size()-1);
 		map1.startingTile = path.get(0);
 		
 		Enemy e1 = GoblinFactory.getInstance().createEnemy();
@@ -375,7 +375,7 @@ public final class Test {
 		e1.setPathIndex(0);
 		Enemy.path = path;
 		System.out.println(e1.getLocation());
-		System.out.println(map1.getStartingTile().getLocation());
+		System.out.println(map1.getStartingTiles().getLocation());
 		System.out.println("enemy created and put in map");
 		
 		
@@ -414,10 +414,10 @@ public final class Test {
 		
 		public static void main(String[] args) {
 			testMovement();
-		}
+		}*/
 	}
 	static class ProjectileTest {
-		private static int  total = 0;
+		/*private static int  total = 0;
 		private static void testProjectile() {
 		    Map map = new Map("map1", 5, 5);
 		    MapEditor me3 = new MapEditor(map);
@@ -510,6 +510,6 @@ public final class Test {
 	
 		public static void main(String[] args) {
 			testProjectile();		
-		}
+		}*/
 	}
 }

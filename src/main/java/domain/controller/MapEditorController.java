@@ -175,7 +175,9 @@ public class MapEditorController {
 		Map map_1 = new Map("Pre-Built Map 2", 9, 16);
 		MapEditor me_1 = new MapEditor(map_1);
 		me_1.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE,0,2);
+		me_1.addEndingTile(0, 2);
 		me_1.placeTile(TileType.PATH, PathType.TOPLEFT, 8, 1);
+		me_1.addStartingTile(8, 1);
 		me_1.placeTile(TileType.PATH, PathType.BOTTOMRIGHT,1,2);
 		me_1.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE,1,1);
 		me_1.placeTile(TileType.PATH, PathType.TOPLEFT,1,0);
@@ -223,5 +225,77 @@ public class MapEditorController {
 		me_1.placeTile(TileType.DECORATIVES, DecorativeType.WELL, 7,11);
 		me_1.placeTile(TileType.DECORATIVES, DecorativeType.TREE1, 5,10);
 		me_1.saveMap();
+	}
+
+	public static void createStaticMap3() {
+		Map map = new Map("Multiple Way Map", 9, 16);
+		MapEditor me = new MapEditor(map);
+
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 0, 8);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 0, 12);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 1, 8);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 1, 12);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 2, 8);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 2, 12);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 3, 8);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 3, 12);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 0);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 1);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 2);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 3);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 4);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 5);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 6);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 7);
+		me.placeTile(TileType.PATH, PathType.TJUNCNOBOTTOM, 4, 8);
+		me.placeTile(TileType.PATH, PathType.TJUNCNOTOP, 4, 9);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 10);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 11);
+		me.placeTile(TileType.PATH, PathType.TJUNCNOBOTTOM, 4, 12);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 13);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 14);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 4, 15);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 5, 9);
+		me.placeTile(TileType.PATH, PathType.TOPLEFT, 6, 7);
+		me.placeTile(TileType.PATH, PathType.HORIZONTAL_MIDDLE, 6, 8);
+		me.placeTile(TileType.PATH, PathType.BOTTOMRIGHT, 6, 9);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 7, 7);
+		me.placeTile(TileType.PATH, PathType.VERTICAL_MIDDLE, 8, 7);
+		me.addEndingTile(0, 8);
+		me.addEndingTile(0, 12);
+		me.addStartingTile(4, 0);
+		me.addStartingTile(4, 15);
+		me.addStartingTile(8, 7);
+
+		me.placeTile(TileType.TOWER, TowerType.ARCHER, 3, 7);
+		me.placeTile(TileType.LOT, 3,  9);
+		me.placeTile(TileType.LOT, 3, 11);
+		me.placeTile(TileType.LOT, 5, 8);
+		me.placeTile(TileType.LOT, 3, 3);
+		me.placeTile(TileType.LOT, 3, 14);
+		me.placeTile(TileType.LOT, 5, 13);
+		me.placeTile(TileType.LOT, 3, 3);
+		me.placeTile(TileType.LOT, 3, 11);
+
+		me.placeTile(TileType.CASTLE, 0, 9);
+
+		me.placeTile(TileType.DECORATIVES, DecorativeType.TREE1, 0, 1);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.TREE3, 6, 2);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.TREE2, 6, 5);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.TREE3, 1, 14);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.TREE1, 7, 10);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.TREE2, 8, 10);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.TREE1, 3, 10);
+
+		me.placeTile(TileType.DECORATIVES, DecorativeType.ROCK1, 1, 1);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.ROCK1, 8, 3);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.ROCK2, 7, 5);
+
+		me.placeTile(TileType.DECORATIVES, DecorativeType.HOUSE1, 1, 4);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.HOUSE2, 6, 13);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.WELL, 6, 14);
+		me.placeTile(TileType.DECORATIVES, DecorativeType.WOOD, 1, 3);
+
+		me.saveMap();
 	}
 }

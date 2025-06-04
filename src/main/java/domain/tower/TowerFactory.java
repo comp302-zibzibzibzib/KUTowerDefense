@@ -3,7 +3,7 @@ package domain.tower;
 public interface TowerFactory {
 	static final int costArcher = 50;
 	static final int upgradeCostArcher = 50;
-	static final double rangeArcher = 15;
+	static final double rangeArcher = 20;
 	static final double fireRateArcher = 5;
 	static final int costArtillery = 50;
 	static final int upgradeCostArtillery = 50;

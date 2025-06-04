@@ -12,6 +12,7 @@ public class MainMenuController {
 		Enemy.enemies.clear();
 		GameOptionsController.initializeGameOptions();
 		MapEditorController.createStaticMap2();
+		MapEditorController.createStaticMap3();
 		PlayModeManager.resetManager();
 		PlayerController.resetPlayer();
 		MapEditorController.resetMap();

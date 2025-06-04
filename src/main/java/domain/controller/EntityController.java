@@ -123,8 +123,7 @@ class MovementTimer extends AnimationTimer {
 
 		if (Enemy.getAllEnemies().isEmpty()) {
 			stop();
-			return;
-		}
+        }
 	}
 }
 
@@ -224,7 +223,6 @@ public class EntityController {
     public static void resetEnemies() {
         Enemy.enemies = new ArrayList<Enemy>();
         Enemy.activeEnemies = new ArrayList<Enemy>();
-        Enemy.path = new ArrayList<PathTile>();
     }
 
     public static boolean isKnightFast(int i) {

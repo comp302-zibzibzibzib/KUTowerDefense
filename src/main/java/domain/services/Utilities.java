@@ -32,16 +32,39 @@ public final class Utilities {
 			return 0;
 		}
 	}
+
+	/**
+	 *
+	 * @param map
+	 * @return Returns a map of starting tiles to paths to the closest ending tile
+	 */
+	public static HashMap<PathTile, List<PathTile>> findPath(Map map) {
+		List<PathTile> startingTiles = map.getStartingTiles();
+		List<PathTile> endingTiles = map.getEndingTiles();
+
+		HashMap<PathTile, List<PathTile>> pathMap = new HashMap<>();
+
+		for (PathTile startingTile : startingTiles) {
+			List<PathTile> bestPath = null;
+			for (PathTile endingTile : endingTiles) {
+				List<PathTile> path = findPath(startingTile, endingTile, map);
+				if (path != null && (bestPath == null || path.size() < bestPath.size())) {
+					bestPath = path;
+				}
+			}
+			pathMap.put(startingTile, bestPath);
+		}
+
+		return pathMap;
+	}
 	
 	/**
 	 * 
 	 * @param map
 	 * @return Returns a List of PathTile objects sorted from starting tile to ending tile of given map 
 	 */
-	public static List<PathTile> findPath(Map map) {
+	private static List<PathTile> findPath(PathTile start, PathTile end, Map map) {
 		// MAL BEDO YANLIŞ YAPMIŞ VİSİT İŞARETLE
-		PathTile start = map.startingTile;
-		PathTile end = map.endingTile;
 		
 		// Gets all PathTile objects from map.tileMap
 		ArrayList<PathTile> pathTileArray = new ArrayList<PathTile>();

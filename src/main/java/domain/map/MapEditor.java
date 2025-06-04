@@ -1,6 +1,7 @@
 package domain.map;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 import domain.kutowerdefense.PlayModeManager;
@@ -19,6 +20,26 @@ public class MapEditor implements Serializable {
 	public MapEditor(Map map) {
 		this.map = map;
 		PlayModeManager.getInstance().setCurrentMap(map);
+	}
+
+	public void addStartingTile(int height, int width) {
+		Tile tile = map.tileMap[height][width];
+		if (!(tile instanceof PathTile)) return;
+
+		PathTile pathTile = (PathTile) tile;
+		map.addStartingTile(pathTile);
+
+		isStartingTilePlaced = !map.getStartingTiles().isEmpty();
+	}
+
+	public void addEndingTile(int height, int width) {
+		Tile tile = map.tileMap[height][width];
+		if (!(tile instanceof PathTile)) return;
+
+		PathTile pathTile = (PathTile) tile;
+		map.addEndingTile(pathTile);
+
+		isEndingTilePlaced = !map.getEndingTiles().isEmpty();
 	}
 
 	public void placeTile(TileType type, int height, int width) {
@@ -108,15 +129,6 @@ public class MapEditor implements Serializable {
 			// Set neighbours (bidirectional) of path tiles
 			PathTile newPathTile = new PathTile(pType, newTileLocation);
 			tileToPlace = newPathTile;
-
-			if (!isStartingTilePlaced && y == map.height - 1) {
-				map.setStartingTile(newPathTile); // Starting tile is set
-				isStartingTilePlaced = true;
-			}
-			if (!isEndingTilePlaced && y == 0) {
-				map.setEndingTile(newPathTile); // Ending tile is set
-				isEndingTilePlaced = true;
-			}
 
 			if (pType.neighbourExists(0) && y > 0 && map.tileMap[y - 1][x] instanceof PathTile) {
 				PathTile up = (PathTile) map.tileMap[y - 1][x];
@@ -272,13 +284,11 @@ public class MapEditor implements Serializable {
 					pathTile.getRight().setLeft(null);
 				}
 
-				if (map.getStartingTile() == pathTile) {
-					map.setStartingTile(null); // Resets starting tile
-					isStartingTilePlaced = false;
+				if (map.getStartingTiles().contains(pathTile)) {
+					map.removeStartingTile(pathTile);
 				}
-				if (map.getEndingTile() == pathTile) {
-					map.setEndingTile(null); // Resets ending tile
-					isEndingTilePlaced = false;
+				if (map.getEndingTiles() == pathTile) {
+					map.removeEndingTile(pathTile);
 				}
 
 				map.tileMap[y][x] = new Tile(currentTile.location); // Replace with grass tile
@@ -307,18 +317,23 @@ public class MapEditor implements Serializable {
 
 	public boolean isValidMap() {
 		// Ensure that starting and ending tiles are really placed
-		if (isStartingTilePlaced && isEndingTilePlaced && map.getStartingTile() != null
-				&& map.getEndingTile() != null) {
-			List<PathTile> reachablePath = Utilities.findPath(map);
-			if (reachablePath == null) return false;
+		if (isStartingTilePlaced && isEndingTilePlaced && map.getStartingTiles() != null
+				&& map.getEndingTiles() != null) {
+			//Ensure that there are at least four tiles with empty lots
+			if (lotCount < 4) return false;
+			HashMap<PathTile, List<PathTile>> reachablePathMap = map.getPathMap();
+			if (reachablePathMap.isEmpty()) return false;
 			//Ensure that there is a connected path and, first tile and last tiles are starting and ending tiles respectively. (Should work if A* is implemented correctly)
-			if(reachablePath.get(0).equals(map.getStartingTile()) && reachablePath.get(reachablePath.size()-1).equals(map.getEndingTile())) {
-				//Ensure that there are at least four tiles with empty lots
-				if(lotCount >= 4) {
+			boolean workingPath = false;
+			for (PathTile tile : reachablePathMap.keySet()) {
+				if (reachablePathMap.get(tile) == null) continue;
 
-					return true;
+				List<PathTile> path = reachablePathMap.get(tile);
+				if (path.getFirst() == tile && map.getEndingTiles().contains(path.getLast())) {
+					workingPath = true;
 				}
 			}
+			return workingPath;
 		}
 		System.out.println("Map does not satisfy the map conditions!");
 		return false;

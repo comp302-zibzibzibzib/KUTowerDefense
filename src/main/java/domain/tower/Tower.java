@@ -59,33 +59,34 @@ public abstract class Tower implements Serializable {
     	double distanceToNext;
     	double progressInTile;
     	double totalProgress = 0.0;
-    	double bestProgress = Double.MIN_VALUE;
+    	double bestProgress = -Double.MIN_VALUE;
     	Enemy lastTarget = null;
 
 		if (target != null && Utilities.euclideanDistance(location, target.getLocation()) > range) {
-			double a = Utilities.euclideanDistance(location, target.getLocation());
 			target = null;
 		}
 
 		List<Enemy> enemyList = new ArrayList<>(Enemy.getActiveEnemies());
     	for (Enemy e : enemyList) {
+			double totalPathLength = e.path.size() * Tile.tileLength;
     	    if (Utilities.euclideanDistance(location, e.getLocation()) <= range) {
     	        currentpathIndex = e.getPathIndex();
     	        nextpathIndex = currentpathIndex + 1;
 
-    	        if (nextpathIndex < 0 || nextpathIndex >= Enemy.path.size()) {
+    	        if (nextpathIndex < 0 || nextpathIndex >= e.path.size()) {
     	            continue; 
     	        }
 
     	        distanceToNext = Utilities.manhattanDistance(
     	            e.getLocation(), 
-    	            Enemy.path.get(nextpathIndex).getLocation()
+    	            e.path.get(nextpathIndex).getLocation()
     	        );
     	        progressInTile = Tile.tileLength - distanceToNext;
     	        totalProgress = currentpathIndex * Tile.tileLength + progressInTile;
 
-    	        if (totalProgress > bestProgress) {
-    	            bestProgress = totalProgress;
+				double progressPercentage = totalProgress / totalPathLength;
+    	        if (progressPercentage > bestProgress) {
+    	            bestProgress = progressPercentage;
     	            lastTarget = e;
    	        	}
    	    	}
