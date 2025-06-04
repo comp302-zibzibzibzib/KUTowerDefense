@@ -15,6 +15,9 @@ public class PlayModeController {
 	
 	private static boolean mapExists() { return playModeManager.getCurrentMap() != null; }
 	
+	public static Map getCurrentMap() {
+	    return playModeManager.getCurrentMap();
+	}
 	public static int getMapHeight() {
 		if (mapExists()) return playModeManager.getCurrentMap().getHeight();
 		return -1;
@@ -70,7 +73,7 @@ public class PlayModeController {
 			}
 			
 			else if(tile.getType().equals(TileType.CASTLE)) {
-				name ="castle";
+				name = "castle";
 			}
 			
 			else if(tile.getType().equals(TileType.TOWER)) {

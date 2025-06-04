@@ -83,7 +83,7 @@ public class PlayModeManager {
 			Enemy.enemies.clear();
 			Enemy.resetID();
 			this.waveLength = GameOptions.getInstance().getNumberOfWaves();
-			for (int i = 0; i < waveLength; i++) instance.waves.add(WaveFactory.createWave()); // Temporarily has 3 identical waves back to back
+			for (int i = 0; i < waveLength; i++) instance.waves.add(WaveFactory.createWave());
 		}
 		
 		timeSinceLastWave += deltaTime * gameSpeed;

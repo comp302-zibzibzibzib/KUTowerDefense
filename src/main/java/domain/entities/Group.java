@@ -5,7 +5,6 @@ import java.util.List;
 import domain.kutowerdefense.PlayModeManager;
 import domain.map.Location;
 import domain.map.Tile;
-import javafx.animation.AnimationTimer;
 
 /*class EnemyMover implements Runnable{ //deprecated class
 	private Enemy enemy;
@@ -47,7 +46,7 @@ public class Group {
 		double startY = startLocation.yCoord + 0.7 * Tile.tileLength; // Offset y so that enemies spawn from the edge
 		Location actualStartLocation = new Location(startX, startY);
 		
-		double delay = 0.5;
+		double delay = 1;
 		
 		timeAfterEnemySpawn += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 		

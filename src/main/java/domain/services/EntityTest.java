@@ -1,11 +1,7 @@
 package domain.services;
 
-import java.util.List;
-
 import domain.controller.EntityController;
 import domain.controller.MainMenuController;
-import domain.kutowerdefense.PlayModeManager;
-import domain.map.PathTile;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;

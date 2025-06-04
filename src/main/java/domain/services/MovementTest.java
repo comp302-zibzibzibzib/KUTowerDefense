@@ -5,7 +5,7 @@ import java.util.List;
 
 import domain.controller.MainMenuController;
 import domain.entities.Enemy;
-import domain.entities.EnemyFactory;
+import domain.entities.GoblinFactory;
 import domain.kutowerdefense.PlayModeManager;
 import domain.map.Map;
 import domain.map.MapEditor;
@@ -37,7 +37,7 @@ class MovementTimer extends AnimationTimer {
 			if(enemy.getPathIndex() == Enemy.path.size()-2) {
 				//System.out.println();
 			}
-			enemy.moveEnemy(deltaTime);
+			enemy.updateEnemy(deltaTime);
             System.out.printf("%f x, %f y \n",enemy.getLocation().xCoord, enemy.getLocation().yCoord);
             
             s++;
@@ -96,7 +96,7 @@ public class MovementTest extends Application {
         
         MainMenuController.startNewGame("map1");
         
-        Enemy goblin = EnemyFactory.createGoblin();
+        Enemy goblin = GoblinFactory.getInstance().createEnemy();
         goblin.initialize(man.getCurrentMap().getStartingTile().getLocation());
         timer = new MovementTimer();
         timer.start();

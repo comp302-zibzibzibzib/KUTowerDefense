@@ -12,7 +12,7 @@ public class PlayerValueListener<T extends Number> {
 	}
 	
 	public void removeListener(Consumer<T> consumer) {
-		if (listenerList.contains(consumer)) listenerList.remove(consumer);
+        listenerList.remove(consumer);
 	}
 	
 	public void invoke() {

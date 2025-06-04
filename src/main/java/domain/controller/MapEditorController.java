@@ -86,8 +86,8 @@ public class MapEditorController {
 	public void removeTower(int x, int y) {
 		Tile tileToRemove = playModeManager.getCurrentMap().tileMap[y][x];
 		if (tileToRemove.getType() != TileType.TOWER) return;
-		mapEditor.removeTile(y, x);
 		player.updateGold((int) (((Lot)tileToRemove).getTower().getCost() * 0.6));
+		mapEditor.removeTile(y, x);
 	}
 	
 	public void forcePlaceTile(String name, int x, int y) {
@@ -205,6 +205,7 @@ public class MapEditorController {
 		me_1.placeTile(TileType.PATH, PathType.TOPLEFT,7,2);
 		me_1.placeTile(TileType.PATH, PathType.BOTTOMRIGHT,8,2);
 		me_1.placeTile(TileType.CASTLE, 0,3);
+		me_1.placeTile(TileType.CASTLE, 3, 10);
 		me_1.placeTile(TileType.DECORATIVES, DecorativeType.TREE1, 7, 14);
 		me_1.placeTile(TileType.DECORATIVES, DecorativeType.TREE2, 4, 15);
 		me_1.placeTile(TileType.DECORATIVES, DecorativeType.TREE3, 0, 8);

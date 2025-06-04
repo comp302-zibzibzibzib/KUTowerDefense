@@ -1,23 +1,16 @@
 package domain.tower;
 
 public class MageTower extends Tower {
+	private static final long serialVersionUID = 1L;
 
 	public MageTower(int cost, int upgradeCost, int level, double range, double fireRate) {
-
-		super();
-		this.upgradeCost = upgradeCost;
-		this.level = level;
-		this.attackType = AttackType.SPELL;
-		this.target = null;
-		this.range = range;
-		this.cost = cost;
+		super(cost, upgradeCost, AttackType.SPELL, level, range, fireRate);
 	}
 
 	@Override
-	public Projectile createProjectile() {
-		Projectile projectile = ProjectileFactory.createSpell(target, location);
-		System.out.printf("%f",projectile.damage);
-		return projectile;
+	public void upgradeTower() {
+		if (level == 2) return;
+		level = 2;
+		attackType = AttackType.SLOW_SPELL;
 	}
-
 }

@@ -1,29 +1,19 @@
 package domain.tower;
 
-public class TowerFactory {
-	public static final int costArcher = 50;
-	private static final int upgradeCostArcher = 50;
-	private static final double rangeArcher = 15;
-	private static final double fireRateArcher = 6;
-	public static final int costArtillery = 50;
-	private static final int upgradeCostArtillery = 50;
-	private static final double rangeArtillery = 10;
-	private static final double fireRateArtillery = 2;
-	public static final int costMage = 50;
-	private static final int upgradeCostMage = 50;
-	private static final double rangeMage = 12;
-	private static final double fireRateMage = 4;
+public interface TowerFactory {
+	static final int costArcher = 50;
+	static final int upgradeCostArcher = 50;
+	static final double rangeArcher = 15;
+	static final double fireRateArcher = 5;
+	static final int costArtillery = 50;
+	static final int upgradeCostArtillery = 50;
+	static final double rangeArtillery = 10;
+	static final double fireRateArtillery = 1;
+	static final int costMage = 50;
+	static final int upgradeCostMage = 50;
+	static final double rangeMage = 12;
+	static final double fireRateMage = 2;
 	
-	public static ArcherTower createArcherTower() {
-		return new ArcherTower(costArcher, upgradeCostArcher, 1, rangeArcher, fireRateArcher);
-	}
-	
-	public static ArtilleryTower createArtilleryTower() {
-		return new ArtilleryTower(costArtillery, upgradeCostArtillery, 1, rangeArtillery, fireRateArtillery);
-	}
-	
-	public static MageTower createMageTower() {
-		return new MageTower(costMage, upgradeCostMage, 1, rangeMage, fireRateMage);
-	}
+	Tower createTower();
 }
 

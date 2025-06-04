@@ -19,6 +19,12 @@ public class Location implements Serializable{
 		this.yCoord = 0;
 	}
 
+	// I don't know why we didn't do this before
+	public Location(Location location) {
+		this.xCoord = location.xCoord;
+		this.yCoord = location.yCoord;
+	}
+
 	public double getXCoord() {
 		return xCoord;
 	}

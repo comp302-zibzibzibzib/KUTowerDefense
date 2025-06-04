@@ -1,7 +1,6 @@
 package domain.kutowerdefense;
 
 import domain.map.Map;
-import domain.map.MapEditor;
 import domain.services.Utilities;
 
 public class KUTowerDefense {

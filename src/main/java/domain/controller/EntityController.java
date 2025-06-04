@@ -1,14 +1,15 @@
 package domain.controller;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
-import domain.entities.Enemy;
-import domain.entities.Goblin;
-import domain.entities.Group;
-import domain.entities.Knight;
-import domain.entities.Wave;
+import domain.entities.*;
 import domain.kutowerdefense.PlayModeManager;
+import domain.map.PathTile;
 import javafx.animation.AnimationTimer;
 
 class SpawnerLoopTimer extends AnimationTimer {
@@ -16,7 +17,6 @@ class SpawnerLoopTimer extends AnimationTimer {
 	
     private long lastUpdate = 0;
     private double totalElapsed = 0;
-    private PlayModeManager manager = PlayModeManager.getInstance();
     
     @Override
     public void start() {
@@ -45,16 +45,16 @@ class SpawnerLoopTimer extends AnimationTimer {
             return;
         }
 
-        double deltaTime = (now - lastUpdate) / 1_000_000_000.0;
+        double deltaTime = (double) (now - lastUpdate) / 1_000_000_000.0;
         lastUpdate = now;
         
-        totalElapsed += deltaTime * manager.getGameSpeed();
+        totalElapsed += deltaTime * PlayModeManager.getInstance().getGameSpeed();
 
         updateManager(deltaTime);
         updateWaves(deltaTime);
         updateGroups(deltaTime);
 
-        if (manager.spawnedAllWaves()) {
+        if (PlayModeManager.getInstance().spawnedAllWaves()) {
             System.out.println("All waves spawned. Stopping spawner loop.");
             stop();
         }
@@ -66,12 +66,12 @@ class SpawnerLoopTimer extends AnimationTimer {
 
     private void updateManager(double deltaTime) {
         if (totalElapsed > PlayModeManager.GRACE_PERIOD_SECONDS) {
-            manager.initializeWaves(deltaTime);
+            PlayModeManager.getInstance().initializeWaves(deltaTime);
         }
     }
 
     private void updateWaves(double deltaTime) {
-        List<Wave> waves = manager.getWaves();
+        List<Wave> waves = PlayModeManager.getInstance().getWaves();
         for (Wave wave : waves) {
             if (wave.isSpawning()) {
                 wave.spawnGroups(deltaTime);
@@ -80,7 +80,7 @@ class SpawnerLoopTimer extends AnimationTimer {
     }
 
     private void updateGroups(double deltaTime) {
-        List<Wave> waves = manager.getWaves();
+        List<Wave> waves = PlayModeManager.getInstance().getWaves();
         for (Wave wave : waves) {
             List<Group> groups = wave.getGroups();
             for (Group group : groups) {
@@ -89,21 +89,6 @@ class SpawnerLoopTimer extends AnimationTimer {
                 }
             }
         }
-    }
-    
-    private void testFunctionality() {
-    	PlayModeManager man = PlayModeManager.getInstance();
-    	
-    	boolean passed = true;
-    	for (Enemy enemy : Enemy.getAllEnemies()) {
-			if (!enemy.getLocation().equals(man.getCurrentMap().getStartingTile().getLocation())
-					&& enemy.isInitalized()) {
-				passed = false;
-				break;
-			}
-		}
-    	if (passed) System.out.println("Initialization Test - PASSED!");
-		else System.out.println("Initialization Test - PASSED!");
     }
 }
 
@@ -124,20 +109,18 @@ class MovementTimer extends AnimationTimer {
 			return;
 		}
 		
-		long deltaTime = (now - lastUpdate);
+		double deltaTime = (double) (now - lastUpdate) / 1_000_000_000;
 		lastUpdate = now;
 		
 		List<Enemy> enemyList = new ArrayList<Enemy>(Enemy.getAllEnemies());
 		for (Enemy enemy : enemyList) {
-			if (!enemy.isInitalized()) continue;
-			
-			enemy.moveEnemy(deltaTime);
-			
-			if(enemy.getPathIndex() == Enemy.path.size()-1) {
-            	System.out.printf("Enemy %d: Reached End%n", enemy.getEnemyID());
-            }
+			if (!enemy.isInitialized()) continue;
+
+			enemy.updateEnemy(deltaTime);
 		}
-		
+
+        GoldBag.bagUpdate(deltaTime);
+
 		if (Enemy.getAllEnemies().isEmpty()) {
 			stop();
 			return;
@@ -165,25 +148,48 @@ public class EntityController {
     }
     
     public static double getEnemyXCoord(int i) {
-    	return Enemy.getAllEnemies().get(i).getLocation().getXCoord();
+    	return Enemy.getActiveEnemies().get(i).getLocation().getXCoord();
     }
     
     public static double getEnemyYCoord(int i) {
-    	return Enemy.getAllEnemies().get(i).getLocation().getYCoord();
+    	return Enemy.getActiveEnemies().get(i).getLocation().getYCoord();
+    }
+
+    public static void addEnemyHPListener(int i, Consumer<Double> consumer) {
+        Enemy enemy = Enemy.getActiveEnemies().get(i);
+        enemy.getHitPointsListener().addListener(consumer);
     }
     
     public static boolean isEnemyInitialized(int i) {
-    	return Enemy.getAllEnemies().get(i).isInitalized();
+    	return Enemy.getAllEnemies().get(i).isInitialized();
     }
     
     public static boolean isEnemyIDInitialized(int id) {
     	for (Enemy enemy : Enemy.getAllEnemies()) {
-    		if (enemy.getEnemyID() == id) return enemy.isInitalized();
+    		if (enemy.getEnemyID() == id) return enemy.isInitialized();
     	} return false;
     }
     
     public static int getNumberOfEnemies() {
-    	return Enemy.getAllEnemies().size();
+    	return Enemy.getActiveEnemies().size();
+    }
+
+    public static List<Integer> getEnemyIDsRenderSort() {
+        Comparator<Enemy> comparator = new Comparator<Enemy>() {
+            @Override
+            public int compare(Enemy o1, Enemy o2) {
+                if (o1.getLocation().yCoord < o2.getLocation().yCoord) return -1;
+                else if (o1.getLocation().yCoord > o2.getLocation().yCoord) return 1;
+                return 0;
+            }
+        };
+
+        ArrayList<Enemy> enemyList = new ArrayList<>(Enemy.getActiveEnemies());
+        enemyList.sort(comparator);
+
+        List<Integer> ids = enemyList.stream().map(Enemy::getEnemyID).collect(Collectors.toList());
+
+        return ids;
     }
     
     public static int getEnemyID(int i) {
@@ -211,6 +217,74 @@ public class EntityController {
     public static void stop() {
     	if (gameLoop != null) gameLoop.stop();
     	if (moveTimer != null) moveTimer.stop();
+        resetEnemies();
+        GoldBag.resetBags();
     }
 
+    public static void resetEnemies() {
+        Enemy.enemies = new ArrayList<Enemy>();
+        Enemy.activeEnemies = new ArrayList<Enemy>();
+        Enemy.path = new ArrayList<PathTile>();
+    }
+
+    public static boolean isKnightFast(int i) {
+        Enemy enemy = Enemy.getActiveEnemies().get(i);
+        if (!(enemy instanceof Knight)) return false;
+        return ((Knight) enemy).isFast();
+    }
+
+    public static boolean isEnemySlowedDown(int i) {
+        Enemy enemy = Enemy.getActiveEnemies().get(i);
+        return enemy.isSlowedDown();
+    }
+
+    public static boolean isGoldBagDead(int id) {
+        return !GoldBag.getGoldBags().containsKey(id);
+    }
+
+    public static int getNumberOfGoldBags() {
+        return GoldBag.getGoldBags().size();
+    }
+
+    public static ArrayList<Integer> getGoldBagIDs() {
+        return new ArrayList<Integer>(GoldBag.getGoldBags().keySet());
+    }
+
+    public static double getGoldBagX(int id) {
+        return GoldBag.getGoldBag(id).getLocation().xCoord;
+    }
+
+    public static double getGoldBagY(int id) {
+        return GoldBag.getGoldBag(id).getLocation().yCoord;
+    }
+
+    public static double getGoldBagTime(int id) {
+        return GoldBag.getGoldBag(id).getTimeSinceCreation();
+    }
+
+    public static boolean isGoldBagFlashing(int id) {
+        return GoldBag.getGoldBag(id).getTimeSinceCreation() >= 7.0;
+    }
+
+    public static void pickUpBag(int id) {
+        GoldBag.getGoldBag(id).pickUpBag();
+    }
+
+    public static List<Integer> getGoldBagsIDsRenderSort() {
+        Comparator<GoldBag> comparator = new Comparator<GoldBag>() {
+            @Override
+            public int compare(GoldBag o1, GoldBag o2) {
+                if (o1.getLocation().yCoord < o2.getLocation().yCoord) return -1;
+                else if (o1.getLocation().yCoord > o2.getLocation().yCoord) return 1;
+                return 0;
+            }
+        };
+
+        List<GoldBag> goldBags = new ArrayList<>(GoldBag.getGoldBags().values());
+        goldBags.sort(comparator);
+
+        List<Integer> goldBagIDs = goldBags.stream().map(GoldBag::getId).collect(Collectors.toList());
+
+        return goldBagIDs;
+    }
 }

@@ -27,7 +27,8 @@ public class MainMenuScene {
 	
 	private KuTowerDefenseA app;
     private Button newGameButton;
-    private Button optionsButton;
+	private Button mapEditorButton;
+	private Button optionsButton;
     private Button quitGameButton;
     private Scene scene;
     
@@ -64,12 +65,15 @@ public class MainMenuScene {
 		this.app = app;
 		newGameButton = new MenuButton(this);
 		newGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("New Game"), 20, 150));
+		mapEditorButton = new MenuButton(this);
+		mapEditorButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Map Editor"), 20, 150));
+		mapEditorButton.setTranslateY(50);
 		optionsButton = new MenuButton(this);
 		optionsButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Options"), 20, 150));
-		optionsButton.setTranslateY(50);
+		optionsButton.setTranslateY(100);
 		quitGameButton = new MenuButton(this);
 		quitGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Quit Game"), 20, 150));
-		quitGameButton.setTranslateY(100);
+		quitGameButton.setTranslateY(150);
 		this.scene = initScene(root);
 	}
     
@@ -79,12 +83,12 @@ public class MainMenuScene {
 		Image image = new Image(getClass().getResourceAsStream("/Images/MainMenuImage.png"));
 		ImageView mv = new ImageView(image);
 		
-		mv.setPreserveRatio(true);
+		mv.setPreserveRatio(false);
 		mv.fitWidthProperty().bind(root.widthProperty());
         mv.fitHeightProperty().bind(root.heightProperty());
         
 		root.getChildren().addAll(mv);
-		root.getChildren().addAll(newGameButton, optionsButton, quitGameButton);
+		root.getChildren().addAll(newGameButton, mapEditorButton, optionsButton, quitGameButton);
 		Scene scene = new Scene(root);
 
 		return scene;
@@ -92,8 +96,10 @@ public class MainMenuScene {
 	
 	private void processButtonEvents(ActionEvent event) {
 		if(event.getSource() == newGameButton) {
-			MainMenuController.startNewGame("SUS map");
+			//MainMenuController.startNewGame("Pre-Built Map 2");
 			app.showMapEditor();
+		} else if (event.getSource() == mapEditorButton) {
+			// Begüm buraya bir şeyler yazar mısın pls
 		} else if (event.getSource() == optionsButton) {
 			GameOptionsController.initializeGameOptions();
 			app.showOptionsMenu(new StackPane());

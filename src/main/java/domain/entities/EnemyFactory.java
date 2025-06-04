@@ -1,19 +1,19 @@
 package domain.entities;
 
-import domain.kutowerdefense.GameOptions;
-
-public class EnemyFactory {
+public interface EnemyFactory {
 	// idk about these values
-	private static double GOBLIN_HIT_POINTS = 30;
-	private static double KNIGHT_HIT_POINTS = 50;
-	private static double GOBLIN_SPELL_REDUCTION = 10;
-	private static double KNIGHT_ARROW_REDUCTION = 10;
+	static double GOBLIN_HIT_POINTS = 50;
+	static double KNIGHT_HIT_POINTS = 50;
+	static double GOBLIN_SPELL_REDUCTION = 0.3;
+	static double KNIGHT_ARROW_REDUCTION = 0.3;
+	static double KNIGHT_SPEED = 3.0;
+	static double GOBLIN_SPEED = 6.0;
+
+	static double BOSS_HIT_POINTS = 5000; //might be too much
+	static double BOSS_SPEED = 1.0;
+	static double BOSS_SPELL_REDUCTION = 0.8; //To penalise spamming mage towers to slowdown or reset
+	static double BOSS_ARROW_REDUCTION = 0.5;
+	static double BOSS_ARTILLERY_INCREASE = 1.4; // new(!) addition
 	
-	public static Goblin createGoblin() {
-		return new Goblin(GOBLIN_HIT_POINTS, GameOptions.getInstance().getEnemySpeed(), null, GOBLIN_SPELL_REDUCTION);
-	}
-	
-	public static Knight createKnight() {
-		return new Knight(KNIGHT_HIT_POINTS, GameOptions.getInstance().getEnemySpeed(), null, KNIGHT_ARROW_REDUCTION);
-	}
+	Enemy createEnemy();
 }

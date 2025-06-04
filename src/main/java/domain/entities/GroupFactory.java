@@ -14,8 +14,8 @@ public class GroupFactory {
 		List<Enemy> enemyComposition = new ArrayList<Enemy>();
 		for (char c : groupComposition.toCharArray()) {
 			Enemy enemy = switch(c) {
-				case 'k' -> EnemyFactory.createKnight();
-				case 'g' -> EnemyFactory.createGoblin();
+				case 'k' -> KnightFactory.getInstance().createEnemy();
+				case 'g' -> GoblinFactory.getInstance().createEnemy();
 				default -> null;
 			};
 			

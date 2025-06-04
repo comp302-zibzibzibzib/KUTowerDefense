@@ -7,6 +7,7 @@ public class Lot extends Tile implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private boolean isEmpty = true;
+    private boolean originallyEmpty;
     private Tower tower;
     private TowerType towerType;
 
@@ -55,6 +56,12 @@ public class Lot extends Tile implements Serializable {
 	public void setTowerType(TowerType towerType) {
 		this.towerType = towerType;
 	}
+
+    public void originallyEmpty(boolean value) {
+        originallyEmpty = value;
+    }
+
+    public boolean wasOriginallyEmpty() { return originallyEmpty; }
     
     
 }

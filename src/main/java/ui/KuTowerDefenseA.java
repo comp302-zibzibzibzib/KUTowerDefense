@@ -21,12 +21,14 @@ public class KuTowerDefenseA  extends Application{
 	public void showMainMenu(StackPane root) {
 		MainMenuScene menuScene = new MainMenuScene(this, root);
         Scene mainMenuScene = menuScene.getScene();
+		primaryStage.setResizable(true);
         primaryStage.setScene(mainMenuScene);
         primaryStage.setTitle("KU Tower Defense");
         primaryStage.show();
     }
     public void showOptionsMenu(StackPane root) {
     	OptionScene options = new OptionScene(this, root);
+		primaryStage.setResizable(true);
         primaryStage.setScene(options.getScene());
         primaryStage.show();
     }
