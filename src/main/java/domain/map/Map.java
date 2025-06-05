@@ -22,7 +22,7 @@ public class Map implements Serializable {
 	//4 lot tiles must exist
 
 	private static final long serialVersionUID = 1L;
-	private List<Tower> towerList = new ArrayList<>();
+	private final List<Tower> towerList = new ArrayList<>();
 
 	public String mapName; 			// Name of map used to read and write map
 	
@@ -222,10 +222,10 @@ public class Map implements Serializable {
 			}
 		} else if (incomingDir[1] > 0) { // Coming from top, going down
 			if (outgoingDir[0] < 0) { // Turning left
-				offset[0] = bankingFactor; // Bank left
+				offset[0] = -bankingFactor; // Bank left
 				offset[1] = -bankingFactor; // Bank up
 			} else if (outgoingDir[0] > 0) { // Turning right
-				offset[0] = -bankingFactor;  // Bank right
+				offset[0] = bankingFactor;  // Bank right
 				offset[1] = -bankingFactor; // Bank up
 			}
 		} else if (incomingDir[1] < 0) { // Coming from bottom, going up
