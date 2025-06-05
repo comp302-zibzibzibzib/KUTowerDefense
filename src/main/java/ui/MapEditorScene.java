@@ -1,14 +1,17 @@
 package ui;
 
 import domain.controller.MapEditorController;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -16,22 +19,24 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 
 public class MapEditorScene {
 	private KuTowerDefenseA app;
-	private MapEditorController mapEditorController = MapEditorController.getInstance();
+	private MapEditorController mapEditorController = MapEditorController.getInstance(true);
 	private java.util.Map<Point2D, GroupedTile> placedTiles = new HashMap<>();
-	Pane editedMap = new Pane();
-	Pane mapForEditor = new Pane();
-	StackPane root = new StackPane();
-	Pane draggingLayer = new Pane();
-	Pane biggerSideBar = new Pane();
-	Pane exitBar = new Pane();
-    Pane optionBar = new Pane();
-	Pane sideBar = new Pane();
+	private Pane editedMap = new Pane();
+	private Pane mapForEditor = new Pane();
+	private StackPane root = new StackPane();
+	private Pane draggingLayer = new Pane();
+	private Pane biggerSideBar = new Pane();
+	private Pane exitBar = new Pane();
+	private Pane optionBar = new Pane();
+	private Pane sideBar = new Pane();
 	private Rectangle highlightBox = new Rectangle(70, 70);
 	private ImageView draggingClone = null;
 	private AssetImage topmid = new AssetImage("top", this);
@@ -83,6 +88,8 @@ public class MapEditorScene {
 
 
 	public MapEditorScene(KuTowerDefenseA app) {
+		File dir = new File("/Data/Snapshots");
+		if (!dir.exists()) dir.mkdirs();
 		System.out.println(getClass());
 		this.app = app;
 	}
@@ -145,10 +152,48 @@ public class MapEditorScene {
 		saveBtn.setOnAction(e -> {
 			String enteredName = nameField.getText();
 			if (!enteredName.isBlank()) {
-				mapEditorController.saveMap(); // !!!!!!!!1dont press the save BUTTON YET!!!!!!!!
+				mapEditorController.saveMap(enteredName);
 				namePromptOverlay.setVisible(false);
+
+				String sanitized = enteredName.replaceAll("[^a-zA-Z0-9-_\\.]", "_");
+				File outputDir = new File("Data/Snapshots");
+				if (!outputDir.exists()) outputDir.mkdirs();
+				Pane snapshotPane = new Pane();
+				snapshotPane.setPrefSize(1120, 630);
+
+				for (int y = 0; y < 9; y++) {
+					for (int x = 0; x < 16; x++) {
+						ImageView grassTile = new ImageView(grass);
+						grassTile.setFitWidth(70);
+						grassTile.setFitHeight(70);
+						grassTile.setLayoutX(x * 70);
+						grassTile.setLayoutY(y * 70);
+						snapshotPane.getChildren().add(grassTile);
+					}
+				}
+				for (GroupedTile tile : placedTiles.values()) {
+					ImageView original = tile.getView();
+					ImageView copy = new ImageView(original.getImage());
+					copy.setFitWidth(original.getFitWidth());
+					copy.setFitHeight(original.getFitHeight());
+					copy.setLayoutX(original.getLayoutX());
+					copy.setLayoutY(original.getLayoutY());
+					snapshotPane.getChildren().add(copy);
+				}
+
+				snapshotPane.applyCss();
+				snapshotPane.layout();
+
+				WritableImage snapshot = snapshotPane.snapshot(new SnapshotParameters(), null);
+				File outputFile = new File(outputDir, sanitized + ".png");
+				try {
+					ImageIO.write(SwingFXUtils.fromFXImage(snapshot, null), "png", outputFile);
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
 			}
 		});
+
 
 		cancelButton.setOnMouseClicked(e -> {
 			namePromptOverlay.setVisible(false);
@@ -404,7 +449,11 @@ public class MapEditorScene {
 		ImageView houseSecondView = createTileImageView(houseSecond, 125, 437.5);
 		ImageView woodView = createTileImageView(wood, 187.5, 437.5);
 
-		sideBar.getChildren().addAll(topBot,topMid, topRight,horizontalTop,midL,grassView,midRightView,horizontalMidView,leftBotomView,midBottomView,midBottomRightView,horizontalBottomView,verticalLeftView,verticalMidView,verticalRightView,lotView,treeFirstView,treeSecondView, treeThirdView,rockFirstView, artilleryTowerView,mageTowerView,houseView,rockSecondView,castleView, archerTowerView,wellView,houseSecondView,woodView);
+		sideBar.getChildren().addAll(topBot,topMid, topRight,horizontalTop,midL,
+				grassView,midRightView,horizontalMidView,leftBotomView,midBottomView,midBottomRightView,
+				horizontalBottomView,verticalLeftView,verticalMidView,verticalRightView,lotView,treeFirstView,treeSecondView,
+				treeThirdView,rockFirstView, artilleryTowerView,mageTowerView,houseView,rockSecondView,
+				castleView, archerTowerView,wellView,houseSecondView,woodView);
 
 		Pane dashedLineSide = dashedLines(20,4,62.5,62.5);
 		dashedLineSide.setPickOnBounds(false);
@@ -561,7 +610,7 @@ public class MapEditorScene {
 					draggingLayer.getChildren().remove(draggingClone);
 					draggingClone = null;
 					highlightBox.setVisible(false);
-					mapEditorController.printMap();
+					MapEditorController.getInstance(true).printMap();
 					return;
 				}
 				else {
@@ -580,12 +629,10 @@ public class MapEditorScene {
 					placedTiles.put(cell, regularTile);
 				}
 
-
 				//updating ui
 				highlightBox.setVisible(false);
 				draggingLayer.getChildren().remove(draggingClone);
 				draggingClone = null;
-
 
 				//console check
 				mapEditorController.printMap();

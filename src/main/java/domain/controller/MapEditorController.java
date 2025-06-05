@@ -32,10 +32,17 @@ public class MapEditorController {
 	private static DecorativeType[] decorativesSet = DecorativeType.values();
 	private static TowerType[] towersSet = TowerType.values();
 	
-	private MapEditorController() {
-		forcedMap = new Map(9,16);
+	private MapEditorController(boolean editorMode) {
+		Map usedMap;
+		if(editorMode){
+			forcedMap = new Map(9, 16);
+			usedMap = forcedMap;
+		}
+		else{
+			usedMap = PlayModeManager.getInstance().getCurrentMap();
+		}
 		//Map currentMap = playModeManager.getCurrentMap();
-		mapEditor = new MapEditor(forcedMap);
+		mapEditor = new MapEditor(usedMap);
 		
 		for(PathType path : pathSet) {
 			paths.put(path.getAssetName(), path);
@@ -46,7 +53,6 @@ public class MapEditorController {
 		for(DecorativeType decorative : decorativesSet) {
 			decoratives.put(decorative.getAssetName(), decorative);
 		}
-		
 	}
 	
 	public static void resetMap() {
@@ -54,11 +60,11 @@ public class MapEditorController {
 		instance = null;
 	}
 	
-	public static MapEditorController getInstance() {
-		if (instance == null) instance = new MapEditorController(); 
+	public static MapEditorController getInstance(boolean editorMode) {
+		if (instance == null) instance = new MapEditorController(editorMode);
 		return instance;
 	}
-	
+
 	public void createArcherTower(int x, int y) {
 		if (player.getGold() < TowerFactory.costArcher) return;
 		
@@ -74,7 +80,6 @@ public class MapEditorController {
 		player.updateGold(-TowerFactory.costMage);
 	}
 
-	
 	public void createArtilleryTower(int x, int y) {
 		if (player.getGold() < TowerFactory.costArtillery) return;
 		
@@ -110,20 +115,18 @@ public class MapEditorController {
 		else {
 			mapEditor.placeTile(TileType.GRASS, y, x);
 		}
-		
 	}
 	
 	public void forcePlaceCastle(int x, int y) {
 		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.CASTLE,y,x);
 	}
-	
-	
+
 	public void forcePlaceLot(int x, int y) {
 		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.LOT,y,x);
 	}
-	
+
 	public void removeTile(int x, int y) {
 		mapEditor.removeTile(y, x);
 	}
@@ -134,11 +137,10 @@ public class MapEditorController {
 	public boolean validateMap() {
 		return mapEditor.isValidMap();
 	}
-	public void saveMap() {
-		Utilities.writeMap(forcedMap);
-	}
-	public void getTile(int x, int y){
-
+	public void saveMap(String name) {
+		Map newMap = forcedMap;
+		newMap.mapName = name;
+		Utilities.writeMap(newMap);
 	}
 	
 	public static void createStaticMap1() {

@@ -39,7 +39,6 @@ public abstract class Tower implements Serializable {
 		this.fireRate = fireRate;
 		firePeriod = 1/fireRate;
 		timeSinceLastShot = firePeriod;
-		PlayModeManager.getInstance().getCurrentMap().addTower(this);
 	}
 
 	public abstract void upgradeTower();

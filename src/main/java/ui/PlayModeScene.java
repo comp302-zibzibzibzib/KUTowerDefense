@@ -31,7 +31,7 @@ public class PlayModeScene extends AnimationTimer {
 	private TileView selectedTower = null;
 	private Circle rangeCircle = null;
 	private Group circle = null;
-	private MapEditorController mapEditorController = MapEditorController.getInstance();
+	private MapEditorController mapEditorController = MapEditorController.getInstance(false);
 	private Pane rootPane;
 	private Pane enemyPane;
 	private Pane goldBagPane;

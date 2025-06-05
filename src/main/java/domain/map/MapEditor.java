@@ -18,7 +18,6 @@ public class MapEditor implements Serializable {
 
 	public MapEditor(Map map) {
 		this.map = map;
-		PlayModeManager.getInstance().setCurrentMap(map);
 	}
 
 	public void placeTile(TileType type, int height, int width) {
@@ -172,7 +171,6 @@ public class MapEditor implements Serializable {
 				return; // Cancel placement
 			}
 
-
 	        // Create the Tower based on TowerType
 	        Tower tower = switch (tType) {
 	            case ARCHER -> ArcherTowerFactory.getInstance().createTower();
@@ -180,6 +178,7 @@ public class MapEditor implements Serializable {
 	            case ARTILLERY -> ArtilleryTowerFactory.getInstance().createTower();
 	        };
 
+			map.addTower(tower);
 	        // Set the location of the tower to match the Lot's location
 	        tower.setLocation(existingTile.getLocation());
 
