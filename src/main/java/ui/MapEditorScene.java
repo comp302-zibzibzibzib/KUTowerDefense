@@ -386,8 +386,10 @@ public class MapEditorScene {
 				setStartView.setImage(setStartPressed);
 				setEndView.setImage(new Image(getClass().getResourceAsStream("/Images/setend.png")));
 				eraserView.setImage(new Image(getClass().getResourceAsStream("/Images/eraser.png")));
+				setStartEventProcess();
 			} else {
 				setStartView.setImage(new Image(getClass().getResourceAsStream("/Images/setstart.png")));
+				editedMap.setOnMouseClicked(null);
 			}
 		});
 
@@ -400,8 +402,10 @@ public class MapEditorScene {
 				setEndView.setImage(setEndPressed);
 				setStartView.setImage(new Image(getClass().getResourceAsStream("/Images/setstart.png")));
 				eraserView.setImage(new Image(getClass().getResourceAsStream("/Images/eraser.png")));
+				setEndEventProcess();
 			} else {
 				setEndView.setImage(new Image(getClass().getResourceAsStream("/Images/setend.png")));
+				editedMap.setOnMouseClicked(null);
 			}
 		});
 
@@ -499,7 +503,6 @@ public class MapEditorScene {
 				draggingClone.setOpacity(0.5);
 				draggingLayer.getChildren().add(draggingClone);
 			}
-
 	    });
 
 		image.setOnMouseDragged(event -> {
@@ -710,6 +713,59 @@ public class MapEditorScene {
 			}
 		});
 	}
+
+	private void setEndEventProcess() {
+		editedMap.setOnMouseClicked(e -> {
+			if (!isSetEnd) return;
+
+			double mouseX = e.getSceneX();
+			double mouseY = e.getSceneY();
+			int cellX = (int) (mouseX / 70);
+			int cellY = (int) (mouseY / 70);
+			Point2D cell = new Point2D(cellX, cellY);
+
+			GroupedTile tile = null;
+			for (GroupedTile t : placedTiles.values()) {
+				if (t.getCoveredCells().contains(cell)) {
+					tile = t;
+					break;
+				}
+			}
+
+			if (tile != null) {
+				for (Point2D pt : tile.getCoveredCells()) {
+					mapEditorController.addEndingTile((int) pt.getX(), (int) pt.getY());
+				}
+			}
+		});
+	}
+
+	private void setStartEventProcess() {
+		editedMap.setOnMouseClicked(e -> {
+			if (!isSetStart) return;
+
+			double mouseX = e.getSceneX();
+			double mouseY = e.getSceneY();
+			int cellX = (int) (mouseX / 70);
+			int cellY = (int) (mouseY / 70);
+			Point2D cell = new Point2D(cellX, cellY);
+
+			GroupedTile tile = null;
+			for (GroupedTile t : placedTiles.values()) {
+				if (t.getCoveredCells().contains(cell)) {
+					tile = t;
+					break;
+				}
+			}
+
+			if (tile != null) {
+				for (Point2D pt : tile.getCoveredCells()) {
+					mapEditorController.addStartingTile((int) pt.getX(), (int) pt.getY());
+				}
+			}
+		});
+	}
+
 	private void hoverEffect(ImageView image){
 		image.setOnMouseEntered(e->{
 			image.setImage(new Image(getClass().getResourceAsStream("/Images/" + image.getUserData() +"hover.png" )));

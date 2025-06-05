@@ -276,11 +276,17 @@ public class Map implements Serializable {
 	}
 
 	public boolean addStartingTile(PathTile tile) {
+		if (endingTiles.contains(tile)) return false;
+
 		boolean isValid = isValidEdgeTile(tile);
-		if (isValid && !endingTiles.contains(tile)) {
+		if (isValid && !startingTiles.contains(tile)) {
 			startingTiles.add(tile);
+			System.out.println("Added starting tile");
+		} else if (isValid && startingTiles.contains(tile)) {
+			startingTiles.remove(tile);
+			System.out.println("Removed starting tile");
 		}
-		return isValid;
+		return isValid && !startingTiles.contains(tile);
 	}
 
 	public void removeStartingTile(PathTile tile) {
@@ -308,11 +314,17 @@ public class Map implements Serializable {
 	}
 
 	public boolean addEndingTile(PathTile tile) {
+		if (startingTiles.contains(tile)) return false;
+
 		boolean isValid = isValidEdgeTile(tile);
-		if (isValid && !startingTiles.contains(tile)) {
+		if (isValid && !endingTiles.contains(tile)) {
 			endingTiles.add(tile);
+			System.out.println("Added ending tile");
+		} else if (isValid && endingTiles.contains(tile)) {
+			endingTiles.remove(tile);
+			System.out.println("Removed ending tile");
 		}
-		return isValid;
+		return isValid && !endingTiles.contains(tile);
 	}
 
 	public void removeEndingTile(PathTile tile) {

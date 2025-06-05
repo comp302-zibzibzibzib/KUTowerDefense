@@ -128,6 +128,16 @@ public class MapEditorController {
 		mapEditor.placeTile(TileType.LOT,y,x);
 	}
 
+	public void addStartingTile(int x, int y) {
+		if (mapEditor.map.tileMap[y][x].getType() != TileType.PATH) return;
+		mapEditor.addStartingTile(y, x);
+	}
+
+	public void addEndingTile(int x, int y) {
+		if (mapEditor.map.tileMap[y][x].getType() != TileType.PATH) return;
+		mapEditor.addEndingTile(y, x);
+	}
+
 	public void removeTile(int x, int y) {
 		mapEditor.removeTile(y, x);
 	}

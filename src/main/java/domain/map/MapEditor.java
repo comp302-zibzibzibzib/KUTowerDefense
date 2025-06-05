@@ -192,6 +192,7 @@ public class MapEditor implements Serializable {
 	        };
 
 	        // Set the location of the tower to match the Lot's location
+			map.addTower(tower);
 	        tower.setLocation(existingTile.getLocation());
 
 	        // Place the Tower inside the Lot
