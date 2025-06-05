@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.*;
 
+import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.map.DecorativeType;
@@ -60,27 +61,27 @@ public class MapEditorController {
 	}
 	
 	public void createArcherTower(int x, int y) {
-		if (player.getGold() < TowerFactory.costArcher) return;
+		if (player.getGold() < GameOptions.getInstance().getArcherCost()) return;
 		
 		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.TOWER, TowerType.ARCHER, y, x);
-		player.updateGold(-TowerFactory.costArcher);
+		player.updateGold(-GameOptions.getInstance().getArcherCost());
 	}
 	
 	public void createMageTower(int x, int y) {
-		if (player.getGold() < TowerFactory.costMage) return;
+		if (player.getGold() < GameOptions.getInstance().getMageCost()) return;
 
 		mapEditor.placeTile(TileType.TOWER, TowerType.MAGE, y, x);
-		player.updateGold(-TowerFactory.costMage);
+		player.updateGold(-GameOptions.getInstance().getMageCost());
 	}
 
 	
 	public void createArtilleryTower(int x, int y) {
-		if (player.getGold() < TowerFactory.costArtillery) return;
+		if (player.getGold() < GameOptions.getInstance().getArtilleryCost()) return;
 		
 		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.TOWER, TowerType.ARTILLERY, y, x);
-		player.updateGold(-TowerFactory.costArtillery);
+		player.updateGold(-GameOptions.getInstance().getArtilleryCost());
 	}
 	
 	public void removeTower(int x, int y) {

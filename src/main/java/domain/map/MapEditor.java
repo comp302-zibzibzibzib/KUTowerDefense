@@ -19,7 +19,6 @@ public class MapEditor implements Serializable {
 
 	public MapEditor(Map map) {
 		this.map = map;
-		PlayModeManager.getInstance().setCurrentMap(map);
 	}
 
 	public void addStartingTile(int height, int width) {
@@ -193,6 +192,7 @@ public class MapEditor implements Serializable {
 	        };
 
 	        // Set the location of the tower to match the Lot's location
+			map.addTower(tower);
 	        tower.setLocation(existingTile.getLocation());
 
 	        // Place the Tower inside the Lot
@@ -295,8 +295,8 @@ public class MapEditor implements Serializable {
 
 			} 
 			else if (currentTile.type == TileType.TOWER) {
-				map.removeTower(((Lot) currentTile).getTower());
 				Lot lot = (Lot) map.tileMap[y][x];
+				map.removeTower(lot.getTower());
 				// When tower is removed a lot remains, since towers are normally placed on top of lots
 				lot.removeTower();
 				lotCount++;

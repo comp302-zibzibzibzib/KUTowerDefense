@@ -1,6 +1,7 @@
 package domain.tower;
 
 import domain.entities.Enemy;
+import domain.kutowerdefense.GameOptions;
 import domain.map.Location;
 
 public class ArrowFactory implements ProjectileFactory {
@@ -16,6 +17,7 @@ public class ArrowFactory implements ProjectileFactory {
 
     @Override
     public Projectile createProjectile(Enemy target, Location sourceLocation) {
-        return new Projectile(AttackType.ARROW, target, sourceLocation);
+        GameOptions options = GameOptions.getInstance();
+        return new Projectile(AttackType.ARROW, options.getArrowDamage(), target, sourceLocation);
     }
 }

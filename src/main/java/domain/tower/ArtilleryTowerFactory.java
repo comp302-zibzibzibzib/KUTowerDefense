@@ -1,5 +1,7 @@
 package domain.tower;
 
+import domain.kutowerdefense.GameOptions;
+
 public class ArtilleryTowerFactory implements TowerFactory {
     private static ArtilleryTowerFactory instance;
 
@@ -14,6 +16,7 @@ public class ArtilleryTowerFactory implements TowerFactory {
 
     @Override
     public Tower createTower() {
-        return new ArtilleryTower(costArtillery, upgradeCostArtillery, 1, rangeArtillery, fireRateArtillery);
+        GameOptions options = GameOptions.getInstance();
+        return new ArtilleryTower(options.getArtilleryCost(), options.getArtilleryUpgradeCost(), 1, options.getArtilleryRange(), options.getArtilleryFireRate());
     }
 }

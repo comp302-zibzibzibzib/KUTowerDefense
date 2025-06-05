@@ -1,5 +1,7 @@
 package domain.entities;
 
+import domain.kutowerdefense.GameOptions;
+
 public class KnightFactory implements EnemyFactory {
     private static KnightFactory instance;
     private KnightFactory() {}
@@ -13,6 +15,7 @@ public class KnightFactory implements EnemyFactory {
 
     @Override
     public Enemy createEnemy() {
-        return new Knight(KNIGHT_HIT_POINTS, KNIGHT_SPEED, null, KNIGHT_ARROW_REDUCTION);
+        GameOptions options = GameOptions.getInstance();
+        return new Knight(options.getKnightHealth(), options.getKnightSpeed(), null, KNIGHT_ARROW_REDUCTION);
     }
 }

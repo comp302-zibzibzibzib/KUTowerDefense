@@ -1,6 +1,7 @@
 package domain.tower;
 
 import domain.entities.Enemy;
+import domain.kutowerdefense.GameOptions;
 import domain.map.Location;
 
 public class ArtilleryFactory implements ProjectileFactory {
@@ -18,6 +19,7 @@ public class ArtilleryFactory implements ProjectileFactory {
 
     @Override
     public Projectile createProjectile(Enemy target, Location sourceLocation) {
-        return new AOEProjectile(target, sourceLocation, SPLASH_RADIUS);
+        GameOptions options = GameOptions.getInstance();
+        return new AOEProjectile(options.getArtilleryDamage(), target, sourceLocation, options.getAoeRange());
     }
 }

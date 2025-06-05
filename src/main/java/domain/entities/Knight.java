@@ -85,7 +85,7 @@ public class Knight extends Enemy {
 
 	private void determineSpeed() {
 		if (spedUp) {
-			speed = (defaultSpeed + EnemyFactory.GOBLIN_SPEED) / 2;
+			speed = (defaultSpeed + GameOptions.getInstance().getGoblinSpeed()) / 2;
 			if (slowedDown) speed *= 0.8;
 		} else if (slowedDown) {
 			speed = defaultSpeed * 0.8;

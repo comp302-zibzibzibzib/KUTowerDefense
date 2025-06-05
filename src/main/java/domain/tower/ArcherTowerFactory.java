@@ -1,5 +1,7 @@
 package domain.tower;
 
+import domain.kutowerdefense.GameOptions;
+
 public class ArcherTowerFactory implements TowerFactory {
     private static ArcherTowerFactory instance;
 
@@ -14,6 +16,7 @@ public class ArcherTowerFactory implements TowerFactory {
 
     @Override
     public Tower createTower() {
-        return new ArcherTower(costArcher, upgradeCostArcher, 1, rangeArcher, fireRateArcher);
+        GameOptions options = GameOptions.getInstance();
+        return new ArcherTower(options.getArcherCost(), options.getArcherUpgradeCost(), 1, options.getArcherRange(), options.getArcherFireRate());
     }
 }

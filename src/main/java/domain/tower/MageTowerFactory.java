@@ -1,5 +1,7 @@
 package domain.tower;
 
+import domain.kutowerdefense.GameOptions;
+
 public class MageTowerFactory implements TowerFactory {
     private static MageTowerFactory instance;
 
@@ -14,7 +16,8 @@ public class MageTowerFactory implements TowerFactory {
 
     @Override
     public Tower createTower() {
-        return new MageTower(costMage, upgradeCostMage, 1, rangeMage, fireRateMage);
+        GameOptions options = GameOptions.getInstance();
+        return new MageTower(options.getMageCost(), options.getMageUpgradeCost(), 1, options.getMageRange(), options.getMageFireRate());
     }
 }
 

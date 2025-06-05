@@ -1,5 +1,7 @@
 package domain.entities;
 
+import domain.kutowerdefense.GameOptions;
+
 public class GoblinFactory implements EnemyFactory {
     private static GoblinFactory instance;
     private GoblinFactory() {}
@@ -13,6 +15,7 @@ public class GoblinFactory implements EnemyFactory {
 
     @Override
     public Enemy createEnemy() {
-        return new Goblin(GOBLIN_HIT_POINTS, GOBLIN_SPEED, null, GOBLIN_SPELL_REDUCTION);
+        GameOptions options = GameOptions.getInstance();
+        return new Goblin(options.getGoblinHealth(), options.getGoblinSpeed(), null, GOBLIN_SPELL_REDUCTION);
     }
 }

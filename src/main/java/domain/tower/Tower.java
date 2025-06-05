@@ -39,7 +39,6 @@ public abstract class Tower implements Serializable {
 		this.fireRate = fireRate;
 		firePeriod = 1/fireRate;
 		timeSinceLastShot = firePeriod;
-		PlayModeManager.getInstance().getCurrentMap().addTower(this);
 	}
 
 	public abstract void upgradeTower();
@@ -94,7 +93,7 @@ public abstract class Tower implements Serializable {
 		target = lastTarget;
     }
 
-	public Projectile update(double dt) {
+	public void update(double dt) {
 		dt = dt * PlayModeManager.getInstance().getGameSpeed();
 		targetEnemy();
 		timeSinceLastShot += dt; //Tracks how much time has passed since last creation
@@ -102,7 +101,7 @@ public abstract class Tower implements Serializable {
 		if(isFrozen) {
 			this.timeSinceFrozen += dt;
 			if(this.timeSinceFrozen < FREEZE_DURATION) {
-				return null;
+				return;
 			}
 			else {
 				isFrozen = false;
@@ -112,7 +111,7 @@ public abstract class Tower implements Serializable {
 		//Projectile creation period
 		//If not enough time has passed does not create another projectile
 		if (timeSinceLastShot < firePeriod || target == null) {
-			return null;
+			return;
 		}
 		//Allocates target if is in range
 		//Resets the time (enough time has passed)
@@ -120,8 +119,8 @@ public abstract class Tower implements Serializable {
 		//Creates projectile based on attack type of the tower
 		//IMPORTANT: Location of the projectile is the same
 		//as the location of the tower at creation, add offset if convenient
-		return createProjectile();
-    }
+		createProjectile();
+	}
     
 	public int getUpgradeCost() {
 		return upgradeCost;

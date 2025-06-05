@@ -308,7 +308,7 @@ public class OptionScene {
                         if (optSlider.getter.get() instanceof Integer) {
 							value.setText(String.valueOf(optSlider.getter.get()));
 						} else if (optSlider.getter.get() instanceof Double) {
-							value.setText(String.format("%.1f", ((Double) optSlider.getter.get()).doubleValue()));
+							value.setText(String.format("%.2f", ((Double) optSlider.getter.get()).doubleValue()));
 						}
 						optSlider.isResetting = true; // Sneaky workaround because JavaFX has broken code?
 						optSlider.slider.setValue(((Number)optSlider.getter.get()).doubleValue());

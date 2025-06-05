@@ -3,13 +3,11 @@ package domain.controller;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import domain.entities.*;
 import domain.kutowerdefense.PlayModeManager;
-import domain.map.PathTile;
 import javafx.animation.AnimationTimer;
 
 class SpawnerLoopTimer extends AnimationTimer {

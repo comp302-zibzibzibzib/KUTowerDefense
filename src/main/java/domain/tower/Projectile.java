@@ -22,8 +22,8 @@ public class Projectile implements Serializable{
 	protected Location location;
 	
 	
-	public Projectile(AttackType attackType, Enemy target, Location location) {
-		this.damage = attackType.getDamage();
+	public Projectile(AttackType attackType, double damage, Enemy target, Location location) {
+		this.damage = damage;
 		this.attackType = attackType;
 		this.target = target;
 		this.location = new Location(location.xCoord, location.yCoord);

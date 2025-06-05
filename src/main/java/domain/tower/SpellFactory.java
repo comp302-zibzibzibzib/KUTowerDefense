@@ -1,6 +1,7 @@
 package domain.tower;
 
 import domain.entities.Enemy;
+import domain.kutowerdefense.GameOptions;
 import domain.map.Location;
 
 public class SpellFactory implements ProjectileFactory {
@@ -16,6 +17,7 @@ public class SpellFactory implements ProjectileFactory {
 
     @Override
     public Projectile createProjectile(Enemy target, Location sourceLocation) {
-        return new Projectile(AttackType.SPELL, target, sourceLocation);
+        GameOptions options = GameOptions.getInstance();
+        return new Projectile(AttackType.SPELL, options.getSpellDamage(), target, sourceLocation);
     }
 }

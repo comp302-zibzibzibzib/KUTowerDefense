@@ -1,5 +1,6 @@
 package domain.controller;
 
+import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.tower.Projectile;
@@ -47,15 +48,15 @@ public class TowerController {
 	private static final TowerLoop towerLoop = new TowerLoop();
 
 	public static boolean canBuildArcher() {
-		return Player.getInstance().getGold() >= TowerFactory.costArcher;
+		return Player.getInstance().getGold() >= GameOptions.getInstance().getArcherCost();
 	}
 	
 	public static boolean canBuildMage() {
-		return Player.getInstance().getGold() >= TowerFactory.costMage;
+		return Player.getInstance().getGold() >= GameOptions.getInstance().getMageCost();
 	}
 	
 	public static boolean canBuildArtillery() {
-		return Player.getInstance().getGold() >= TowerFactory.costArtillery;
+		return Player.getInstance().getGold() >= GameOptions.getInstance().getArtilleryCost();
 	}
 
 	public static int getNumberOfProjectiles() {

@@ -15,7 +15,8 @@ public class GameOptionsController {
 			"Min Group per Wave", "Max Enemies per Group", "Min Enemies per Group", "Wave Delay", "Group Delay", "Enemy Delay",
 			"Knight Percentage", "Goblin Percentage", "Player Gold", "Player Lives", "Goblin Health", "Goblin Speed", "Goblin Reward",
 			"Knight Health", "Knight Speed", "Knight Reward", "Gold Bag Chance", "Arrow Damage", "Artillery Damage", "Spell Damage", "AOE Range",
-			"Archer Cost", "Artillery Cost", "Mage Cost", "Archer Range", "Artillery Range", "Mage Range");
+			"Archer Cost", "Archer Upgrade Cost", "Archer Range", "Archer Fire Rate", "Artillery Cost", "Artillery Upgrade Cost", 
+			"Artillery Range", "Artillery Fire Rate", "Mage Cost", "Mage Upgrade Cost", "Mage Range", "Mage Fire Rate");
 
 	public static HashMap<String, Number[]> optionRanges;
 
@@ -58,11 +59,17 @@ public class GameOptionsController {
 		consumerMap.put("Spell Damage", options::setSpellDamage);
 		consumerMap.put("AOE Range", options::setAoeRange);
 		consumerMap.put("Archer Cost", options::setArcherCost);
-		consumerMap.put("Artillery Cost", options::setArtilleryCost);
-		consumerMap.put("Mage Cost", options::setMageCost);
+		consumerMap.put("Archer Upgrade Cost", options::setArcherUpgradeCost);
 		consumerMap.put("Archer Range", options::setArcherRange);
+		consumerMap.put("Archer Fire Rate", options::setArcherFireRate);
+		consumerMap.put("Artillery Cost", options::setArtilleryCost);
+		consumerMap.put("Artillery Upgrade Cost", options::setArtilleryUpgradeCost);
 		consumerMap.put("Artillery Range", options::setArtilleryRange);
+		consumerMap.put("Artillery Fire Rate", options::setArtilleryFireRate);
+		consumerMap.put("Mage Cost", options::setMageCost);
+		consumerMap.put("Mage Upgrade Cost", options::setMageUpgradeCost);
 		consumerMap.put("Mage Range", options::setMageRange);
+		consumerMap.put("Mage Fire Rate", options::setMageFireRate);
 
 		supplierMap = new HashMap<>();
 		supplierMap.put("Wave Number", options::getNumberOfWaves);
@@ -89,11 +96,17 @@ public class GameOptionsController {
 		supplierMap.put("Spell Damage", options::getSpellDamage);
 		supplierMap.put("AOE Range", options::getAoeRange);
 		supplierMap.put("Archer Cost", options::getArcherCost);
-		supplierMap.put("Artillery Cost", options::getArtilleryCost);
-		supplierMap.put("Mage Cost", options::getMageCost);
+		supplierMap.put("Archer Upgrade Cost", options::getArcherUpgradeCost);
 		supplierMap.put("Archer Range", options::getArcherRange);
+		supplierMap.put("Archer Fire Rate", options::getArcherFireRate);
+		supplierMap.put("Artillery Cost", options::getArtilleryCost);
+		supplierMap.put("Artillery Upgrade Cost", options::getArtilleryUpgradeCost);
 		supplierMap.put("Artillery Range", options::getArtilleryRange);
+		supplierMap.put("Artillery Fire Rate", options::getArtilleryFireRate);
+		supplierMap.put("Mage Cost", options::getMageCost);
+		supplierMap.put("Mage Upgrade Cost", options::getMageUpgradeCost);
 		supplierMap.put("Mage Range", options::getMageRange);
+		supplierMap.put("Mage Fire Rate", options::getMageFireRate);
 
 		optionRanges = new HashMap<>();
 		optionRanges.put("Wave Number", new Number[]{1, 20, 1});
@@ -118,13 +131,19 @@ public class GameOptionsController {
 		optionRanges.put("Arrow Damage", new Number[]{5.0, 15.0, 1.0});
 		optionRanges.put("Artillery Damage", new Number[]{25.0, 40.0, 1.0});
 		optionRanges.put("Spell Damage", new Number[]{15.0, 25.0, 1.0});
-		optionRanges.put("AOE Range", new Number[]{0.5, 3.0, 0.5});
-		optionRanges.put("Archer Cost", new Number[]{10, 200, 5});
-		optionRanges.put("Artillery Cost", new Number[]{10, 300, 5});
-		optionRanges.put("Mage Cost", new Number[]{10, 400, 5});
-		optionRanges.put("Archer Range", new Number[]{1.0, 10.0, 0.1});
-		optionRanges.put("Artillery Range", new Number[]{1.0, 10.0, 0.1});
-		optionRanges.put("Mage Range", new Number[]{1.0, 10.0, 0.1});
+		optionRanges.put("AOE Range", new Number[]{2.0, 6.0, 0.1});
+		optionRanges.put("Archer Cost", new Number[]{10, 400, 5});
+		optionRanges.put("Archer Upgrade Cost", new Number[]{50, 250, 10});
+		optionRanges.put("Archer Range", new Number[]{5.0, 20.0, 0.1});
+		optionRanges.put("Archer Fire Rate", new Number[]{1.0, 15.0, 0.1});
+		optionRanges.put("Artillery Cost", new Number[]{10, 600, 5});
+		optionRanges.put("Artillery Upgrade Cost", new Number[]{150, 400, 10});
+		optionRanges.put("Artillery Range", new Number[]{4.0, 10.0, 0.1});
+		optionRanges.put("Artillery Fire Rate", new Number[]{0.5, 5.0, 0.1});
+		optionRanges.put("Mage Cost", new Number[]{10, 500, 5});
+		optionRanges.put("Mage Upgrade Cost", new Number[]{100, 600, 10});
+		optionRanges.put("Mage Range", new Number[]{5.0, 15.0, 0.1});
+		optionRanges.put("Mage Fire Rate", new Number[]{1.0, 10.0, 0.1});
  	}
 
 	public static Consumer<Number> getConsumer(String name) {

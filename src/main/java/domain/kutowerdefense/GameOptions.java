@@ -24,31 +24,37 @@ public class GameOptions implements Serializable {
 	private double enemyDelay;
 
 	// Player
-	private int startingPlayerGold;
-    private int startingPlayerLives;
+	private int startingPlayerGold; // ok
+    private int startingPlayerLives; // ok
 
 	// Enemies
-	private double goblinHealth;
-	private double goblinSpeed;
-	private int goblinReward;
-	private double knightHealth;
-	private double knightSpeed;
-	private int knightReward;
-	private double goldBagChance;
+	private double goblinHealth; // ok
+	private double goblinSpeed; // ok
+	private int goblinReward; // ok
+	private double knightHealth; // ok
+	private double knightSpeed; // ok
+	private int knightReward; // ok
+	private double goldBagChance; //ok
 
 	// Projectiles
-	private double arrowDamage;
-	private double artilleryDamage;
-	private double spellDamage;
-	private double aoeRange;
+	private double arrowDamage; // ok
+	private double artilleryDamage; // ok
+	private double spellDamage; // ok
+	private double aoeRange; // ok
 
 	// Towers
-	private int archerCost;
-	private int artilleryCost;
-	private int mageCost;
-	private double archerRange;
-	private double artilleryRange;
-	private double mageRange;
+	private int archerCost; // ok
+	private int archerUpgradeCost;
+	private double archerRange; // ok
+	private double archerFireRate;
+	private int artilleryCost; // ok
+	private int artilleryUpgradeCost;
+	private double artilleryRange; // ok
+	private double artilleryFireRate;
+	private int mageCost; // ok
+	private int mageUpgradeCost;
+	private double mageRange; // ok
+	private double mageFireRate;
     
     public static GameOptions getDefaultOptions() {
     	return new GameOptions();
@@ -127,10 +133,18 @@ public class GameOptions implements Serializable {
 		artilleryCost = 350;
 		mageCost = 250;
 
-		archerRange = 7.0;
-		artilleryRange = 5.0;
-		mageRange = 6.0;
+		archerRange = 12.0;
+		artilleryRange = 7.0;
+		mageRange = 10.0;
 		aoeRange = 3.0;
+
+		archerUpgradeCost = 200;
+		artilleryUpgradeCost = 400;
+		mageUpgradeCost = 300;
+
+		archerFireRate = 5.0;
+		artilleryFireRate = 1.0;
+		mageFireRate = 2.0;
     }
 
 	public int getNumberOfWaves() {
@@ -253,6 +267,54 @@ public class GameOptions implements Serializable {
 		return aoeRange;
 	}
 
+	public int getArcherUpgradeCost() {
+		return archerUpgradeCost;
+	}
+	
+	public void setArcherUpgradeCost(int archerUpgradeCost) {
+		this.archerUpgradeCost = archerUpgradeCost;
+	}
+	
+	public double getArcherFireRate() {
+		return archerFireRate;
+	}
+	
+	public void setArcherFireRate(double archerFireRate) {
+		this.archerFireRate = archerFireRate;
+	}
+	
+	public int getArtilleryUpgradeCost() {
+		return artilleryUpgradeCost;
+	}
+	
+	public void setArtilleryUpgradeCost(int artilleryUpgradeCost) {
+		this.artilleryUpgradeCost = artilleryUpgradeCost;
+	}
+	
+	public double getArtilleryFireRate() {
+		return artilleryFireRate;
+	}
+	
+	public void setArtilleryFireRate(double artilleryFireRate) {
+		this.artilleryFireRate = artilleryFireRate;
+	}
+	
+	public int getMageUpgradeCost() {
+		return mageUpgradeCost;
+	}
+	
+	public void setMageUpgradeCost(int mageUpgradeCost) {
+		this.mageUpgradeCost = mageUpgradeCost;
+	}
+	
+	public double getMageFireRate() {
+		return mageFireRate;
+	}
+	
+	public void setMageFireRate(double mageFireRate) {
+		this.mageFireRate = mageFireRate;
+	}
+	
 	// Below is for controller use
 	public void setNumberOfWaves(Number numberOfWaves) {
 		this.numberOfWaves = numberOfWaves.intValue();
@@ -372,6 +434,144 @@ public class GameOptions implements Serializable {
 		this.aoeRange = aoeRange.doubleValue();
 	}
 
+	public void setMaxGroupPerWave(int maxGroupPerWave) {
+		this.maxGroupPerWave = maxGroupPerWave;
+	}
+	
+	public void setMinGroupPerWave(int minGroupPerWave) {
+		this.minGroupPerWave = minGroupPerWave;
+	}
+	
+	public void setMaxEnemiesPerGroup(int maxEnemiesPerGroup) {
+		this.maxEnemiesPerGroup = maxEnemiesPerGroup;
+	}
+	
+	public void setMinEnemiesPerGroup(int minEnemiesPerGroup) {
+		this.minEnemiesPerGroup = minEnemiesPerGroup;
+	}
+	
+	public void setWaveDelay(double waveDelay) {
+		this.waveDelay = waveDelay;
+	}
+	
+	public void setGroupDelay(double groupDelay) {
+		this.groupDelay = groupDelay;
+	}
+	
+	public void setEnemyDelay(double enemyDelay) {
+		this.enemyDelay = enemyDelay;
+	}
+	
+	public void setKnightPercentage(double knightPercentage) {
+		this.knightPercentage = knightPercentage;
+		this.goblinPercentage = 1 - this.knightPercentage;
+	}
+	
+	public void setGoblinPercentage(double goblinPercentage) {
+		this.goblinPercentage = goblinPercentage;
+		this.knightPercentage = 1 - this.goblinPercentage;
+	}
+	
+	public void setStartingPlayerGold(int startingPlayerGold) {
+		this.startingPlayerGold = startingPlayerGold;
+	}
+	
+	public void setStartingPlayerLives(int startingPlayerLives) {
+		this.startingPlayerLives = startingPlayerLives;
+	}
+	
+	public void setGoblinHealth(double goblinHealth) {
+		this.goblinHealth = goblinHealth;
+	}
+	
+	public void setGoblinSpeed(double goblinSpeed) {
+		this.goblinSpeed = goblinSpeed;
+	}
+	
+	public void setGoblinReward(int goblinReward) {
+		this.goblinReward = goblinReward;
+	}
+	
+	public void setKnightHealth(double knightHealth) {
+		this.knightHealth = knightHealth;
+	}
+	
+	public void setKnightSpeed(double knightSpeed) {
+		this.knightSpeed = knightSpeed;
+	}
+	
+	public void setKnightReward(int knightReward) {
+		this.knightReward = knightReward;
+	}
+	
+	public void setGoldBagChance(double goldBagChance) {
+		this.goldBagChance = goldBagChance;
+	}
+	
+	public void setArrowDamage(double arrowDamage) {
+		this.arrowDamage = arrowDamage;
+	}
+	
+	public void setArtilleryDamage(double artilleryDamage) {
+		this.artilleryDamage = artilleryDamage;
+	}
+	
+	public void setSpellDamage(double spellDamage) {
+		this.spellDamage = spellDamage;
+	}
+	
+	public void setArcherCost(int archerCost) {
+		this.archerCost = archerCost;
+	}
+	
+	public void setArtilleryCost(int artilleryCost) {
+		this.artilleryCost = artilleryCost;
+	}
+	
+	public void setMageCost(int mageCost) {
+		this.mageCost = mageCost;
+	}
+	
+	public void setArcherRange(double archerRange) {
+		this.archerRange = archerRange;
+	}
+	
+	public void setArtilleryRange(double artilleryRange) {
+		this.artilleryRange = artilleryRange;
+	}
+	
+	public void setMageRange(double mageRange) {
+		this.mageRange = mageRange;
+	}
+	
+	public void setAoeRange(double aoeRange) {
+		this.aoeRange = aoeRange;
+	}
+	
+	public void setArcherUpgradeCost(Number archerUpgradeCost) {
+		this.archerUpgradeCost = archerUpgradeCost.intValue();
+	}
+	
+	public void setArcherFireRate(Number archerFireRate) {
+		this.archerFireRate = archerFireRate.doubleValue();
+	}
+	
+	public void setArtilleryUpgradeCost(Number artilleryUpgradeCost) {
+		this.artilleryUpgradeCost = artilleryUpgradeCost.intValue();
+	}
+	
+	public void setArtilleryFireRate(Number artilleryFireRate) {
+		this.artilleryFireRate = artilleryFireRate.doubleValue();
+	}
+	
+	public void setMageUpgradeCost(Number mageUpgradeCost) {
+		this.mageUpgradeCost = mageUpgradeCost.intValue();
+	}
+	
+	public void setMageFireRate(Number mageFireRate) {
+		this.mageFireRate = mageFireRate.doubleValue();
+	}
+	
 	public static void nullifyOptions() {
 		instance = null;
 	}
