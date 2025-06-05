@@ -2,6 +2,7 @@ package domain.entities;
 
 import java.util.List;
 
+import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 
 /*class GroupSpawner implements Runnable { //Deprecated Class, left just in case
@@ -44,18 +45,18 @@ public class Wave {
 	private boolean startSpawning;
 	
 	private List<Group> groups;
-	private List<Double> groupSpawnDelays;
+	private double groupSpawnDelay;
 	
-	public Wave(int numberOfGroups, List<Group> groups, List<Double> groupSpawnDelays) {
+	public Wave(int numberOfGroups, List<Group> groups) {
 		this.numberOfGroups = numberOfGroups;
 		this.groups = groups;
-		this.groupSpawnDelays = groupSpawnDelays;
+		this.groupSpawnDelay = GameOptions.getInstance().getGroupDelay();
 		index = 0;
 		timeAfterGroup = 0;
 		startSpawning = false;
 	}
 	
-	public void spawnGroups(double deltaTime) {//MIGHT NOT WORK
+	public void spawnGroups(double deltaTime) {
 		if (!startSpawning || spawnedAllGroups()) return;
 		timeAfterGroup += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 		
@@ -65,7 +66,7 @@ public class Wave {
 		}
 		
 		if(!spawnedAllGroups() && !groups.get(index).isSpawning()
-				&& timeAfterGroup > groupSpawnDelays.get(index)) { //first delay should be 0
+				&& timeAfterGroup > groupSpawnDelay) { //first delay should be 0
 			groups.get(index).startSpawning();
 			//System.out.printf("Initializing group%o!%n", index + 1);
 			timeAfterGroup = 0.0;//resets amount of time passed and increases index
@@ -94,14 +95,6 @@ public class Wave {
 
 	public void setGroups(List<Group> groups) {
 		this.groups = groups;
-	}
-
-	public List<Double> getGroupSpawnDelays() {
-		return groupSpawnDelays;
-	}
-
-	public void setGroupSpawnDelays(List<Double> groupSpawnDelays) {
-		this.groupSpawnDelays = groupSpawnDelays;
 	}
 	
 	public boolean spawnedAllGroups() {

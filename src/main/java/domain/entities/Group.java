@@ -2,9 +2,12 @@ package domain.entities;
 
 import java.util.List;
 
+import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
+import domain.kutowerdefense.Player;
 import domain.map.Location;
 import domain.map.Tile;
+import domain.services.Utilities;
 
 /*class EnemyMover implements Runnable{ //deprecated class
 	private Enemy enemy;
@@ -27,12 +30,10 @@ public class Group {
 	private boolean startSpawning;
 	
 	private List<Enemy> composition;
-	private double groupSpawnDelay;
 	
 	public Group(int numberOfEnemies, List<Enemy> composition) {
 		this.numberOfEnemies = numberOfEnemies;
 		this.composition = composition;
-		this.groupSpawnDelay = 3;
 		index = 0;
 		timeAfterEnemySpawn = 0;
 		startSpawning = false;
@@ -42,6 +43,8 @@ public class Group {
 		if (!startSpawning || spawnedAllEnemies()) return;
 		
 		double delay = 1;
+		double delayCutoff = (delay * 0.5) * (double) Player.getInstance().getWaveNumber() / (double) GameOptions.getInstance().getNumberOfWaves();
+		delay -= delayCutoff;
 		
 		timeAfterEnemySpawn += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 		
@@ -109,9 +112,5 @@ public class Group {
 	
 	public boolean isSpawning() {
 		return startSpawning;
-	}
-	
-	public double getSpawnDelay() {
-		return groupSpawnDelay;
 	}
 }

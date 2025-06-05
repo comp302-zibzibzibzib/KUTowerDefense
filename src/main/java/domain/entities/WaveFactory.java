@@ -1,21 +1,38 @@
 package domain.entities;
 
-import java.util.Arrays;
+import domain.kutowerdefense.GameOptions;
+import domain.kutowerdefense.Player;
+import domain.services.Utilities;
+
 import java.util.List;
+import java.util.ArrayList;
 
 public class WaveFactory {
-	
-	public static Wave createWave() { // Currently always generates a wave with the same properties
-		Group group1 = GroupFactory.createGroup(GroupFactory.groupComp1);
-		Group group2 = GroupFactory.createGroup(GroupFactory.groupComp2);
-		Group group3 = GroupFactory.createGroup(GroupFactory.groupComp3);
-		Group group4 = GroupFactory.createGroup(GroupFactory.groupComp4);
-		Group group5 = GroupFactory.createGroup(GroupFactory.groupComp5);
-		
-		List<Group> groupList = Arrays.asList(new Group[]{group1, group2, group3, group4, group5});
-		List<Double> delayList = Arrays.asList(new Double[]{group1.getSpawnDelay(), group2.getSpawnDelay(),
-				group3.getSpawnDelay(), group4.getSpawnDelay(), group5.getSpawnDelay()});
-		
-		return new Wave(groupList.size(), groupList, delayList);
+	static int previousGroupAmount = 0;
+
+
+	public static Wave createWave(int currentWave) {
+		List<Group> groupList = new ArrayList<Group>();
+		int waveNum = GameOptions.getInstance().getNumberOfWaves();
+		double wavePercentage = (double) currentWave / (double) waveNum;
+
+		double groupAmountMultiplier = 1.0 + 1.0 * wavePercentage;
+		int maxGroup = (int) (GameOptions.getInstance().getMaxGroupPerWave() * groupAmountMultiplier);
+		int minGroup = (int) (GameOptions.getInstance().getMinGroupPerWave() * groupAmountMultiplier);
+
+		int groupAmount = Utilities.globalRNG.nextInt(minGroup, maxGroup + 1);
+
+		if (groupAmount < previousGroupAmount) {
+			groupAmount += (int) ((previousGroupAmount - groupAmount) * 0.5);
+		} else {
+			previousGroupAmount = groupAmount;
+		}
+
+		for (int i = 0; i < groupAmount; i++) {
+			Group group = GroupFactory.createGroup(currentWave);
+			groupList.add(group);
+		}
+
+		return new Wave(groupList.size(), groupList);
 	}
 }
