@@ -18,6 +18,7 @@ public class KUTowerDefense {
 	public static void openOptions() {
 		
 	}
+
 	
 	public static void quitGame() {
 		System.exit(0);

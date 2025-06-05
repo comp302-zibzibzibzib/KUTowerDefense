@@ -9,29 +9,28 @@ import domain.map.Tile;
 import domain.map.TileType;
 
 public class PlayModeController {
-	private static PlayModeManager playModeManager = PlayModeManager.getInstance();
-	
+
 	private PlayModeController() {}
 	
-	private static boolean mapExists() { return playModeManager.getCurrentMap() != null; }
+	private static boolean mapExists() { return PlayModeManager.getInstance().getCurrentMap() != null; }
 	
 	public static Map getCurrentMap() {
-	    return playModeManager.getCurrentMap();
+	    return PlayModeManager.getInstance().getCurrentMap();
 	}
 	public static int getMapHeight() {
-		if (mapExists()) return playModeManager.getCurrentMap().getHeight();
+		if (mapExists()) return PlayModeManager.getInstance().getCurrentMap().getHeight();
 		return -1;
 	}
 	
 	public static int getMapWidth() {
-		if (mapExists()) return playModeManager.getCurrentMap().getWidth();
+		if (mapExists()) return PlayModeManager.getInstance().getCurrentMap().getWidth();
 		return -1;
 	}
 	
 	public static double getTileXCoord(int x, int y) {
 		if (mapExists()) {
 			try {
-				return playModeManager.getCurrentMap().tileMap[y][x].getLocation().getXCoord();
+				return PlayModeManager.getInstance().getCurrentMap().tileMap[y][x].getLocation().getXCoord();
 			} catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("Error: Wrong method. Use the correct placeTile overload!");
 			}
@@ -42,7 +41,7 @@ public class PlayModeController {
 	public static double getTileYCoord(int x, int y) {
 		if (mapExists()) {
 			try {
-				return playModeManager.getCurrentMap().tileMap[y][x].getLocation().getYCoord();
+				return PlayModeManager.getInstance().getCurrentMap().tileMap[y][x].getLocation().getYCoord();
 			} catch (ArrayIndexOutOfBoundsException e) {
 				System.out.println("Error: Wrong method. Use the correct placeTile overload!");
 			}
@@ -57,7 +56,7 @@ public class PlayModeController {
 	public static String getAssetName(int x, int y) {
 		String name = null;
 		try {
-			Tile tile = playModeManager.getCurrentMap().tileMap[y][x];
+			Tile tile = PlayModeManager.getInstance().getCurrentMap().tileMap[y][x];
 			
 			if (tile.type.equals(TileType.GRASS)) {
 				name = "grass";
@@ -91,32 +90,32 @@ public class PlayModeController {
 	}
 	
 	public static double getGameSpeed() {
-		return playModeManager.getGameSpeed();
+		return PlayModeManager.getInstance().getGameSpeed();
 	}
 	
 	public static void accelerateGame() {
-		playModeManager.accelerateGame();
+		PlayModeManager.getInstance().accelerateGame();
 	}
 	
 	public static void decelerateGame() {
-		playModeManager.decelerateGame();
+		PlayModeManager.getInstance().decelerateGame();
 	}
 	
 	public static void pauseGame() {
-		playModeManager.pauseGame();
+		PlayModeManager.getInstance().pauseGame();
 	}
 	
 	public static void resumeGame() {
-		playModeManager.resumeGame();
+		PlayModeManager.getInstance().resumeGame();
 	}
 	
 	public static void quitGame() {
-		playModeManager.quitGame();
+		PlayModeManager.getInstance().quitGame();
 	}
 	
 	public static double getTowerRange(int x, int y) {
 		try {
-			Tile tile = playModeManager.getCurrentMap().tileMap[y][x];
+			Tile tile = PlayModeManager.getInstance().getCurrentMap().tileMap[y][x];
 			if (!(tile instanceof Lot)) return -1;
 			
 			Lot lot = (Lot) tile;

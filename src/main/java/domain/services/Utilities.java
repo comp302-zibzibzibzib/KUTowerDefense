@@ -44,6 +44,10 @@ public final class Utilities {
 
 		HashMap<PathTile, List<PathTile>> pathMap = new HashMap<>();
 
+		if (startingTiles.isEmpty() || endingTiles.isEmpty()) {
+			return null;
+		}
+
 		for (PathTile startingTile : startingTiles) {
 			List<PathTile> bestPath = null;
 			for (PathTile endingTile : endingTiles) {
@@ -57,13 +61,20 @@ public final class Utilities {
 
 		return pathMap;
 	}
-	
+
 	/**
 	 * 
 	 * @param map
-	 * @return Returns a List of PathTile objects sorted from starting tile to ending tile of given map 
+	 * Tests written by Begüm Bıçakcı
+	 * @return Returns a List of PathTile objects sorted from starting tile to ending tile of given map
+	 * @author Bedirhan Sakaoğlu
 	 */
 	private static List<PathTile> findPath(PathTile start, PathTile end, Map map) {
+		// REQUIRES: requires nothing.
+		// MODIFIES: modifies nothing.
+		// EFFECTS: returns a list containing path tiles from map.start to map.end if the given map has a valid path,
+		//			else returns null.
+
 		// MAL BEDO YANLIŞ YAPMIŞ VİSİT İŞARETLE
 		
 		// Gets all PathTile objects from map.tileMap
