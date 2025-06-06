@@ -3,9 +3,11 @@ package domain.tower;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import domain.entities.Effect;
 import domain.entities.Enemy;
 import domain.kutowerdefense.PlayModeManager;
 import domain.map.Location;
+import domain.map.Tile;
 import domain.services.Utilities;
 
 public class Projectile implements Serializable{
@@ -30,7 +32,34 @@ public class Projectile implements Serializable{
 		this.id = getProjID();
 		projectiles.add(this);
 	}
-	
+	/**
+     * @requires
+     *   - deltaTime ≥ 0
+     *   - If PlayModeManager.getInstance().getGameSpeed() ≠ 0, then:
+     *       • target ≠ null
+     *       • target.getLocation() ≠ null
+     *       • this.location ≠ null
+     *       • distance = Utilities.euclideanDistance(this.location, target.getLocation()) > 0
+     *
+     * @modifies
+     *   - this.location (projectile location)
+     *   - If the pre‐movement distance to target < 1, then:
+     *       • target.hitPoints (via target.hitEnemy(...))
+     *       • Projectile.projectiles (this instance will be removed)
+     *
+     * @effects
+     *   - If PlayModeManager.getInstance().getGameSpeed() == 0 or target == null, returns immediately
+     *     (no changes to any state).
+     *   - Otherwise:
+     *       1. Let speed = 30 * PlayModeManager.getInstance().getGameSpeed().
+     *       2. Compute displacement = speed * deltaTime.
+     *       3. Update this.location to:
+     *            this.location.xCoord += xUnit * displacement
+     *            this.location.yCoord += yUnit * displacement
+     *       4. If (pre‐movement) distance < 1, then invoke hitTarget(), which:
+     *            • calls target.hitEnemy(damage, attackType) (reducing target’s HP)
+     *            • calls killProjectile(), removing this instance from Projectile.projectiles.
+     */
 	public void update(double deltaTime) {
 		if (PlayModeManager.getInstance().getGameSpeed() == 0 || target == null) return;
 
@@ -61,6 +90,20 @@ public class Projectile implements Serializable{
 
 	public void hitTarget() {
 		target.hitEnemy(damage, attackType);
+		if (attackType != AttackType.ARROW) {
+			boolean effectNear = false;
+			for (Effect effect : Effect.getEffects().values()) {
+				if (effect.getAttackType() != attackType) continue;
+				if (Utilities.euclideanDistance(effect.getLocation(), target.getLocation()) < Tile.tileLength * 0.5) {
+					effectNear = true;
+					break;
+				}
+			}
+
+			if (!effectNear) {
+				new Effect(target.getLocation(), attackType);
+			}
+		}
 		killProjectile();
 	}
 
@@ -97,6 +140,9 @@ public class Projectile implements Serializable{
 
 	public Location getLocation() {
 		return location;
+	}
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 	
 	public Enemy getTarget() {

@@ -2,12 +2,14 @@ package domain.controller;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import domain.entities.*;
 import domain.kutowerdefense.PlayModeManager;
+import domain.map.PathTile;
 import javafx.animation.AnimationTimer;
 
 class SpawnerLoopTimer extends AnimationTimer {
@@ -282,5 +284,33 @@ public class EntityController {
         List<Integer> goldBagIDs = goldBags.stream().map(GoldBag::getId).collect(Collectors.toList());
 
         return goldBagIDs;
+    }
+
+    public static List<Integer> getEffectIDs() {
+        return new ArrayList<>(Effect.getEffects().keySet());
+    }
+
+    public static void killEffect(int id) {
+        Effect.killEffect(id);
+    }
+
+    public static String getEffectName(int id) {
+        Effect effect = Effect.getEffects().get(id);
+        return switch (effect.getAttackType()) {
+            case ARTILLERY -> "explosion";
+            case SPELL -> "fireRed";
+            case SLOW_SPELL -> "fireBlue";
+            default -> null;
+        };
+    }
+
+    public static double getEffectX(int id) {
+        Effect effect = Effect.getEffects().get(id);
+        return effect.getLocation().xCoord;
+    }
+
+    public static double getEffectY(int id) {
+        Effect effect = Effect.getEffects().get(id);
+        return effect.getLocation().yCoord;
     }
 }

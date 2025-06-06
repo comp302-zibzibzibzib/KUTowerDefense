@@ -92,6 +92,16 @@ public class TowerController {
 		return true;
 	}
 
+	public static String getProjectileName(int id) {
+		Projectile proj = getProjectile(id);
+		return switch (proj.getAttackType()) {
+			case ARROW -> "arrow";
+			case ARTILLERY -> "bomb";
+			case SPELL -> "red_ball";
+			case SLOW_SPELL -> "blue_ball";
+		};
+	}
+
 	public static void stop() {
 		towerLoop.stop();
 		Projectile.resetProjectiles();

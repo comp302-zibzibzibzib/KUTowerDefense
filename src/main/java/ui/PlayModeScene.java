@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import domain.controller.*;
+import domain.entities.Effect;
 import javafx.animation.AnimationTimer;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -37,6 +38,8 @@ public class PlayModeScene extends AnimationTimer {
 	private Pane goldBagPane;
 	private Pane overlayPane;
 	private Pane hudPane;
+	private Pane projectilePane;
+	private Pane effectPane;
 	private Group removeSelection = null;
 
 	private Image archerButtonImage  = new Image(getClass().getResourceAsStream("/Images/archerbutton.png"));
@@ -63,6 +66,7 @@ public class PlayModeScene extends AnimationTimer {
 	private Map<String, List<Image>> enemyAnimations = new HashMap<>();
 	private Map<Integer, ProjectileView> projectileViews = new HashMap<>();
 	private Map<Integer, GoldBagView> goldBags = new HashMap<>();
+	private Map<Integer, EffectView> effectViews = new HashMap<>();
 
 	private double totalElapsed = 0;
 	private long lastUpdate = 0;
@@ -217,19 +221,19 @@ public class PlayModeScene extends AnimationTimer {
 		}
 	}
 
-	private class ProjectileView extends StackPane {
-		Rectangle rect;
+	private class ProjectileView extends ImageView {
+		static final String projectileDirectory = "/Images/projectiles/";
 
-		public ProjectileView() {
-			rect = new Rectangle();
-			rect.setWidth(30.0);
-			rect.setHeight(10.0);
-
-			this.getChildren().add(rect);
+		public ProjectileView(String imageName) {
+			super();
+			String imagePath = projectileDirectory + imageName + ".png";
+			setImage(new Image(getClass().getResourceAsStream(imagePath)));
+			setFitHeight(32);
+			setFitWidth(32);
 		}
 
 		public void setRotation(double angle) {
-			rect.setRotate(angle);
+			setRotate(angle);
 		}
 	}
 
@@ -278,16 +282,106 @@ public class PlayModeScene extends AnimationTimer {
 			}
 		}
 	}
+
+	private class EffectView extends ImageView {
+		private static final double FRAME_DURATION = 0.15;
+
+		public static List<Image> fireRedFrames = new ArrayList<>();
+		public static List<Image> fireBlueFrames = new ArrayList<>();
+		public static List<Image> explosionFrames = new ArrayList<>();
+
+		private final int id;
+		private final int frameCount;
+		private int frameIndex;
+		private List<Image> frames;
+		private double timeSinceLastFrame;
+
+		public EffectView(int id) {
+			this.id = id;
+			String name = EntityController.getEffectName(id);
+
+			double x = EntityController.getEffectX(id);
+			double y = EntityController.getEffectY(id);
+
+			frames = switch (name) {
+				case "explosion" -> explosionFrames;
+				case "fireRed" -> fireRedFrames;
+				case "fireBlue" -> fireBlueFrames;
+				default -> null;
+			};
+
+			if (frames == null) {
+				throw new IllegalArgumentException("Invalid effect name: " + name);
+			}
+
+			frameCount = frames.size();
+			frameIndex = 0;
+			setImage(frames.get(frameIndex++));
+
+			if (name.equals("explosion")) {
+				setFitHeight(128);
+				setFitWidth(128);
+			} else {
+				setFitHeight(96);
+				setFitWidth(96);
+			}
+
+			timeSinceLastFrame = 0.0;
+
+			setLayoutX(x * 16 - getFitWidth()/2);
+			setLayoutY(y * 16 - getFitHeight()/2);
+
+			effectViews.put(id, this);
+			effectPane.getChildren().add(this);
+		}
+
+		public void update(double deltaTime) {
+			if (frameIndex >= frameCount) {
+				EntityController.killEffect(id);
+				effectViews.remove(id);
+				effectPane.getChildren().remove(this);
+				return;
+			}
+
+			timeSinceLastFrame += deltaTime;
+			if (timeSinceLastFrame >= FRAME_DURATION) {
+				setImage(frames.get(frameIndex++));
+				timeSinceLastFrame = 0;
+			}
+		}
+	}
 	
 
 	public PlayModeScene(KuTowerDefenseA app) {
 		this.app = app;
 
-		if (!GoldBagView.frames.isEmpty()) return;
+		GoldBagView.frames.clear();
+		EffectView.fireRedFrames.clear();
+		EffectView.fireBlueFrames.clear();
+		EffectView.explosionFrames.clear();
+
 		for (int i = 1; i <= 7; i++) {
 			String name = "/Images/goldbag/goldbag" + i + ".png";
 			Image frame = new Image(getClass().getResourceAsStream(name));
 			GoldBagView.frames.add(frame);
+		}
+
+		for (int i = 1; i <= 7; i++) {
+			String name = "/Images/fireRed/fireRed" + i + ".png";
+			Image frame = new Image(getClass().getResourceAsStream(name));
+			EffectView.fireRedFrames.add(frame);
+		}
+
+		for (int i = 1; i <= 7; i++) {
+			String name = "/Images/fireBlue/fireBlue" + i + ".png";
+			Image frame = new Image(getClass().getResourceAsStream(name));
+			EffectView.fireBlueFrames.add(frame);
+		}
+
+		for (int i = 1; i <= 9; i++) {
+			String name = "/Images/explosion/explosion" + i + ".png";
+			Image frame = new Image(getClass().getResourceAsStream(name));
+			EffectView.explosionFrames.add(frame);
 		}
 	}
 	
@@ -302,8 +396,12 @@ public class PlayModeScene extends AnimationTimer {
 		overlayPane.setPickOnBounds(false);
 		hudPane = new Pane();
 		hudPane.setPickOnBounds(false);
+		effectPane = new Pane();
+		effectPane.setMouseTransparent(true);
+		projectilePane = new Pane();
+		projectilePane.setMouseTransparent(true);
 		pauseResumeMenuButtons();
-		StackPane stack = new StackPane(rootPane, enemyPane, goldBagPane, overlayPane, hudPane);
+		StackPane stack = new StackPane(rootPane, enemyPane, projectilePane, effectPane, goldBagPane, overlayPane, hudPane);
 		this.start();
 		
 		playerStatsPutter();
@@ -849,21 +947,21 @@ public class PlayModeScene extends AnimationTimer {
 			double y = TowerController.getProjectileY(i);
 
 			if (!projectileViews.containsKey(id)) {
-				ProjectileView projView = new ProjectileView();
+				ProjectileView projView = new ProjectileView(TowerController.getProjectileName(id));
 				projectileViews.put(id, projView);
-				enemyPane.getChildren().add(projView);
+				projectilePane.getChildren().add(projView);
 			}
 
 			ProjectileView projView = projectileViews.get(id);
-			projView.setLayoutX(x * 16 - projView.getWidth()/2);
-			projView.setLayoutY(y * 16 - projView.getHeight()/2);
+			projView.setLayoutX(x * 16 - projView.getFitWidth()/2);
+			projView.setLayoutY(y * 16 - projView.getFitHeight()/2);
 			projView.setRotation(TowerController.getProjectileAngle(i));
 		}
 
 		projectileViews.entrySet().removeIf(entry -> {
 			int id = entry.getKey();
 			if (TowerController.projectileDead(id)) {
-				enemyPane.getChildren().remove(entry.getValue());
+				projectilePane.getChildren().remove(entry.getValue());
 				return true;
 			}
 			return false;
@@ -963,6 +1061,16 @@ public class PlayModeScene extends AnimationTimer {
 		for (int id : goldBagIdList) {
 			GoldBagView gbv = goldBags.get(id);
 			gbv.toFront();
+		}
+
+		for (int id : EntityController.getEffectIDs()) {
+			if (!effectViews.containsKey(id)) {
+				EffectView ev = new EffectView(id);
+			}
+		}
+
+		for (EffectView ev : new ArrayList<>(effectViews.values())) {
+			ev.update(deltaTime);
 		}
 	}
 
