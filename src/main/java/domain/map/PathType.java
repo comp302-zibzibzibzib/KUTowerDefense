@@ -16,11 +16,11 @@ public enum PathType {
 	BOTTOMLEFT("BTL", new boolean[] {true, false, false, true},"bottomleft", new double[] {0.20, -0.20}),
 	TOPLEFT("TPL", new boolean[] {false, true, false, true},"topleft", new double[] {0.20, 0.20}),
 	TOPRIGHT("TPR", new boolean[] {false, true, true, false},"topright", new double[] {-0.20, 0.20}),
-	TJUNCNOLEFT("JNL", new boolean[] {true, true, false, true}, "top"),
-	TJUNCNORIGHT("JNR", new boolean[] {true, true, true, false}, "top"),
-	TJUNCNOTOP("JNT", new boolean[] {false, true, true, true}, "top"),
-	TJUNCNOBOTTOM("JNB", new boolean[] {true, false, true, true}, "top"),
-	CROSSJUNCTION("JCR", new boolean[] {true, true, true, true}, "top");
+	TJUNCNOLEFT("JNL", new boolean[] {true, true, false, true}, "junctionnoleft"),
+	TJUNCNORIGHT("JNR", new boolean[] {true, true, true, false}, "junctionnoright"),
+	TJUNCNOTOP("JNT", new boolean[] {false, true, true, true}, "junctionnotop"),
+	TJUNCNOBOTTOM("JNB", new boolean[] {true, false, true, true}, "junctionnobottom"),
+	CROSSJUNCTION("JCR", new boolean[] {true, true, true, true}, "junctioncross");
 	
 	private String str;
 	private boolean[] neighbourBool; // {up, down, left, right}
