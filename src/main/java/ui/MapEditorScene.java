@@ -28,10 +28,12 @@ import java.util.Set;
 public class MapEditorScene {
 	private KuTowerDefenseA app;
 	private MapEditorController mapEditorController = MapEditorController.getInstance(true);
-	private java.util.Map<Point2D, GroupedTile> placedTiles = new HashMap<>();
+	private HashMap<Point2D, GroupedTile> placedTiles = new HashMap<>();
+	private HashMap<Integer, Rectangle> tileHighlights = new HashMap<>();
 	private Pane editedMap = new Pane();
 	private Pane mapForEditor = new Pane();
 	private StackPane root = new StackPane();
+	private Pane highlightPane = new Pane();
 	private Pane draggingLayer = new Pane();
 	private Pane biggerSideBar = new Pane();
 	private Pane exitBar = new Pane();
@@ -103,6 +105,7 @@ public class MapEditorScene {
 		eraserHighlightBox.setStroke(Color.LIGHTBLUE);
 		eraserHighlightBox.setStrokeWidth(2);
 		eraserHighlightBox.setVisible(false);
+		highlightPane.setMouseTransparent(true);
 		draggingLayer.getChildren().add(eraserHighlightBox);
 		draggingLayer.getChildren().add(highlightBox);
 		mapForEditor.setMouseTransparent(true);
@@ -113,8 +116,15 @@ public class MapEditorScene {
 		editedMap.setPickOnBounds(false);
 		dashedLineMap.setMouseTransparent(true);
 		HBox content = new HBox(renderMapEditor(), getSideBar());
-		root.getChildren().addAll(content,editedMap,dashedLineMap, draggingLayer);
+		root.getChildren().addAll(content, editedMap, dashedLineMap, highlightPane, draggingLayer);
 		Scene scene = new Scene(root);
+
+		mapEditorController.addHighlightListener((Integer id) -> {
+			if (id != null && tileHighlights.containsKey(id)) {
+				Rectangle highlight = tileHighlights.remove(id);
+				highlightPane.getChildren().remove(highlight);
+			}
+		});
 		setupNamePromptOverlay();
 		return scene;
 	}
@@ -655,6 +665,27 @@ public class MapEditorScene {
 		}
 	}
 
+	private Rectangle createHighlightBox(boolean isStart, double x, double y) {
+		Rectangle highlight = new Rectangle();
+
+		if (isStart) {
+			highlight.setFill(Color.color(0.2, 0.847, 0.3, 0.3));
+			highlight.setStroke(Color.LIGHTGREEN);
+			highlight.setStrokeWidth(2);
+		} else {
+			highlight.setFill(Color.color(0.8, 0.2, 0.2, 0.3));
+			highlight.setStroke(Color.DARKRED);
+			highlight.setStrokeWidth(2);
+		}
+
+		highlight.setMouseTransparent(true);
+		highlight.setWidth(70);
+		highlight.setHeight(70);
+		highlight.setX(x);
+		highlight.setY(y);
+		return highlight;
+	}
+
 	private void highlightEffect() {
 		for(Node node : sideBar.getChildren()) {
 			if(node instanceof ImageView) {
@@ -734,7 +765,19 @@ public class MapEditorScene {
 
 			if (tile != null) {
 				for (Point2D pt : tile.getCoveredCells()) {
-					mapEditorController.addEndingTile((int) pt.getX(), (int) pt.getY());
+					Boolean success = mapEditorController.addEndingTile((int) pt.getX(), (int) pt.getY());
+					if (success == null) return;
+					int id = cellY * mapEditorController.getMapWidth() + cellX;
+					if (success) {
+						double x = cellX * 70;
+						double y = cellY * 70;
+						Rectangle highlight = createHighlightBox(false, x, y);
+						tileHighlights.put(id, highlight);
+						highlightPane.getChildren().add(highlight);
+					} else {
+						Rectangle highlight = tileHighlights.remove(id);
+						highlightPane.getChildren().remove(highlight);
+					}
 				}
 			}
 		});
@@ -760,7 +803,19 @@ public class MapEditorScene {
 
 			if (tile != null) {
 				for (Point2D pt : tile.getCoveredCells()) {
-					mapEditorController.addStartingTile((int) pt.getX(), (int) pt.getY());
+					Boolean success = mapEditorController.addStartingTile((int) pt.getX(), (int) pt.getY());
+					if (success == null) return;
+					int id = cellY * mapEditorController.getMapWidth() + cellX;
+					if (success) {
+						double x = cellX * 70;
+						double y = cellY * 70;
+						Rectangle highlight = createHighlightBox(true, x, y);
+						tileHighlights.put(id, highlight);
+						highlightPane.getChildren().add(highlight);
+					} else {
+						Rectangle highlight = tileHighlights.remove(id);
+						highlightPane.getChildren().remove(highlight);
+					}
 				}
 			}
 		});

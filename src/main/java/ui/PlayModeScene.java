@@ -224,15 +224,18 @@ public class PlayModeScene extends AnimationTimer {
 	private class ProjectileView extends ImageView {
 		static final String projectileDirectory = "/Images/projectiles/";
 
+		String name;
 		public ProjectileView(String imageName) {
 			super();
-			String imagePath = projectileDirectory + imageName + ".png";
+			name = imageName;
+			String imagePath = projectileDirectory + name + ".png";
 			setImage(new Image(getClass().getResourceAsStream(imagePath)));
 			setFitHeight(32);
 			setFitWidth(32);
 		}
 
 		public void setRotation(double angle) {
+			if (name.equals("bomb")) return;
 			setRotate(angle);
 		}
 	}
@@ -284,7 +287,7 @@ public class PlayModeScene extends AnimationTimer {
 	}
 
 	private class EffectView extends ImageView {
-		private static final double FRAME_DURATION = 0.15;
+		private static final double FRAME_DURATION = 0.1;
 
 		public static List<Image> fireRedFrames = new ArrayList<>();
 		public static List<Image> fireBlueFrames = new ArrayList<>();

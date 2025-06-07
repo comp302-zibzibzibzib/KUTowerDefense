@@ -141,7 +141,7 @@ public class Map implements Serializable {
 	}
 
 	public HashMap<PathTile, List<PathTile>> getPathMap() {
-		if (pathMap == null) setPath(); // Finding paths is a difficult thing, don't do it more than once per map
+		setPath(); // Finding paths is a difficult thing, don't do it more than once per map
 		return pathMap;
 	}
 
@@ -275,18 +275,20 @@ public class Map implements Serializable {
 		return startingTiles;
 	}
 
-	public boolean addStartingTile(PathTile tile) {
-		if (endingTiles.contains(tile)) return false;
+	public Boolean addStartingTile(PathTile tile) {
+		if (endingTiles.contains(tile)) return null;
 
 		boolean isValid = isValidEdgeTile(tile);
 		if (isValid && !startingTiles.contains(tile)) {
 			startingTiles.add(tile);
 			System.out.println("Added starting tile");
+			return true;
 		} else if (isValid && startingTiles.contains(tile)) {
 			startingTiles.remove(tile);
 			System.out.println("Removed starting tile");
+			return false;
 		}
-		return isValid && !startingTiles.contains(tile);
+		return false;
 	}
 
 	public void removeStartingTile(PathTile tile) {
@@ -313,18 +315,20 @@ public class Map implements Serializable {
 		return endingTiles;
 	}
 
-	public boolean addEndingTile(PathTile tile) {
-		if (startingTiles.contains(tile)) return false;
+	public Boolean addEndingTile(PathTile tile) {
+		if (startingTiles.contains(tile)) return null;
 
 		boolean isValid = isValidEdgeTile(tile);
 		if (isValid && !endingTiles.contains(tile)) {
 			endingTiles.add(tile);
 			System.out.println("Added ending tile");
+			return true;
 		} else if (isValid && endingTiles.contains(tile)) {
 			endingTiles.remove(tile);
 			System.out.println("Removed ending tile");
+			return false;
 		}
-		return isValid && !endingTiles.contains(tile);
+		return false;
 	}
 
 	public void removeEndingTile(PathTile tile) {

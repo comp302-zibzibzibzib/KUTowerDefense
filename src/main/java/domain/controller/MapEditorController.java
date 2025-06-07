@@ -3,6 +3,7 @@ package domain.controller;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.*;
+import java.util.function.Consumer;
 
 import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
@@ -22,6 +23,7 @@ import domain.tower.TowerFactory;
 
 public class MapEditorController {
 	private Map forcedMap;
+	private List<Consumer<Integer>> highlightListenerList = new ArrayList<>();
 	private static MapEditor mapEditor;
 	private static Player player = Player.getInstance();
 	private static PlayModeManager playModeManager = PlayModeManager.getInstance();
@@ -53,6 +55,21 @@ public class MapEditorController {
 		}
 		for(DecorativeType decorative : decorativesSet) {
 			decoratives.put(decorative.getAssetName(), decorative);
+		}
+	}
+
+	public void addHighlightListener(Consumer<Integer> listener) {
+		highlightListenerList.add(listener);
+	}
+
+	public void removeHighlightListener(Consumer<Integer> listener) {
+		highlightListenerList.remove(listener);
+	}
+
+	public void publishHighlight(int x, int y) {
+		int id = y * mapEditor.map.getWidth() + x;
+		for(Consumer<Integer> listener : highlightListenerList) {
+			listener.accept(id);
 		}
 	}
 	
@@ -97,6 +114,8 @@ public class MapEditorController {
 	}
 	
 	public void forcePlaceTile(String name, int x, int y) {
+		Tile tileToRemove = mapEditor.map.tileMap[y][x];
+		if (tileToRemove.getType() == TileType.TOWER) mapEditor.removeTile(y, x);
 		mapEditor.removeTile(y, x);
 		PathType pathType = paths.get(name);
 		TowerType towerType = towers.get(name);
@@ -104,11 +123,9 @@ public class MapEditorController {
 		
 		if (pathType != null){
 			mapEditor.placeTile(TileType.PATH,pathType, y, x);
-
 		}
 		else if (towerType != null) {
 			mapEditor.placeTile(TileType.TOWER, towerType, y, x);
-
 		}
 		else if(decorativeType != null) {
 			mapEditor.placeTile(TileType.DECORATIVES,decorativeType, y, x);
@@ -116,30 +133,45 @@ public class MapEditorController {
 		else {
 			mapEditor.placeTile(TileType.GRASS, y, x);
 		}
+		publishHighlight(x, y);
 	}
 	
 	public void forcePlaceCastle(int x, int y) {
 		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.CASTLE,y,x);
+		publishHighlight(x, y);
+		publishHighlight(x + 1, y);
+		publishHighlight(x, y + 1);
+		publishHighlight(x + 1, y + 1);
 	}
 
 	public void forcePlaceLot(int x, int y) {
 		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.LOT,y,x);
+		publishHighlight(x, y);
 	}
 
-	public void addStartingTile(int x, int y) {
-		if (mapEditor.map.tileMap[y][x].getType() != TileType.PATH) return;
-		mapEditor.addStartingTile(y, x);
+	public Boolean addStartingTile(int x, int y) {
+		if (mapEditor.map.tileMap[y][x].getType() != TileType.PATH) return false;
+		return mapEditor.addStartingTile(y, x);
 	}
 
-	public void addEndingTile(int x, int y) {
-		if (mapEditor.map.tileMap[y][x].getType() != TileType.PATH) return;
-		mapEditor.addEndingTile(y, x);
+	public Boolean addEndingTile(int x, int y) {
+		if (mapEditor.map.tileMap[y][x].getType() != TileType.PATH) return false;
+		return mapEditor.addEndingTile(y, x);
+	}
+
+	public int getMapWidth() {
+		return mapEditor.map.getWidth();
+	}
+
+	public int getMapHeight() {
+		return mapEditor.map.getHeight();
 	}
 
 	public void removeTile(int x, int y) {
 		mapEditor.removeTile(y, x);
+		publishHighlight(x, y);
 	}
 	
 	public void printMap() {

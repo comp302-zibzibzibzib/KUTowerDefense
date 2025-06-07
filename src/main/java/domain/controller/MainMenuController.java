@@ -1,11 +1,9 @@
 package domain.controller;
 
+import domain.entities.Effect;
 import domain.entities.Enemy;
 import domain.kutowerdefense.KUTowerDefense;
 import domain.kutowerdefense.PlayModeManager;
-import domain.map.Map;
-import domain.map.MapEditor;
-import domain.services.Utilities;
 
 public class MainMenuController {
 	
@@ -13,6 +11,7 @@ public class MainMenuController {
 
 	public static void startNewGame(String mapName) {
 		Enemy.enemies.clear();
+		Effect.resetEffects();
 		GameOptionsController.initializeGameOptions();
 		//MapEditorController.createStaticMap2();
 		PlayModeManager.resetManager();

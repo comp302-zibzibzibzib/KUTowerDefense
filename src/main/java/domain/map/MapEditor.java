@@ -21,24 +21,26 @@ public class MapEditor implements Serializable {
 		this.map = map;
 	}
 
-	public void addStartingTile(int height, int width) {
+	public Boolean addStartingTile(int height, int width) {
 		Tile tile = map.tileMap[height][width];
-		if (!(tile instanceof PathTile)) return;
+		if (!(tile instanceof PathTile)) return false;
 
 		PathTile pathTile = (PathTile) tile;
-		map.addStartingTile(pathTile);
+		Boolean success = map.addStartingTile(pathTile);
 
 		isStartingTilePlaced = !map.getStartingTiles().isEmpty();
+		return success;
 	}
 
-	public void addEndingTile(int height, int width) {
+	public Boolean addEndingTile(int height, int width) {
 		Tile tile = map.tileMap[height][width];
-		if (!(tile instanceof PathTile)) return;
+		if (!(tile instanceof PathTile)) return false;
 
 		PathTile pathTile = (PathTile) tile;
-		map.addEndingTile(pathTile);
+		Boolean success = map.addEndingTile(pathTile);
 
 		isEndingTilePlaced = !map.getEndingTiles().isEmpty();
+		return success;
 	}
 
 	public void placeTile(TileType type, int height, int width) {
@@ -97,7 +99,6 @@ public class MapEditor implements Serializable {
 			map.tileMap[y][x] = tileToPlace;
 		} catch (ArrayIndexOutOfBoundsException e) {
 			System.out.println("Error: Please enter a valid location!");
-			System.exit(-1); // Won't be possible in the UI can be discarded
 		}
 
 	}
@@ -322,7 +323,7 @@ public class MapEditor implements Serializable {
 			//Ensure that there are at least four tiles with empty lots
 			if (lotCount < 4) return false;
 			HashMap<PathTile, List<PathTile>> reachablePathMap = map.getPathMap();
-			if (reachablePathMap.isEmpty()) return false;
+			if (reachablePathMap == null || reachablePathMap.isEmpty()) return false;
 			//Ensure that there is a connected path and, first tile and last tiles are starting and ending tiles respectively. (Should work if A* is implemented correctly)
 			boolean workingPath = false;
 			for (PathTile tile : reachablePathMap.keySet()) {

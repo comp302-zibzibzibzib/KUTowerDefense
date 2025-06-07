@@ -164,9 +164,8 @@ public class EntityController {
     }
     
     public static boolean isEnemyIDInitialized(int id) {
-    	for (Enemy enemy : Enemy.getAllEnemies()) {
-    		if (enemy.getEnemyID() == id) return enemy.isInitialized();
-    	} return false;
+    	List<Integer> enemyIDs = Enemy.getActiveEnemies().stream().map(c -> c.getEnemyID()).toList();
+        return enemyIDs.contains(id);
     }
     
     public static int getNumberOfEnemies() {
@@ -192,24 +191,24 @@ public class EntityController {
     }
     
     public static int getEnemyID(int i) {
-    	return Enemy.getAllEnemies().get(i).getEnemyID();
+    	return Enemy.getActiveEnemies().get(i).getEnemyID();
     }
     
     public static boolean isGoblin(int i) {
-    	return Enemy.getAllEnemies().get(i) instanceof Goblin;
+    	return Enemy.getActiveEnemies().get(i) instanceof Goblin;
     }
     
     public static boolean isKnight(int i) {
-    	return Enemy.getAllEnemies().get(i) instanceof Knight;
+    	return Enemy.getActiveEnemies().get(i) instanceof Knight;
     }
     
     public static int getXScale(int i) {
-    	double[] direction = Enemy.getAllEnemies().get(i).getDirection();
+    	double[] direction = Enemy.getActiveEnemies().get(i).getDirection();
     	return (int) Math.signum(direction[0]);
     }
     
     public static int getYScale(int i) {
-    	double[] direction = Enemy.getAllEnemies().get(i).getDirection();
+    	double[] direction = Enemy.getActiveEnemies().get(i).getDirection();
     	return (int) Math.signum(direction[1]);
     }
     
