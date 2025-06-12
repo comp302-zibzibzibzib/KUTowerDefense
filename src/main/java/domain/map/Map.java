@@ -241,9 +241,7 @@ public class Map implements Serializable {
 		return offset;
 	}
 
-
-
-	private double[] getDirectionVector(PathTile from, PathTile to) {
+	private static double[] getDirectionVector(PathTile from, PathTile to) {
 		double deltaX = to.getLocation().xCoord - from.getLocation().xCoord;
 		double deltaY = to.getLocation().yCoord - from.getLocation().yCoord;
 
@@ -254,21 +252,33 @@ public class Map implements Serializable {
 			return new double[]{0.0, Math.signum(deltaY)};
 		}
 	}
-
-
+	
 	public static double[] getEdgeTargetOffset(PathTile edge) {
 		Map map = PlayModeManager.getInstance().getCurrentMap();
-		int[] tileCoords = Map.locationToTileMap(edge.location);
-		if (tileCoords[0] == 0) {
-			return new double[] {0.0, -1.0};  // {x, y}
-		} else if (tileCoords[0] == map.getHeight() - 1) {
-			return new double[] {0.0, 1.0};
-		} else if (tileCoords[1] == 0) {
-			return new double[] {-1.0, 0.0};
-		} else if (tileCoords[1] == map.getWidth() - 1) {
-			return new double[] {1.0, 0.0};
-		}
-		return new double[] {0.0, 0.0};
+	    HashMap<PathTile, List<PathTile>> pathMap = map.getPathMap();
+	    List<PathTile> path = pathMap.get(edge);
+	    double offset = Tile.tileLength * 0.15;
+	    if (map.getStartingTiles().contains(edge)) {
+	        
+	        if (path != null && path.size() >= 2) {
+	            double[] dir = getDirectionVector(edge, path.get(1));
+	            return new double[]{ -dir[0] * offset, -dir[1] * offset };
+	        }
+	    }
+
+	    if (map.getEndingTiles().contains(edge)) {
+	        for (List<PathTile> p : pathMap.values()) {
+	            if (!p.isEmpty() && p.get(p.size() - 1).equals(edge)) {
+	                path = p;
+	                break;
+	            }
+	        }
+	        if (path != null && path.size() >= 2) {
+	            double[] dir = getDirectionVector(path.get(path.size() - 2), edge);
+	            return new double[]{ dir[0] * offset, dir[1] * offset};
+	        }
+	    }
+	    return new double[]{ 0.0, 0.0 };
 	}
 
 	public List<PathTile> getStartingTiles() {

@@ -21,7 +21,7 @@ public abstract class Enemy {
 
 	public static ArrayList<Enemy> enemies = new ArrayList<>();
 	public static ArrayList<Enemy> activeEnemies = new ArrayList<>();
-	public List<PathTile> path;
+	public static List<PathTile> path;
 	public List<double[]> pathOffsets = new ArrayList<>();
 	private static int numberOfEnemies = 0; // Not active enemy number just the total amount created during runtime
 	protected double hitPoints;
