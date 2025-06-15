@@ -7,6 +7,7 @@ import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.map.Location;
+import domain.map.Tile;
 import domain.services.Utilities;
 
 public class GoldBag {
@@ -35,7 +36,13 @@ public class GoldBag {
 
 		initY = location.yCoord;
 		yVelocity = -bagSpeed;
+
 		int direction = (Utilities.globalRNG.nextBoolean()) ? -1 : 1;
+		if (location.xCoord < 20.0) direction = 1;
+		
+		int w = PlayModeManager.getInstance().getCurrentMap().getWidth();
+		if (w * Tile.tileLength - location.xCoord < 20.0) direction = -1;
+
 		xVelocity = 2 * direction * bagSpeed;
 	}
 

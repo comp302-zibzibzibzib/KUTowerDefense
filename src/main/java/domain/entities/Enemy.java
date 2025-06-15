@@ -17,7 +17,7 @@ import domain.tower.Projectile;
 
 public abstract class Enemy {
 	private static final double GAUSSIAN_MEAN = 0.0;
-	private static final double GAUSSIAN_STANDARD_DEVIATION = 10.0;
+	private static final double GAUSSIAN_STANDARD_DEVIATION = 3.0;
 
 	public static ArrayList<Enemy> enemies = new ArrayList<>();
 	public static ArrayList<Enemy> activeEnemies = new ArrayList<>();

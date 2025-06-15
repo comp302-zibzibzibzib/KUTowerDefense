@@ -182,6 +182,10 @@ public abstract class Tower implements Serializable {
     	return cost;
     }
 
+	public void setCost(int cost) {
+		this.cost = cost;
+	}
+
 	public void setIsFrozen(boolean value) {
 		isFrozen = value;
 	}

@@ -13,11 +13,11 @@ public class MainMenuController {
 		Enemy.enemies.clear();
 		Effect.resetEffects();
 		GameOptionsController.initializeGameOptions();
-		//MapEditorController.createStaticMap2();
 		PlayModeManager.resetManager();
 		PlayerController.resetPlayer();
 		MapEditorController.resetMap();
 		KUTowerDefense.newGame(mapName);
+		TowerController.setTowerAttributes();
 		EntityController.startEntityLogic();
 		TowerController.startTowerLogic();
 	}

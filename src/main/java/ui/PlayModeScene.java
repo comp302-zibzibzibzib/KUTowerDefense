@@ -7,10 +7,13 @@ import java.util.function.Consumer;
 import domain.controller.*;
 import domain.entities.Effect;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -39,6 +42,7 @@ public class PlayModeScene extends AnimationTimer {
 	private Pane overlayPane;
 	private Pane hudPane;
 	private Pane projectilePane;
+	private Canvas projectileCanvas = new Canvas();
 	private Pane effectPane;
 	private Group removeSelection = null;
 
@@ -64,9 +68,9 @@ public class PlayModeScene extends AnimationTimer {
 	private Map<Integer, EnemyStack> enemyStacks = new HashMap<Integer, EnemyStack>();
 	private Map<Integer, Integer> enemyFrameIndicies = new HashMap<Integer, Integer>();
 	private Map<String, List<Image>> enemyAnimations = new HashMap<>();
-	private Map<Integer, ProjectileView> projectileViews = new HashMap<>();
 	private Map<Integer, GoldBagView> goldBags = new HashMap<>();
 	private Map<Integer, EffectView> effectViews = new HashMap<>();
+	private Map<String, Image> projectileImages = new HashMap<>();
 
 	private double totalElapsed = 0;
 	private long lastUpdate = 0;
@@ -221,25 +225,6 @@ public class PlayModeScene extends AnimationTimer {
 		}
 	}
 
-	private class ProjectileView extends ImageView {
-		static final String projectileDirectory = "/Images/projectiles/";
-
-		String name;
-		public ProjectileView(String imageName) {
-			super();
-			name = imageName;
-			String imagePath = projectileDirectory + name + ".png";
-			setImage(new Image(getClass().getResourceAsStream(imagePath)));
-			setFitHeight(32);
-			setFitWidth(32);
-		}
-
-		public void setRotation(double angle) {
-			if (name.equals("bomb")) return;
-			setRotate(angle);
-		}
-	}
-
 	private class GoldBagView extends ImageView {
 		public static final ArrayList<Image> frames = new ArrayList<>();
 		public static final double FRAME_DURATION = 0.15;
@@ -386,6 +371,13 @@ public class PlayModeScene extends AnimationTimer {
 			Image frame = new Image(getClass().getResourceAsStream(name));
 			EffectView.explosionFrames.add(frame);
 		}
+
+		if (projectileImages.isEmpty()) {
+			projectileImages.put("bomb", new Image(getClass().getResourceAsStream("/Images/projectiles/bomb.png")));
+			projectileImages.put("arrow", new Image(getClass().getResourceAsStream("/Images/projectiles/arrow.png")));
+			projectileImages.put("red_ball", new Image(getClass().getResourceAsStream("/Images/projectiles/red_ball.png")));
+			projectileImages.put("blue_ball", new Image(getClass().getResourceAsStream("/Images/projectiles/blue_ball.png")));
+		}
 	}
 	
 	public Scene getScene() {
@@ -401,10 +393,16 @@ public class PlayModeScene extends AnimationTimer {
 		hudPane.setPickOnBounds(false);
 		effectPane = new Pane();
 		effectPane.setMouseTransparent(true);
-		projectilePane = new Pane();
-		projectilePane.setMouseTransparent(true);
+		//projectilePane = new Pane();
+		//projectilePane.setMouseTransparent(true);
+		projectileCanvas = new Canvas();
+		projectileCanvas.setMouseTransparent(true);
 		pauseResumeMenuButtons();
-		StackPane stack = new StackPane(rootPane, enemyPane, projectilePane, effectPane, goldBagPane, overlayPane, hudPane);
+		StackPane stack = new StackPane(rootPane, enemyPane, projectileCanvas, effectPane, goldBagPane, overlayPane, hudPane);
+		Platform.runLater(() -> {
+			projectileCanvas.setWidth(stack.getWidth());
+			projectileCanvas.setHeight(stack.getHeight());
+		});
 		this.start();
 		
 		playerStatsPutter();
@@ -944,31 +942,30 @@ public class PlayModeScene extends AnimationTimer {
         	totalElapsed = 0;
         }
 
+		GraphicsContext projectileGraphicsContext = projectileCanvas.getGraphicsContext2D();
+		projectileGraphicsContext.clearRect(0, 0, projectileCanvas.getWidth(), projectileCanvas.getHeight());
+
 		for (int i = 0; i < TowerController.getNumberOfProjectiles(); i++) {
 			int id = TowerController.getProjectileID(i);
-			double x = TowerController.getProjectileX(i);
-			double y = TowerController.getProjectileY(i);
+			double centroidX = TowerController.getProjectileX(i) * 16;
+			double centroidY = TowerController.getProjectileY(i) * 16;
+			String name = TowerController.getProjectileName(id);
+			int width = 32;
+			int height = 32;
 
-			if (!projectileViews.containsKey(id)) {
-				ProjectileView projView = new ProjectileView(TowerController.getProjectileName(id));
-				projectileViews.put(id, projView);
-				projectilePane.getChildren().add(projView);
+			if (name.equals("bomb")) {
+				width = 48;
+				height = 48;
 			}
 
-			ProjectileView projView = projectileViews.get(id);
-			projView.setLayoutX(x * 16 - projView.getFitWidth()/2);
-			projView.setLayoutY(y * 16 - projView.getFitHeight()/2);
-			projView.setRotation(TowerController.getProjectileAngle(i));
+			Image projectileImage = projectileImages.get(name);
+
+			projectileGraphicsContext.save();
+			projectileGraphicsContext.translate(centroidX, centroidY);
+			if (!name.equals("bomb")) projectileGraphicsContext.rotate(TowerController.getProjectileAngle(i));
+			projectileGraphicsContext.drawImage(projectileImage, -width * 0.5, -height * 0.5, width, height);
+			projectileGraphicsContext.restore();
 		}
-
-		projectileViews.entrySet().removeIf(entry -> {
-			int id = entry.getKey();
-			if (TowerController.projectileDead(id)) {
-				projectilePane.getChildren().remove(entry.getValue());
-				return true;
-			}
-			return false;
-		});
 
 		for (int i = 0; i < EntityController.getNumberOfEnemies(); i++) {
 

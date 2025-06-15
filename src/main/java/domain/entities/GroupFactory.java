@@ -15,7 +15,7 @@ public class GroupFactory {
 		int waveNum = GameOptions.getInstance().getNumberOfWaves();
 		double wavePercentage = (double) currentWave / (double) waveNum;
 
-		double enemyAmountMultiplier = 1.0 + 1.0 * wavePercentage;
+		double enemyAmountMultiplier = 0.5 + 1.5 * wavePercentage;
 		int maxEnemy = (int) (GameOptions.getInstance().getMaxEnemiesPerGroup() * enemyAmountMultiplier);
 		int minEnemy = (int) (GameOptions.getInstance().getMinEnemiesPerGroup() * enemyAmountMultiplier);
 

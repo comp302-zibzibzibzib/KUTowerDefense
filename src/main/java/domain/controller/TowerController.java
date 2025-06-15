@@ -3,6 +3,7 @@ package domain.controller;
 import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
+import domain.map.Map;
 import domain.tower.Projectile;
 import domain.tower.Tower;
 import domain.tower.TowerFactory;
@@ -106,6 +107,41 @@ public class TowerController {
 		towerLoop.stop();
 		Projectile.resetProjectiles();
 		PlayModeManager.getInstance().getCurrentMap().resetTowers();
+	}
+
+	public static void setTowerAttributes() {
+		Map currentMap = PlayModeManager.getInstance().getCurrentMap();
+		for (Tower tower : currentMap.getTowerList()) {
+			double range = switch (tower.getAttackType()) {
+				case ARROW -> GameOptions.getInstance().getArcherRange();
+				case ARTILLERY -> GameOptions.getInstance().getArtilleryRange();
+				case SPELL, SLOW_SPELL -> GameOptions.getInstance().getMageRange();
+            };
+
+			double fireRate = switch (tower.getAttackType()) {
+				case ARROW -> GameOptions.getInstance().getArcherFireRate();
+				case ARTILLERY -> GameOptions.getInstance().getArtilleryFireRate();
+				case SPELL, SLOW_SPELL -> GameOptions.getInstance().getMageFireRate();
+            };
+
+			int cost = switch (tower.getAttackType()) {
+				case ARROW -> GameOptions.getInstance().getArcherCost();
+				case ARTILLERY -> GameOptions.getInstance().getArtilleryCost();
+				case SPELL, SLOW_SPELL -> GameOptions.getInstance().getMageCost();
+			};
+
+			int upgradeCost = switch (tower.getAttackType()) {
+				case ARROW -> GameOptions.getInstance().getArcherUpgradeCost();
+				case ARTILLERY -> GameOptions.getInstance().getArtilleryUpgradeCost();
+				case SPELL, SLOW_SPELL -> GameOptions.getInstance().getMageUpgradeCost();
+			};
+
+			tower.setRange(range);
+			tower.setFireRate(fireRate);
+			tower.setCost(cost);
+			tower.setUpgradeCost(upgradeCost);
+			tower.setLevel(1);
+		}
 	}
 
 	private static Projectile getProjectile(int id) {
