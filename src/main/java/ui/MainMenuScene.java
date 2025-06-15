@@ -141,13 +141,11 @@ public class MainMenuScene {
 			confirmButton.setLayoutX(((350 - 120) / 2.0) + 40);
 			confirmButton.setLayoutY(230);
 
-
-
 			Label confirm = new Label("Confirm");
 			confirm.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 28));
 			confirm.setTextFill(Color.WHITE);
 			confirm.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
-			confirm.setLayoutX(((350 - 120) / 2.0) + 90);
+			confirm.setLayoutX(((350 - 120) / 2.0) + 85);
 			confirm.setLayoutY(235);
 			group.getChildren().addAll(confirmButton, confirm);
 			group.setOnMouseClicked(e -> {
@@ -162,15 +160,15 @@ public class MainMenuScene {
 			blueBView.setFitWidth(350);
 			blueBView.setFitHeight(200);
 			blueBView.setLayoutX(80);
-			blueBView.setLayoutY(40);
+			blueBView.setLayoutY(30);
 
 			mapPreview = new ImageView();
-			mapPreview.setFitWidth(270);
-			mapPreview.setFitHeight(110);
-			mapPreview.setLayoutX(120);
+			mapPreview.setFitWidth(280);
+			mapPreview.setFitHeight(112);
+			mapPreview.setLayoutX(115);
 			mapPreview.setLayoutY(70);
 
-			Rectangle previewClip = new Rectangle(270, 140);
+			Rectangle previewClip = new Rectangle(280, 112);
 			previewClip.setArcWidth(30);
 			previewClip.setArcHeight(30);
 			mapPreview.setClip(previewClip);
