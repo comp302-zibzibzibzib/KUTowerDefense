@@ -2,6 +2,8 @@ package ui;
 
 import domain.controller.MapEditorController;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -13,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -85,13 +88,18 @@ public class MapEditorScene {
 	private Image erasserPressed = new Image(getClass().getResourceAsStream("/Images/eraserpressed.png"));
 	private Image setEndPressed = new Image(getClass().getResourceAsStream("/Images/setendpressed.png"));
 	private Image setStartPressed = new Image(getClass().getResourceAsStream("/Images/setstartpressed.png"));
+	private Image clickButtonPressed = new Image(getClass().getResourceAsStream("/Images/clickbuttonpressed.png"));
 	private boolean isErasing = false;
 	private Rectangle eraserHighlightBox = new Rectangle(70, 70);
 	private Image editMapImage = new Image(getClass().getResourceAsStream("/Images/HUD/blueb3.png"));
 	private Group editModeGroup = new Group();
 	private boolean isSetStart = false;
 	private boolean isSetEnd = false;
+	private boolean isClick = false;
 	private Image saveExitButton = new Image(getClass().getResourceAsStream("/Images/exit.png"));
+	private AssetImage deleteButton = new AssetImage("delete", this);
+	private AssetImage clickButton = new AssetImage("clickbutton", this);
+	private String selectedClickTileName;
 
 
 
@@ -114,7 +122,6 @@ public class MapEditorScene {
 		highlightPane.setMouseTransparent(true);
 		draggingLayer.getChildren().add(eraserHighlightBox);
 		draggingLayer.getChildren().add(highlightBox);
-		mapForEditor.setMouseTransparent(true);
 		mapForEditor.setPickOnBounds(false);
 		Pane dashedLineMap = dashedLines(9,16,70,70);
 		dashedLineMap.setPickOnBounds(false);
@@ -131,6 +138,7 @@ public class MapEditorScene {
 				highlightPane.getChildren().remove(highlight);
 			}
 		});
+
 		return scene;
 	}
 	private void setupNamePromptOverlay() {
@@ -282,6 +290,12 @@ public class MapEditorScene {
 		ImageView eraserView = new ImageView(eraserButton);
 		eraserView.setUserData(eraserButton.getName());
 		ImageView editMapView = new ImageView(editMapImage);
+		ImageView deleteView = new ImageView(deleteButton);
+		deleteView.setUserData(deleteButton.getName());
+		ImageView clickView = new ImageView(clickButton);
+		clickView.setUserData(clickButton.getName());
+
+
 
 		editMapView.setFitWidth(185);
 		editMapView.setFitHeight(57);
@@ -301,25 +315,39 @@ public class MapEditorScene {
         exitView.setLayoutX(194);
         exitView.setLayoutY(0);
 
-        saveView.setFitHeight(57);
-        saveView.setFitWidth(57);
-        saveView.setLayoutX(190);
-        saveView.setLayoutY(0);
+        saveView.setFitHeight(52);
+        saveView.setFitWidth(52);
+        saveView.setLayoutX(207);
+        saveView.setLayoutY(4);
 
-		eraserView.setFitHeight(57);
-		eraserView.setFitWidth(57);
-		eraserView.setLayoutX(130);
-		eraserView.setLayoutY(1);
+		eraserView.setFitHeight(52);
+		eraserView.setFitWidth(52);
+		eraserView.setLayoutX(165);
+		eraserView.setLayoutY(5);
 
-		setStartView.setFitHeight(57);
-		setStartView.setFitWidth(57);
-		setStartView.setLayoutX(71);
-		setStartView.setLayoutY(0);
+		setStartView.setFitHeight(52);
+		setStartView.setFitWidth(52);
+		setStartView.setLayoutX(123);
+		setStartView.setLayoutY(5);
 
-		setEndView.setFitHeight(57);
-		setEndView.setFitWidth(57);
-		setEndView.setLayoutX(12);
-		setEndView.setLayoutY(1);
+		setEndView.setFitHeight(52);
+		setEndView.setFitWidth(52);
+		setEndView.setLayoutX(83);
+		setEndView.setLayoutY(5);
+
+		deleteView.setFitHeight(52);
+		deleteView.setFitWidth(52);
+		deleteView.setLayoutX(41);
+		deleteView.setLayoutY(3);
+
+		clickView.setFitHeight(52);
+		clickView.setFitWidth(52);
+		clickView.setLayoutX(-1);
+		clickView.setLayoutY(5);
+
+		deleteView.setOnMouseClicked(e->{
+			deleteEventProcessor();
+		});
 
 		eraserView.setOnMouseEntered(e -> {
 			if (!isErasing) {
@@ -354,8 +382,20 @@ public class MapEditorScene {
 			}
 		});
 
+		clickView.setOnMouseEntered(e -> {
+			if (!isClick) {
+				clickView.setImage(new Image(getClass().getResourceAsStream("/Images/clickbuttonhover.png")));
+			}
+		});
+		clickView.setOnMouseExited(e -> {
+			if (!isClick) {
+				clickView.setImage(new Image(getClass().getResourceAsStream("/Images/clickbutton.png")));
+			}
+		});
+
 		hoverEffect(exitView);
 		hoverEffect(saveView);
+		hoverEffect(deleteView);
 
 		saveView.setOnMouseClicked(e -> {
 			if (mapEditorController.validateMap()) {
@@ -370,11 +410,13 @@ public class MapEditorScene {
 			isErasing = !isErasing;
 			isSetStart = false;
 			isSetEnd = false;
+			isClick = false;
 
 			if (isErasing) {
 				eraserView.setImage(erasserPressed);
 				setStartView.setImage(new Image(getClass().getResourceAsStream("/Images/setstart.png")));
 				setEndView.setImage(new Image(getClass().getResourceAsStream("/Images/setend.png")));
+				clickView.setImage(new Image(getClass().getResourceAsStream("/Images/clickbutton.png")));
 				eraserEventProcess();
 			} else {
 				eraserView.setImage(new Image(getClass().getResourceAsStream("/Images/eraser.png")));
@@ -387,11 +429,13 @@ public class MapEditorScene {
 			isSetStart = !isSetStart;
 			isSetEnd = false;
 			isErasing = false;
+			isClick = false;
 
 			if (isSetStart) {
 				setStartView.setImage(setStartPressed);
 				setEndView.setImage(new Image(getClass().getResourceAsStream("/Images/setend.png")));
 				eraserView.setImage(new Image(getClass().getResourceAsStream("/Images/eraser.png")));
+				clickView.setImage(new Image(getClass().getResourceAsStream("/Images/clickbutton.png")));
 				setStartEventProcess();
 			} else {
 				setStartView.setImage(new Image(getClass().getResourceAsStream("/Images/setstart.png")));
@@ -403,11 +447,14 @@ public class MapEditorScene {
 			isSetEnd = !isSetEnd;
 			isSetStart = false;
 			isErasing = false;
+			isClick = false;
 
 			if (isSetEnd) {
 				setEndView.setImage(setEndPressed);
 				setStartView.setImage(new Image(getClass().getResourceAsStream("/Images/setstart.png")));
 				eraserView.setImage(new Image(getClass().getResourceAsStream("/Images/eraser.png")));
+				clickView.setImage(new Image(getClass().getResourceAsStream("/Images/clickbutton.png")));
+
 				setEndEventProcess();
 			} else {
 				setEndView.setImage(new Image(getClass().getResourceAsStream("/Images/setend.png")));
@@ -415,11 +462,30 @@ public class MapEditorScene {
 			}
 		});
 
+		clickView.setOnMouseClicked(e->{
+			isClick = !isClick;
+			isSetStart = false;
+			isErasing = false;
+			isSetEnd = false;
+
+			if (isClick) {
+				clickView.setImage(clickButtonPressed);
+				setStartView.setImage(new Image(getClass().getResourceAsStream("/Images/setstart.png")));
+				setEndView.setImage(new Image(getClass().getResourceAsStream("/Images/setend.png")));
+				eraserView.setImage(new Image(getClass().getResourceAsStream("/Images/eraser.png")));
+				clickEventProcess();
+			} else {
+				clickView.setImage(new Image(getClass().getResourceAsStream("/Images/clickbutton.png")));
+				editedMap.setOnMouseClicked(null);
+			}
+
+		});
+
 		exitView.setOnMouseClicked(e->{
 			app.showMainMenu(new StackPane());
 		});
 
-        optionBar.getChildren().addAll(saveView,eraserView,setStartView,setEndView);
+        optionBar.getChildren().addAll(saveView,eraserView,setStartView,setEndView,deleteView,clickView);
         exitBar.getChildren().addAll(exitView,editModeGroup);
 
 		ImageView topBot = createTileImageView(topbottom, 0, 0);
@@ -506,7 +572,13 @@ public class MapEditorScene {
 
 	private void eventProcessor(ImageView image) { //anlayana
 		image.setOnMousePressed(event -> {
-			if(!isErasing && !isSetStart && !isSetEnd){
+			if (isClick) {
+				String tileName = (String) image.getUserData();
+				selectedClickTileName = tileName;
+				System.out.println("tilename:" + selectedClickTileName);
+				return;
+			}
+			if(!isErasing && !isSetStart && !isSetEnd && !isClick){
 				String tileName = (String) image.getUserData();
 				Image originalImage = new Image(getClass().getResourceAsStream("/Images/" + tileName + ".png"));
 				draggingClone = new ImageView(originalImage);
@@ -763,7 +835,115 @@ public class MapEditorScene {
 			}
 		});
 	}
+	private void clickEventProcess(){
+		mapForEditor.setOnMouseClicked(this::placeTileForClick);
+		editedMap.setOnMouseClicked(this::placeTileForClick);
+//		mapForEditor.setOnMouseMoved(this::updateHighlightBoxForClick);
+		//editedMap.setOnMouseMoved(this::updateHighlightBoxForClick);
+//		mapForEditor.setOnMouseEntered(e -> highlightBox.setVisible(true));
+		//editedMap.setOnMouseEntered(e -> highlightBox.setVisible(true));
+//		mapForEditor.setOnMouseExited(e -> highlightBox.setVisible(false));
+//		editedMap.setOnMouseExited(e -> highlightBox.setVisible(false));
+	}
 
+//	private void updateHighlightBoxForClick(MouseEvent e){
+//		double mouseX = e.getSceneX();
+//		double mouseY = e.getSceneY();
+//		int cellX = (int) (mouseX / 70);
+//		int cellY = (int) (mouseY / 70);
+//		if (cellX < 0 || cellX >= 16 || cellY < 0 || cellY >= 9) {
+//			highlightBox.setVisible(false);
+//			return;
+//		}
+//
+//		if (selectedClickTileName.equals("castle")) {
+//			highlightBox.setWidth(140);
+//			highlightBox.setHeight(140);
+//			highlightBox.setLayoutX(cellX * 70);
+//			highlightBox.setLayoutY(cellY * 70);
+//			highlightBox.setVisible(true);
+//		} else {
+//			highlightBox.setWidth(70);
+//			highlightBox.setHeight(70);
+//			highlightBox.setLayoutX(cellX * 70);
+//			highlightBox.setLayoutY(cellY * 70);
+//			highlightBox.setVisible(true);
+//		}
+//	}
+
+	private void deleteEventProcessor(){
+		editedMap.getChildren().clear();
+		MapEditorController.resetMap();
+		mapEditorController =  MapEditorController.getInstance(true);
+	}
+	private void placeTileForClick(MouseEvent e){
+		System.out.println("clicked");
+		if (!isClick || selectedClickTileName == null) return;
+
+		double mouseX = e.getSceneX();
+		double mouseY = e.getSceneY();
+		int cellX = (int) (mouseX / 70);
+		int cellY = (int) (mouseY / 70);
+		Point2D cell = new Point2D(cellX, cellY);
+
+		if (cellX < 0 || cellX >= 16 || cellY < 0 || cellY >= 9) {
+			return;
+		}
+
+		if (selectedClickTileName.equals("castle")) {
+			boolean success = mapEditorController.forcePlaceCastle(cellX, cellY);
+			if (!success) return;
+
+			removeGroupedTileAt(cell);
+
+			Set<Point2D> cells = Set.of(
+					new Point2D(cellX, cellY),
+					new Point2D(cellX + 1, cellY),
+					new Point2D(cellX, cellY + 1),
+					new Point2D(cellX + 1, cellY + 1)
+			);
+			for (Point2D pt : cells) removeGroupedTileAt(pt);
+
+			ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/Images/castle.png")));
+			imageView.setFitWidth(140);
+			imageView.setFitHeight(140);
+			imageView.setLayoutX(cellX * 70);
+			imageView.setLayoutY(cellY * 70);
+			editedMap.getChildren().add(imageView);
+
+			GroupedTile castleTile = new GroupedTile("castle", cells, imageView);
+			for (Point2D pt : cells){
+				placedTiles.put(pt, castleTile);
+			}
+		}
+		else if (selectedClickTileName.equals("lot")) {
+			mapEditorController.forcePlaceLot(cellX, cellY);
+			ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/Images/lot.png")));
+			imageView.setFitWidth(70);
+			imageView.setFitHeight(70);
+			imageView.setLayoutX(cellX * 70);
+			imageView.setLayoutY(cellY * 70);
+			editedMap.getChildren().add(imageView);
+			placedTiles.put(cell, new GroupedTile("lot", Set.of(cell), imageView));
+		}
+		else if (selectedClickTileName.equals("grass")) {
+			mapEditorController.removeTile(cellX, cellY);
+			mapEditorController.forcePlaceTile("grass", cellX, cellY);
+			removeGroupedTileAt(cell);
+		}
+		else {
+			mapEditorController.forcePlaceTile(selectedClickTileName, cellX, cellY);
+			ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/Images/" + selectedClickTileName + ".png")));
+			imageView.setFitWidth(70);
+			imageView.setFitHeight(70);
+			imageView.setLayoutX(cellX * 70);
+			imageView.setLayoutY(cellY * 70);
+			editedMap.getChildren().add(imageView);
+			placedTiles.put(cell, new GroupedTile(selectedClickTileName, Set.of(cell), imageView));
+		}
+
+		mapEditorController.printMap();
+	}
 	private void setEndEventProcess() {
 		editedMap.setOnMouseClicked(e -> {
 			if (!isSetEnd) return;

@@ -92,9 +92,6 @@ public class MapEditorController {
 	}
 
 	public void upgradeTower(int x, int y){
-
-
-
 		Tile tile = PlayModeManager.getInstance().getCurrentMap().tileMap[y][x];
 		Tower tower  = ((Lot) tile).getTower();
 		System.out.println(tower.getClass().getName());
