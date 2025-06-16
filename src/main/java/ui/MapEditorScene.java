@@ -258,15 +258,15 @@ public class MapEditorScene {
 	}
 
 	private Pane getSideBar() {
-		biggerSideBar.setPrefSize(265,630);
+		biggerSideBar.setPrefSize(269,630);
         biggerSideBar.setStyle("-fx-background-color: #434447;");
 
-		exitBar.setPrefSize(265,62.5);
+		exitBar.setPrefSize(269,62.5);
 		exitBar.setLayoutX(4);
 		exitBar.setLayoutY(0);
         exitBar.setStyle("-fx-background-color: #8FD393;");
 
-        optionBar.setPrefSize(265, 62.5);
+        optionBar.setPrefSize(269, 62.5);
         optionBar.setLayoutX(4);
 		optionBar.setLayoutY(63.5);
         optionBar.setStyle("-fx-background-color: #8FD393;");
@@ -475,7 +475,7 @@ public class MapEditorScene {
 		highlightEffect(bar);
 
 		sideBar = new ScrollPane(bar);
-		sideBar.setPrefSize(262, 505);
+		sideBar.setPrefSize(265, 505);
 		sideBar.setLayoutX(4);
 		sideBar.setLayoutY(127);
 		sideBar.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);

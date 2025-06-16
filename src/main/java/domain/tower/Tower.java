@@ -48,8 +48,16 @@ public abstract class Tower implements Serializable {
 			case AttackType.ARROW -> ArrowFactory.getInstance().createProjectile(target, location);
 			case AttackType.SPELL -> SpellFactory.getInstance().createProjectile(target, location);
 			case AttackType.SLOW_SPELL -> SlowSpellFactory.getInstance().createProjectile(target, location);
-			case AttackType.ARTILLERY -> ArtilleryFactory.getInstance().createProjectile(target, location);
+			case AttackType.ARTILLERY -> createArtillery(target, location);
 		};
+	}
+
+	private Projectile createArtillery(Enemy target, Location location) {
+		if (level == 2) {
+			return BetterArtilleryFactory.getInstance().createProjectile(target, location);
+		} else {
+			return ArtilleryFactory.getInstance().createProjectile(target, location);
+		}
 	}
 
     public void targetEnemy() {
