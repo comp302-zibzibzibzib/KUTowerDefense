@@ -19,7 +19,7 @@ import domain.map.Tile;
 import domain.map.TileType;
 import domain.map.TowerType;
 import domain.services.Utilities;
-import domain.tower.TowerFactory;
+import domain.tower.*;
 
 public class MapEditorController {
 	private Map forcedMap;
@@ -90,7 +90,33 @@ public class MapEditorController {
 		mapEditor.placeTile(TileType.TOWER, TowerType.ARCHER, y, x);
 		player.updateGold(-GameOptions.getInstance().getArcherCost());
 	}
-	
+
+	public void upgradeTower(int x, int y){
+
+
+
+		Tile tile = PlayModeManager.getInstance().getCurrentMap().tileMap[y][x];
+		Tower tower  = ((Lot) tile).getTower();
+		System.out.println(tower.getClass().getName());
+		if ( tower.getClass().getName().equals("domain.tower.ArcherTower") && player.getGold() >= GameOptions.getInstance().getArcherUpgradeCost()){
+			player.updateGold(-GameOptions.getInstance().getArcherUpgradeCost());
+			tower.upgradeTower();
+			return;
+
+		}
+		if ( tower.getClass().getName().equals("domain.tower.ArtilleryTower") && player.getGold() >= GameOptions.getInstance().getArtilleryUpgradeCost()){
+			player.updateGold(-GameOptions.getInstance().getArtilleryUpgradeCost());
+			tower.upgradeTower();
+			return;
+		}
+		if (tower.getClass().getName().equals("domain.tower.MageTower") && player.getGold() >= GameOptions.getInstance().getMageUpgradeCost()) {
+			player.updateGold(-GameOptions.getInstance().getMageUpgradeCost());
+			tower.upgradeTower();
+			return;
+		}
+
+	}
+
 	public void createMageTower(int x, int y) {
 		if (player.getGold() < GameOptions.getInstance().getMageCost()) return;
 
@@ -112,6 +138,7 @@ public class MapEditorController {
 		player.updateGold((int) (((Lot)tileToRemove).getTower().getCost() * 0.6));
 		mapEditor.removeTile(y, x);
 	}
+
 	
 	public void forcePlaceTile(String name, int x, int y) {
 		Tile tileToRemove = mapEditor.map.tileMap[y][x];

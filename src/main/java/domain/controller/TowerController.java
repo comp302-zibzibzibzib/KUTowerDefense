@@ -59,6 +59,11 @@ public class TowerController {
 	public static boolean canBuildArtillery() {
 		return Player.getInstance().getGold() >= GameOptions.getInstance().getArtilleryCost();
 	}
+	public static boolean canUpgrade(){
+		return (Player.getInstance().getGold() >= GameOptions.getInstance().getArtilleryUpgradeCost()||
+				Player.getInstance().getGold() >= GameOptions.getInstance().getArcherUpgradeCost()||
+				Player.getInstance().getGold() >= GameOptions.getInstance().getMageUpgradeCost());
+	}
 
 	public static int getNumberOfProjectiles() {
 		return Projectile.getProjectiles().size();

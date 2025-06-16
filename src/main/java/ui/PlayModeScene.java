@@ -63,6 +63,7 @@ public class PlayModeScene extends AnimationTimer {
 	private Image redRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_red.png"));
 	private Image blueRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_blue.png"));
 	private Image yellowRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_yellow.png"));
+	private Image upgradeHover = new Image(getClass().getResourceAsStream("/Images/upgradehover.png"));
 
 	private HBox hbox;
 	
@@ -462,7 +463,7 @@ public class PlayModeScene extends AnimationTimer {
 				if(assetName.equals("lot")) {
 					tileView.setOnMouseClicked(event ->{
 						selectedLot = tileView;
-						showLotCircle(tileView);
+						showTowerOverlay(tileView, "lot",null);
 						System.out.println("damn");
 					});
 				}
@@ -478,7 +479,7 @@ public class PlayModeScene extends AnimationTimer {
 					tileView.setOnMouseClicked(event->{
 						removeRange();
 						selectedTower = tileView;
-						showDeleteCircle(tileView);
+						showTowerOverlay(tileView, "tower","archertower");
 					});
 				}
 				else if(assetName.equals("magetower")) {
@@ -488,7 +489,7 @@ public class PlayModeScene extends AnimationTimer {
 					tileView.setOnMouseClicked(event->{
 						removeRange();
 						selectedTower = tileView;
-						showDeleteCircle(tileView);
+						showTowerOverlay(tileView, "tower","magetower");
 
 					});
 					
@@ -500,7 +501,7 @@ public class PlayModeScene extends AnimationTimer {
 					tileView.setOnMouseClicked(event->{
 						removeRange();
 						selectedTower = tileView;
-						showDeleteCircle(tileView);
+						showTowerOverlay(tileView, "tower","artillerytower");
 
 					});
 				}
@@ -526,7 +527,7 @@ public class PlayModeScene extends AnimationTimer {
 		return map;
 		
 	}
-	
+
 	
 	private void castleMaker(Pane pane , int i , int j) {
 		int[][] tileIndicies = new int[][] {{i, j}, {i, j+1}, {i+1, j}, {i+1, j+1}};
@@ -552,231 +553,217 @@ public class PlayModeScene extends AnimationTimer {
 			pane.getChildren().addAll(castleView);
 		}
 	}
-	
-	private void showLotCircle(ImageView lot) {
-		if (towerSelection != null&& towerSelection.getParent() != null) {
-	        ((Pane) towerSelection.getParent()).getChildren().remove(towerSelection);
-	    }	
-		int x = (int)(lot.getLayoutX()/80);
-    	int y = (int)(lot.getLayoutY()/80);
-		double centerX = lot.getLayoutX() + lot.getFitWidth() / 2;
-	    double centerY = lot.getLayoutY() + lot.getFitHeight() / 2;
-	    
-	    ImageView archerButtonView = new ImageView(archerButtonImage);
-	    ImageView mageButtonView = new ImageView(mageButtonImage);
-	    ImageView artilleryButtonView = new ImageView(artilleryButtonImage);
-	    archerButtonView.setFitWidth(40);
-	    archerButtonView.setFitHeight(40);
-	    mageButtonView.setFitWidth(40);
-	    mageButtonView.setFitHeight(40);
-	    artilleryButtonView.setFitWidth(40);
-	    artilleryButtonView.setFitHeight(40);
 
 
-	    ImageView circleView = new ImageView(circleImage);
-	    circleView.setFitWidth(100);
-	    circleView.setFitHeight(100);
-	    circleView.setLayoutX(centerX - 50);
-	    circleView.setLayoutY(centerY - 50);
-	    
-	    Button archerButton = new Button();
-	    archerButton.setGraphic(archerButtonView);
-	    archerButton.setBackground(null);
-	    archerButton.setPrefSize(40, 40);
-	    if(lot.getLayoutY() == 0) {
-	    	archerButton.setLayoutX(centerX- 27);
-		    archerButton.setLayoutY(centerY +25 );
-	    }
-	    else {
-	    	archerButton.setLayoutX(centerX- 25);
-		    archerButton.setLayoutY(centerY - 80);
-	    }
-	   
-	    Button mageButton = new Button();
-	    mageButton.setPrefSize(20,20);
-	    mageButton.setGraphic(mageButtonView);
-	    mageButton.setStyle("-fx-background-color: transparent;");
-	    mageButton.setLayoutX(centerX- 75);
-	    mageButton.setLayoutY(centerY - 20);
-	    mageButton.setFocusTraversable(false);
+	private void showTowerOverlay(ImageView tile, String mode,String towerName){
+		removeCircle(mode.equals("lot") ? towerSelection : removeSelection);
 
-	    
-	    Button artilleryButton = new Button();
-	    artilleryButton.setStyle("-fx-background-color: transparent;");
-	    artilleryButton.setGraphic(artilleryButtonView);
-	    artilleryButton.setPrefSize(40, 40);
-	    artilleryButton.setLayoutX(centerX + 20);
-	    artilleryButton.setLayoutY(centerY -20);
-	    
-	    
-	    archerButton.setOnMouseClicked(event ->{
-	    	removeCircle(towerSelection);
-	    	if (!TowerController.canBuildArcher()) return;
-			mapEditorController.createArcherTower(x, y);
-					
-			Pane parent = (Pane) selectedLot.getParent();
-			parent.getChildren().remove(selectedLot);
-			selectedLot = null;
-			
-			Image archerImage = new Image(getClass().getResourceAsStream("/Images/archertower.png"));
-			TileView archerTile = new TileView(archerImage, x, y);
-			
-			archerTile.setOnMouseEntered(event2 -> {
-				rangeRender(archerTile);
+		int x = (int)(tile.getLayoutX() / 80);
+		int y = (int)(tile.getLayoutY() / 80);
+		double centerX = tile.getLayoutX() + tile.getFitWidth() / 2;
+		double centerY = tile.getLayoutY() + tile.getFitHeight() / 2;
+
+		ImageView circleView = new ImageView(circleImage);
+		circleView.setFitWidth(100);
+		circleView.setFitHeight(100);
+		circleView.setLayoutX(centerX - 50);
+		circleView.setLayoutY(centerY - 50);
+
+		Group overlayGroup = new Group(circleView);
+
+		if (mode.equals("lot")) {
+			ImageView archerView = new ImageView(archerButtonImage);
+			ImageView mageView = new ImageView(mageButtonImage);
+			ImageView artilleryView = new ImageView(artilleryButtonImage);
+			archerView.setFitWidth(40);
+			archerView.setFitHeight(40);
+			mageView.setFitWidth(40);
+			mageView.setFitHeight(40);
+			artilleryView.setFitWidth(40);
+			artilleryView.setFitHeight(40);
+			Button archer = new Button(null, archerView);
+			Button mage = new Button(null, mageView);
+			Button artillery = new Button(null, artilleryView);
+
+			archer.setPrefSize(40, 40);
+			mage.setPrefSize(40, 40);
+			artillery.setPrefSize(40, 40);
+			archer.setStyle("-fx-background-color: transparent;");
+			mage.setStyle("-fx-background-color: transparent;");
+			artillery.setStyle("-fx-background-color: transparent;");
+
+			if (tile.getLayoutY() == 0) {
+				archer.setLayoutX(centerX - 27);
+				archer.setLayoutY(centerY + 25);
+			} else {
+				archer.setLayoutX(centerX - 25);
+				archer.setLayoutY(centerY - 80);
+			}
+
+			mage.setLayoutX(centerX - 75);
+			mage.setLayoutY(centerY - 20);
+
+			artillery.setLayoutX(centerX + 20);
+			artillery.setLayoutY(centerY - 20);
+
+			archer.setOnMouseClicked(e -> {
+				removeCircle(towerSelection);
+				if (!TowerController.canBuildArcher()) return;
+				mapEditorController.createArcherTower(x, y);
+				replaceWithTower(tile, x, y, "archertower");
 			});
-			archerTile.setOnMouseClicked(event2 -> {
-				selectedTower = archerTile;
-				removeRange();
-				showDeleteCircle(archerTile);
+			mage.setOnMouseClicked(e -> {
+				removeCircle(towerSelection);
+				if (!TowerController.canBuildMage()) return;
+				mapEditorController.createMageTower(x, y);
+				replaceWithTower(tile, x, y, "magetower");
 			});
-			
-			parent.getChildren().add(archerTile);
-			
-			System.out.print(PlayerController.getPlayerGold());
-			System.out.println("aaaa");
-			
+			artillery.setOnMouseClicked(e -> {
+				removeCircle(towerSelection);
+				if (!TowerController.canBuildArtillery()) return;
+				mapEditorController.createArtilleryTower(x, y);
+				replaceWithTower(tile, x, y, "artillerytower");
+			});
+
+			archer.setOnMouseEntered(e -> ((ImageView) archer.getGraphic()).setImage(hoverArcher));
+			archer.setOnMouseExited(e -> ((ImageView) archer.getGraphic()).setImage(archerButtonImage));
+			mage.setOnMouseEntered(e -> ((ImageView) mage.getGraphic()).setImage(hoverMage));
+			mage.setOnMouseExited(e -> ((ImageView) mage.getGraphic()).setImage(mageButtonImage));
+			artillery.setOnMouseEntered(e -> ((ImageView) artillery.getGraphic()).setImage(hoverArtillery));
+			artillery.setOnMouseExited(e -> ((ImageView) artillery.getGraphic()).setImage(artilleryButtonImage));
+
+			overlayGroup.getChildren().addAll(archer, mage, artillery);
+			towerSelection = overlayGroup;
+		}
+		else if (mode.equals("tower")) {
+			ImageView deleteView = new ImageView(new Image(getClass().getResourceAsStream("/Images/delete.png")));
+			ImageView upgradeView = new ImageView(new Image(getClass().getResourceAsStream("/Images/upgrade.png")));
+			upgradeView.setFitHeight(40);
+			upgradeView.setFitWidth(40);
+			deleteView.setFitWidth(40);
+			deleteView.setFitHeight(40);
+			Button deleteButton = new Button(null, deleteView);
+			Button upgradeButton = new Button(null, upgradeView);
+			upgradeButton.setPrefSize(40, 40);
+			deleteButton.setPrefSize(40, 40);
+			deleteButton.setStyle("-fx-background-color: transparent;");
+			upgradeButton.setStyle("-fx-background-color: transparent;");
+
+			if (tile.getLayoutY() == 0) {
+				deleteButton.setLayoutX(centerX - 27);
+				deleteButton.setLayoutY(centerY + 25);
+				upgradeButton.setLayoutX(centerX - 75);
+				upgradeButton.setLayoutY(centerY - 20);
+
+			}
+			else if (tile.getLayoutX()/80 == 15) {
+				deleteButton.setLayoutX(centerX - 27);
+				deleteButton.setLayoutY(centerY - 80);
+				upgradeButton.setLayoutX(centerX - 75);
+				upgradeButton.setLayoutY(centerY - 20);
+				
+			}
+			else if (tile.getLayoutX() == 0) {
+				deleteButton.setLayoutX(centerX - 27);
+				deleteButton.setLayoutY(centerY - 80);
+				upgradeButton.setLayoutX(centerX + 20);
+				upgradeButton.setLayoutY(centerY - 20);
+			}
+			else if (tile.getLayoutY()/80 == 8) {
+				deleteButton.setLayoutX(centerX - 27);
+				deleteButton.setLayoutY(centerY - 80);
+				upgradeButton.setLayoutX(centerX - 75);
+				upgradeButton.setLayoutY(centerY - 20);
+			}
+			else {
+				deleteButton.setLayoutX(centerX - 27);
+				deleteButton.setLayoutY(centerY - 80);
+				upgradeButton.setLayoutX(centerX - 27);
+				upgradeButton.setLayoutY(centerY + 25);
+			}
+
+			deleteButton.setOnMouseClicked(e -> {
+				removeCircle(removeSelection);
+				mapEditorController.removeTower(x, y);
+
+				Pane parent = (Pane) tile.getParent();
+				parent.getChildren().remove(tile);
+				Image lotImage = new Image(getClass().getResourceAsStream("/Images/lot.png"));
+				TileView lotTile = new TileView(lotImage, x, y);
+				lotTile.setOnMouseClicked(ev -> {
+					selectedLot = lotTile;
+					showTowerOverlay(lotTile, "lot",null);
+				});
+				parent.getChildren().add(lotTile);
+			});
+
+			upgradeButton.setOnMouseClicked(e->{
+				removeCircle(removeSelection);
+				if (!TowerController.canUpgrade()) return;
+				mapEditorController.upgradeTower(x, y);
+
+				Pane parent = (Pane) tile.getParent();
+				parent.getChildren().remove(tile);
+
+				if(towerName.equals("magetower")){
+					Image upMage = new Image(getClass().getResourceAsStream("/Images/upgradedmage.png"));
+					TileView upMageView = new TileView(upMage, x, y);
+					upMageView.setOnMouseClicked(ev -> {
+						selectedLot = upMageView;
+						showTowerOverlay(upMageView, "tower","magetower");
+					});
+					parent.getChildren().add(upMageView);
+				}
+				else if(towerName.equals("archertower")){
+					Image upArcher = new Image(getClass().getResourceAsStream("/Images/upgradedarcher.png"));
+					TileView upArcherView = new TileView(upArcher, x, y);
+					upArcherView.setOnMouseClicked(ev -> {
+						selectedLot = upArcherView;
+						showTowerOverlay(upArcherView, "tower","archertower");
+					});
+					parent.getChildren().add(upArcherView);
+				}
+				else if(towerName.equals("artillerytower")){
+					Image upArt = new Image(getClass().getResourceAsStream("/Images/upgradedartillery.png"));
+					TileView upArtView = new TileView(upArt, x, y);
+					upArtView.setOnMouseClicked(ev -> {
+						selectedLot = upArtView;
+						showTowerOverlay(upArtView, "tower","artillerytower");
+					});
+					parent.getChildren().add(upArtView);
+				}
+
+			});
+
+			deleteButton.setOnMouseEntered(e -> deleteView.setImage(deleteHover));
+			deleteButton.setOnMouseExited(e -> deleteView.setImage(new Image(getClass().getResourceAsStream("/Images/delete.png"))));
+			upgradeButton.setOnMouseEntered(e->upgradeView.setImage(upgradeHover));
+			upgradeButton.setOnMouseExited(e -> upgradeView.setImage(new Image(getClass().getResourceAsStream("/Images/upgrade.png"))));
+
+			overlayGroup.getChildren().addAll(deleteButton,upgradeButton);
+			removeSelection = overlayGroup;
+		}
+
+		overlayPane.getChildren().add(overlayGroup);
+		}
+
+
+	private void replaceWithTower(ImageView oldTile, int x, int y, String towerName) {
+		Pane parent = (Pane) oldTile.getParent();
+		parent.getChildren().remove(oldTile);
+		Image towerImage = new Image(getClass().getResourceAsStream("/Images/" + towerName + ".png"));
+		TileView newTile = new TileView(towerImage, x, y);
+		newTile.setOnMouseEntered(ev -> rangeRender(newTile));
+		newTile.setOnMouseClicked(ev -> {
+			selectedTower = newTile;
+			removeRange();
+			showTowerOverlay(newTile, "tower",towerName);
 		});
-	    archerButton.setOnMouseEntered(e -> { archerButtonView.setImage(hoverArcher); });
-	    archerButton.setOnMouseExited(e -> {archerButtonView.setImage(archerButtonImage); });
-	    
-	    mageButton.setOnMouseClicked(event -> {
-	    	removeCircle(towerSelection);
-	    	if (!TowerController.canBuildMage()) return;
-			mapEditorController.createMageTower(x, y);
-
-			Pane parent = (Pane) selectedLot.getParent();
-			parent.getChildren().remove(selectedLot);
-			selectedLot = null;
-			
-			Image mageImage = new Image(getClass().getResourceAsStream("/Images/magetower.png"));
-			TileView mageTile = new TileView(mageImage, x, y);
-			
-			mageTile.setOnMouseEntered(event2 -> {
-				rangeRender(mageTile);
-			});
-			mageTile.setOnMouseClicked(event2 -> {
-				selectedTower = mageTile;
-				removeRange();
-				showDeleteCircle(mageTile);
-			});
-			
-			parent.getChildren().add(mageTile);
-			
-			System.out.print(PlayerController.getPlayerGold());
-			System.out.println("mmmmm"); //mmmm
-
-	    });
-	    mageButton.setOnMouseEntered(e -> { mageButtonView.setImage(hoverMage); });
-	    mageButton.setOnMouseExited(e -> { mageButtonView.setImage(mageButtonImage); });
-	    
-	    artilleryButton.setOnMouseClicked(event->{
-	    	removeCircle(towerSelection);
-	    	if (!TowerController.canBuildArtillery()) return;
-			mapEditorController.createArtilleryTower(x, y);
-
-			Pane parent = (Pane) selectedLot.getParent();
-			parent.getChildren().remove(selectedLot);
-			selectedLot = null;
-			
-			Image artilleryImage = new Image(getClass().getResourceAsStream("/Images/artillerytower.png"));
-			TileView artilleryTile = new TileView(artilleryImage, x, y);
-			
-			artilleryTile.setOnMouseEntered(event2 -> {
-				rangeRender(artilleryTile);
-			});
-			artilleryTile.setOnMouseClicked(event2 -> {
-				selectedTower = artilleryTile;
-				removeRange();
-				showDeleteCircle(artilleryTile);
-			});
-			
-			parent.getChildren().add(artilleryTile);
-			
-			System.out.print(PlayerController.getPlayerGold());
-			System.out.println("arrrr");
-
-	    });
-	    artilleryButton.setOnMouseEntered(e -> { artilleryButtonView.setImage(hoverArtillery); });
-		artilleryButton.setOnMouseExited(e -> { artilleryButtonView.setImage(artilleryButtonImage); });
-	    
-	    towerSelection = new Group(circleView, archerButton,mageButton,artilleryButton);
-
-	    overlayPane.getChildren().add(towerSelection);
+		parent.getChildren().add(newTile);
 	}
-	
-	private void showDeleteCircle(ImageView tower) {
-		if (removeSelection != null&& removeSelection.getParent() != null) {
-	        ((Pane) removeSelection.getParent()).getChildren().remove(removeSelection);
-	    }	
-		int x = (int)(tower.getLayoutX()/80);
-    	int y = (int)(tower.getLayoutY()/80);
-        double centerX = tower.getLayoutX() + tower.getFitWidth() / 2;
-        double centerY = tower.getLayoutY() + tower.getFitHeight() / 2;
-        Image circleImage = new Image(getClass().getResourceAsStream("/Images/circle.png"));
-        ImageView circleView = new ImageView(circleImage);
-        circleView.setFitWidth(100);
-        circleView.setFitHeight(100);
-        circleView.setLayoutX(centerX - 50);
-        circleView.setLayoutY(centerY - 50);
 
-        Image deleteButtonImage  = new Image(getClass().getResourceAsStream("/Images/delete.png"));
-        ImageView deleteButtonView = new ImageView(deleteButtonImage);
-        deleteButtonView.setFitWidth(40);
-        deleteButtonView.setFitHeight(40);
 
-		ImageView upgradeButtonView = new ImageView(archerButtonImage);
-		upgradeButtonView.setFitWidth(40);
-		upgradeButtonView.setFitHeight(40);
 
-        Button deleteButton = new Button();
-        deleteButton.setGraphic(deleteButtonView);
-        deleteButton.setBackground(null);
-        deleteButton.setPrefSize(40, 40);
-        if(tower.getLayoutY() == 0) {
-            deleteButton.setLayoutX(centerX - 27);
-             deleteButton.setLayoutY(centerY + 25);
-        }
-        else {
-            deleteButton.setLayoutX(centerX - 27);
-            deleteButton.setLayoutY(centerY - 80);
-        }
-
-		Button upgradeButton = new Button();
-		upgradeButton.setGraphic(upgradeButtonView);
-		upgradeButton.setBackground(null);
-		upgradeButton.setPrefSize(40, 40);
-
-        deleteButton.setOnMouseClicked(event -> {
-            removeCircle(removeSelection);
-            mapEditorController.removeTower(x,y);
-            
-            Pane parent = (Pane) selectedTower.getParent();
-            
-            if (selectedTower == null) return;
-            parent.getChildren().remove(selectedTower);
-            selectedTower = null;
-            
-            Image lotImage = new Image(getClass().getResourceAsStream("/Images/lot.png"));
-            TileView lotView = new TileView(lotImage, x, y);
-            
-            lotView.setOnMouseClicked(event2 -> {
-				selectedLot = lotView;
-				showLotCircle(lotView);
-				System.out.println("damn");
-			});
-            
-			parent.getChildren().add(lotView);
-			System.out.print(PlayerController.getPlayerGold());
-        });
-        deleteButton.setOnMouseEntered(e -> { deleteButtonView.setImage(deleteHover); });
-	    deleteButton.setOnMouseExited(e -> { deleteButtonView.setImage(deleteButtonImage); });
-
-        removeSelection = new Group(circleView,deleteButton);
-
-        overlayPane.getChildren().add(removeSelection);
-	}
-	
-	
 	private void removeCircle(Group group) {
 		if (group != null && group.getParent() != null) {
 	        ((Pane) group.getParent()).getChildren().remove(group);

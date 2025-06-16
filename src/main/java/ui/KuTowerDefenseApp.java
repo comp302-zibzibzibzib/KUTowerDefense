@@ -27,7 +27,7 @@ public class KuTowerDefenseApp extends Application{
 	public void showMainMenu(StackPane root) {
 		MainMenuScene menuScene = new MainMenuScene(this, root);
         Scene mainMenuScene = menuScene.getScene();
-		mainMenuScene.setCursor(cursor);
+		//mainMenuScene.setCursor(cursor);
 		primaryStage.setResizable(true);
         primaryStage.setScene(mainMenuScene);
         primaryStage.setTitle("KU Tower Defense");
@@ -35,7 +35,7 @@ public class KuTowerDefenseApp extends Application{
     }
     public void showOptionsMenu(StackPane root) {
     	OptionScene options = new OptionScene(this, root);
-		options.getScene().setCursor(cursor);
+		//options.getScene().setCursor(cursor);
 		primaryStage.setResizable(true);
         primaryStage.setScene(options.getScene());
         primaryStage.show();
@@ -43,7 +43,7 @@ public class KuTowerDefenseApp extends Application{
     public void showMapEditor() {
     	MapEditorScene mapEditor = new MapEditorScene(this);
     	Scene editor = mapEditor.getScene();
-		editor.setCursor(cursor);
+		//editor.setCursor(cursor);
     	primaryStage.setScene(editor);
     	primaryStage.setResizable(false);
     	
@@ -51,7 +51,7 @@ public class KuTowerDefenseApp extends Application{
     public void startGame() {
     	PlayModeScene playableGame = new PlayModeScene(this);
     	Scene game = playableGame.getScene();
-		game.setCursor(cursor);
+		//game.setCursor(cursor);
     	primaryStage.setScene(game);
     	primaryStage.setResizable(false);
     }

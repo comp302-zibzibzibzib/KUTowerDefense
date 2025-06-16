@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -249,7 +250,6 @@ public class MapEditorScene {
 				tileView.setLayoutY(y);
 
 				mapForEditor.getChildren().addAll(tileView);
-
 			}
 		}
 
@@ -260,12 +260,12 @@ public class MapEditorScene {
 		biggerSideBar.setPrefSize(265,630);
         biggerSideBar.setStyle("-fx-background-color: #434447;");
 
-		exitBar.setPrefSize(265,62.5);
+		exitBar.setPrefSize(264,62.5);
 		exitBar.setLayoutX(4);
 		exitBar.setLayoutY(0);
         exitBar.setStyle("-fx-background-color: #8FD393;");
 
-        optionBar.setPrefSize(265, 62.5);
+        optionBar.setPrefSize(264, 62.5);
         optionBar.setLayoutX(4);
 		optionBar.setLayoutY(63.5);
         optionBar.setStyle("-fx-background-color: #8FD393;");
@@ -459,6 +459,7 @@ public class MapEditorScene {
 		ImageView rockSecondView = createTileImageView(rockSecond, 0, 562.5);
 
 		Pane bar = new Pane();
+		bar.setPrefWidth(260);
 		bar.getChildren().addAll(topBot,topMid, topRight,horizontalTop,midL,
 				grassView,midRightView,horizontalMidView,leftBotomView,midBottomView,midBottomRightView,
 				horizontalBottomView,verticalLeftView,verticalMidView,verticalRightView,lotView,treeFirstView,treeSecondView,
@@ -597,7 +598,6 @@ public class MapEditorScene {
 					for (Point2D pt : cells) {
 						removeGroupedTileAt(pt);
 					}
-
 					//fixing the image
 					draggingClone.setFitWidth(140);
 					draggingClone.setFitHeight(140);
