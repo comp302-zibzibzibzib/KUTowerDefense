@@ -18,13 +18,8 @@
 .scroll-bar .thumb {
     -fx-background-color: "#8BC1C2FF";
     -fx-background-insets: 2;
-    -fx-background-radius: 4;
 }
 
-.scroll-bar .track {
-    -fx-background-color: "#0B0D0E4D";
-    -fx-background-radius: 4;
-}
 
 .scroll-bar:vertical .increment-button,
 .scroll-bar:vertical .decrement-button {

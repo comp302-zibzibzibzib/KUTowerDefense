@@ -10,6 +10,7 @@ public class ArcherTower extends Tower {
 	@Override
 	public void upgradeTower() {
 		if (level == 2) return;
+		level = 2;
 		range *= 1.5;
 		fireRate *= 2;
 	}

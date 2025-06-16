@@ -1,5 +1,6 @@
 package ui;
 
+import domain.controller.GameOptionsController;
 import javafx.animation.PauseTransition;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -21,7 +22,6 @@ public class MusicPlayer {
             }
             Media media = new Media(resource.toString());
             mediaPlayer = new MediaPlayer(media);
-            mediaPlayer.setVolume(0.5);
 
             mediaPlayer.setOnEndOfMedia(() -> {
                 PauseTransition delay = new PauseTransition(LOOP_DELAY);

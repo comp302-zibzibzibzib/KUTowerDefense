@@ -7,6 +7,8 @@ import domain.map.Map;
 import domain.map.PathTile;
 import domain.map.Tile;
 import domain.map.TileType;
+import domain.tower.MageTower;
+import domain.tower.Tower;
 
 public class PlayModeController {
 

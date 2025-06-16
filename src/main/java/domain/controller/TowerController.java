@@ -3,7 +3,9 @@ package domain.controller;
 import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
+import domain.map.Lot;
 import domain.map.Map;
+import domain.map.Tile;
 import domain.tower.Projectile;
 import domain.tower.Tower;
 import domain.tower.TowerFactory;
@@ -58,6 +60,11 @@ public class TowerController {
 	
 	public static boolean canBuildArtillery() {
 		return Player.getInstance().getGold() >= GameOptions.getInstance().getArtilleryCost();
+	}
+	public static boolean canUpgrade(int x, int y) {
+		Tile tile = PlayModeManager.getInstance().getCurrentMap().tileMap[y][x];
+		Tower tower = ((Lot) tile).getTower();
+		return Player.getInstance().getGold() >= tower.getUpgradeCost() && tower.getLevel() == 1;
 	}
 
 	public static int getNumberOfProjectiles() {

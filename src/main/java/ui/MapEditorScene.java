@@ -476,7 +476,6 @@ public class MapEditorScene {
 
 		sideBar = new ScrollPane(bar);
 		sideBar.setPrefSize(262, 505);
-		sideBar.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		sideBar.setLayoutX(4);
 		sideBar.setLayoutY(127);
 		sideBar.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
