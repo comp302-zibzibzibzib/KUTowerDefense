@@ -141,7 +141,7 @@ public class MapEditorScene {
 	private void setupNamePromptOverlay() {
 		Pane promptBox = new Pane();
 		promptBox.setPrefSize(400, 220);
-		promptBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2;");
+		promptBox.setStyle("-fx-background-color: lightblue; -fx-border-color: black; -fx-border-width: 2;");
 
 		Label nameLabel = new Label("Enter Map Name:");
 		nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
@@ -192,6 +192,7 @@ public class MapEditorScene {
 						snapshotPane.getChildren().add(grassTile);
 					}
 				}
+
 				for (GroupedTile tile : placedTiles.values()) {
 					ImageView original = tile.getView();
 					ImageView copy = new ImageView(original.getImage());
@@ -235,8 +236,8 @@ public class MapEditorScene {
 			}
 		}
 		return dashedPane;
-
 	}
+
 	private Pane renderMapEditor() {
 		double x;
 		double y;
@@ -398,7 +399,31 @@ public class MapEditorScene {
 			if (mapEditorController.validateMap()) {
 				setupNamePromptOverlay();
 			} else {
+				Pane saveMapError = new Pane();
+				saveMapError.setPrefSize(269, 62.5);
+				saveMapError.setStyle("-fx-background-color: lightblue; -fx-border-color: black; -fx-border-width: 2;");
 
+				Font errorFont = Font.font("Comic Sans MS", FontWeight.BOLD, 15);
+				Label errorLabel = new Label("Map cannot be validated.");
+				errorLabel.setFont(errorFont);
+				errorLabel.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
+				errorLabel.setLayoutX(45);
+				errorLabel.setLayoutY(20);
+
+				ImageView cancelView = new ImageView(saveExitButton);
+				cancelView.setFitHeight(30);
+				cancelView.setFitWidth(30);
+
+				cancelView.setLayoutX(238);
+				cancelView.setLayoutY(0);
+
+				saveMapError.getChildren().addAll(errorLabel, cancelView);
+
+				DynamicPopup saveErrorPopup = new DynamicPopup(saveMapError, root, DynamicPopupAlignment.TOPCENTERUPPER, 2);
+
+				cancelView.setOnMouseClicked(e2 -> {
+					saveErrorPopup.cleanupPopup();
+				});
 			}
 		});
 

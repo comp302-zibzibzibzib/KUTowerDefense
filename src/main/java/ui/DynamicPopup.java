@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
 enum DynamicPopupAlignment {
-    TOPLEFT, TOPRIGHT, TOPCENTER, CENTER;
+    TOPLEFT, TOPRIGHT, TOPCENTER, TOPCENTERUPPER, CENTER;
 }
 
 public class DynamicPopup extends AnimationTimer {
@@ -80,7 +80,7 @@ public class DynamicPopup extends AnimationTimer {
 
     private void setX() {
         switch (alignment) {
-            case CENTER, TOPCENTER -> popupPane.layoutXProperty().bind(parent.widthProperty().divide(2).subtract(popupPane.widthProperty().divide(2)));
+            case CENTER, TOPCENTER, TOPCENTERUPPER -> popupPane.layoutXProperty().bind(parent.widthProperty().divide(2).subtract(popupPane.widthProperty().divide(2)));
             case TOPLEFT -> popupPane.layoutXProperty().bind(parent.widthProperty().divide(4).subtract(popupPane.widthProperty().divide(2)));
             case TOPRIGHT -> popupPane.layoutXProperty().bind(parent.widthProperty().multiply(0.75).subtract(popupPane.widthProperty().divide(2)));
         }
@@ -90,6 +90,7 @@ public class DynamicPopup extends AnimationTimer {
         switch (alignment) {
             case CENTER -> popupPane.layoutYProperty().bind(background.heightProperty().divide(2).subtract(popupPane.heightProperty().divide(2)));
             case TOPLEFT, TOPRIGHT, TOPCENTER -> popupPane.layoutYProperty().bind(background.heightProperty().divide(4).subtract(popupPane.heightProperty().divide(2)));
+            case TOPCENTERUPPER -> popupPane.layoutYProperty().bind(background.heightProperty().divide(6).subtract(popupPane.heightProperty().divide(2)));
         }
     }
 
@@ -97,6 +98,7 @@ public class DynamicPopup extends AnimationTimer {
         double dest = switch (alignment) {
             case CENTER -> background.heightProperty().divide(2).subtract(popupPane.heightProperty().divide(2)).doubleValue();
             case TOPLEFT, TOPRIGHT, TOPCENTER -> background.heightProperty().divide(4).subtract(popupPane.heightProperty().divide(2)).doubleValue();
+            case TOPCENTERUPPER -> background.heightProperty().divide(6).subtract(popupPane.heightProperty().divide(2)).doubleValue();
         };
         return dest;
     }

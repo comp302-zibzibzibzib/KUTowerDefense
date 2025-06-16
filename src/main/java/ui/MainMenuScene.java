@@ -124,7 +124,7 @@ public class MainMenuScene {
 
 		mapSelectionOverlay.setPrefSize(500, 300);
 		mapSelectionOverlay.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-		mapSelectionOverlay.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2;");
+		mapSelectionOverlay.setStyle("-fx-background-color: lightblue; -fx-border-color: black; -fx-border-width: 2;");
 
 		Label title = new Label("Select a Map");
 		title.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 28));
