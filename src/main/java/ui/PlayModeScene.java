@@ -2,6 +2,7 @@ package ui;
 
 import java.security.SecureRandom;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 import domain.controller.*;
@@ -63,6 +64,8 @@ public class PlayModeScene extends AnimationTimer {
 	private Image redRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_red.png"));
 	private Image blueRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_blue.png"));
 	private Image yellowRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_yellow.png"));
+	private Image buttonBlue3 = new Image(getClass().getResourceAsStream("/Images/HUD/blueb3.png"));
+	private Image buttonHover3 = new Image(getClass().getResourceAsStream("/Images/HUD/hoverb3.png"));
 
 	private HBox hbox;
 	
@@ -405,10 +408,124 @@ public class PlayModeScene extends AnimationTimer {
 			projectileCanvas.setHeight(stack.getHeight());
 		});
 		this.start();
-		
-		playerStatsPutter();
+
+		playerStatsRender();
+		AtomicBoolean gameEnd = new AtomicBoolean(false);
+		Consumer<Integer> gameOverAction = (val) -> {
+			if (val <= 0 && !gameEnd.get()) {
+				gameEnd.set(true);
+				PlayModeController.decelerateGame();
+
+				Pane gameOverPane = gameEndPane(false);
+				DynamicPopup dynamicPopup = new DynamicPopup(gameOverPane, stack, DynamicPopupAlignment.CENTER, 1);
+			}
+		};
+		PlayerController.addLivesListener(gameOverAction);
+
+		Consumer<Boolean> winGameAction = (val) -> {
+			if (val && !gameEnd.get()) {
+				gameEnd.set(true);
+				PlayModeController.decelerateGame();
+
+				Pane gameWinPane = gameEndPane(true);
+				DynamicPopup dynamicPopup = new DynamicPopup(gameWinPane, stack, DynamicPopupAlignment.CENTER, 1);
+			}
+		};
+		EntityController.addRemovedEnemyListener(winGameAction);
+
 		Scene scene = new Scene(stack);
 		return scene;
+	}
+
+	private Pane gameEndPane(boolean win) {
+		Pane gameOverPane = new Pane();
+		StackPane gameOverLabelStack;
+		if (win) {
+			gameOverLabelStack = createLabelStackPane(yellowRibbon, new Label("You Win"),
+					35, 300, 100);
+		} else {
+			gameOverLabelStack = createLabelStackPane(redRibbon, new Label("Game Over"),
+					35, 300, 100);
+		}
+		gameOverLabelStack.setLayoutX(12);
+
+		Button mainMenuButton = new Button();
+		mainMenuButton.setBackground(null);
+		mainMenuButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3,
+				new Label("Main Menu"), 20, 150, 50));
+
+		mainMenuButton.setOnAction(e -> {
+			stop();
+			MainMenuController.cleanupSession();
+			app.showMainMenu(new StackPane());
+		});
+
+		Button replayButton = new Button();
+		replayButton.setBackground(null);
+		replayButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3,
+				new Label("Replay"), 20, 150, 50));
+
+		replayButton.setOnAction(e -> {
+			String mapName = PlayModeController.getMapName();
+			stop();
+			MainMenuController.cleanupSession();
+			MainMenuController.startNewGame(mapName);
+			app.startGame();
+		});
+
+		HBox buttonBox = new HBox(mainMenuButton, replayButton);
+		buttonBox.setLayoutY(140);
+
+		gameOverPane.getChildren().addAll(gameOverLabelStack, buttonBox);
+		return gameOverPane;
+	}
+
+	private StackPane createButtonStackPane(Image image, Image hoverImage, Image clickedImage, Label label, int fontSize, int width, int height) {
+		ImageView view = new ImageView(image);
+		view.setFitHeight(height);
+		view.setFitWidth(width);
+
+		Font font = Font.font("Comic Sans MS", FontWeight.BOLD, fontSize);
+		label.setFont(font);
+		label.setStyle("-fx-text-fill: white;");
+
+		StackPane pane = new StackPane();
+		pane.getChildren().addAll(view, label);
+
+		label.setTranslateY(-5);
+
+		pane.setOnMouseEntered(e -> { view.setImage(hoverImage); });
+		pane.setOnMouseExited(e -> { view.setImage(image); });
+
+		pane.setOnMousePressed(e -> { view.setImage(clickedImage); });
+		pane.setOnMouseReleased(e -> {
+			if (pane.isHover()) {
+				view.setImage(hoverImage);
+			} else {
+				view.setImage(image);
+			}
+		});
+
+		pane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+
+		return pane;
+	}
+
+	private StackPane createLabelStackPane(Image image, Label label, int fontSize, int width, int height) {
+		ImageView view = new ImageView(image);
+		view.setFitHeight(height);
+		view.setFitWidth(width);
+
+		Font font = Font.font("Comic Sans MS", FontWeight.BOLD, fontSize);
+		label.setFont(font);
+		label.setStyle("-fx-text-fill: white;");
+
+		StackPane pane = new StackPane();
+		pane.getChildren().addAll(view, label);
+
+		label.setTranslateY(-10);
+
+		return pane;
 	}
 
 	private Pane grassRender() {
@@ -813,7 +930,7 @@ public class PlayModeScene extends AnimationTimer {
 	        circle = null;
 	    }
 	}
-	private void playerStatsPutter() {
+	private void playerStatsRender() {
 		Image coinImage  = new Image(getClass().getResourceAsStream("/Images/HUD/coin.png"));
         ImageView coinView = new ImageView(coinImage);
         Image heartImage  = new Image(getClass().getResourceAsStream("/Images/HUD/health.png"));
@@ -876,8 +993,12 @@ public class PlayModeScene extends AnimationTimer {
         waves.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
         
         Consumer<Integer> goldAction = (val) -> coin.setText(String.format("%d", PlayerController.getPlayerGold()));
-        Consumer<Integer> livesAction = (val) -> lives.setText(String.format("%d/%d", PlayerController.getPlayerLives(),
-																				GameOptionsController.getOption("Player Lives")));
+        Consumer<Integer> livesAction = (val) -> {
+			int playerLives = PlayerController.getPlayerLives();
+			if (playerLives <= 0) { playerLives = 0; }
+			lives.setText(String.format("%d/%d", playerLives,
+					GameOptionsController.getOption("Player Lives")));
+		};
         Consumer<Integer> wavesAction = (val) -> waves.setText(String.format("%d/%d", PlayerController.getWaveNumber(),
         																		GameOptionsController.getOption("Wave Number")));
         
@@ -925,8 +1046,8 @@ public class PlayModeScene extends AnimationTimer {
 		gameOverPane.setPrefSize(600, 400);
 		ImageView gameOverBanner = new ImageView(redRibbon);
 		Label gameOverLabel = new Label("Game Over");
-		gameOverBanner.setLayoutX(300);
-		gameOverLabel.setLayoutX(300);
+		gameOverBanner.setLayoutX(gameOverPane.getPrefWidth()/2 - gameOverBanner.getFitWidth()/2);
+		gameOverLabel.setLayoutX(gameOverPane.getPrefWidth()/2 - gameOverLabel.getLayoutBounds().getWidth()/2);
 
 		gameOverPane.getChildren().addAll(gameOverBanner, gameOverLabel);
 		return gameOverPane;

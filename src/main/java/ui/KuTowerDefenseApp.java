@@ -1,5 +1,6 @@
 package ui;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -17,6 +18,7 @@ public class KuTowerDefenseApp extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		MusicPlayer.playBackgroundMusic("/soundtrack.mp3");
 		cursorImage = new Image(getClass().getResourceAsStream("/Images/HUD/cursor.png"));
 		cursor = new ImageCursor(cursorImage, cursorImage.getWidth()/2, cursorImage.getHeight()/2);
 		this.primaryStage = primaryStage;
@@ -38,7 +40,7 @@ public class KuTowerDefenseApp extends Application{
 		options.getScene().setCursor(cursor);
 		primaryStage.setResizable(true);
         primaryStage.setScene(options.getScene());
-        primaryStage.show();
+		Platform.runLater(() -> primaryStage.show());
     }
     public void showMapEditor() {
     	MapEditorScene mapEditor = new MapEditorScene(this);

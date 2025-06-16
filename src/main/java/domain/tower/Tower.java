@@ -14,11 +14,11 @@ public abstract class Tower implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final double FREEZE_DURATION = 4.0;
 
-	protected int cost;
-	protected int upgradeCost;
-    protected int level;
-    protected double range;
-    protected double fireRate;
+	protected transient int cost;
+	protected transient int upgradeCost;
+    protected transient int level;
+    protected transient double range;
+    protected transient double fireRate;
     protected AttackType attackType;
     protected Enemy target;
     protected Location location;

@@ -26,6 +26,11 @@ public class PlayModeController {
 		if (mapExists()) return PlayModeManager.getInstance().getCurrentMap().getWidth();
 		return -1;
 	}
+
+	public static String getMapName() {
+		if (mapExists()) return PlayModeManager.getInstance().getCurrentMap().getMapName();
+		return null;
+	}
 	
 	public static double getTileXCoord(int x, int y) {
 		if (mapExists()) {

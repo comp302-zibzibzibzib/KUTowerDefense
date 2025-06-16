@@ -24,37 +24,39 @@ public class GameOptions implements Serializable {
 	private double enemyDelay;
 
 	// Player
-	private int startingPlayerGold; // ok
-    private int startingPlayerLives; // ok
+	private int startingPlayerGold; 
+    private int startingPlayerLives; 
 
 	// Enemies
-	private double goblinHealth; // ok
-	private double goblinSpeed; // ok
-	private int goblinReward; // ok
-	private double knightHealth; // ok
-	private double knightSpeed; // ok
-	private int knightReward; // ok
+	private double goblinHealth; 
+	private double goblinSpeed; 
+	private int goblinReward; 
+	private double knightHealth; 
+	private double knightSpeed; 
+	private int knightReward; 
 	private double goldBagChance; //ok
 
 	// Projectiles
-	private double arrowDamage; // ok
-	private double artilleryDamage; // ok
-	private double spellDamage; // ok
-	private double aoeRange; // ok
+	private double arrowDamage; 
+	private double artilleryDamage; 
+	private double spellDamage; 
+	private double aoeRange;
 
 	// Towers
-	private int archerCost; // ok
+	private int archerCost;
 	private int archerUpgradeCost;
-	private double archerRange; // ok
+	private double archerRange;
 	private double archerFireRate;
-	private int artilleryCost; // ok
+	private int artilleryCost;
 	private int artilleryUpgradeCost;
-	private double artilleryRange; // ok
+	private double artilleryRange;
 	private double artilleryFireRate;
-	private int mageCost; // ok
+	private int mageCost;
 	private int mageUpgradeCost;
-	private double mageRange; // ok
+	private double mageRange;
 	private double mageFireRate;
+	
+	private double musicVolume;
     
     public static GameOptions getDefaultOptions() {
     	return new GameOptions();
@@ -145,6 +147,8 @@ public class GameOptions implements Serializable {
 		archerFireRate = 5.0;
 		artilleryFireRate = 1.0;
 		mageFireRate = 2.0;
+
+		musicVolume = 0.5;
     }
 
 	public int getNumberOfWaves() {
@@ -266,6 +270,8 @@ public class GameOptions implements Serializable {
 	public double getAoeRange() {
 		return aoeRange;
 	}
+
+	public double getMusicVolume() { return musicVolume; }
 
 	public int getArcherUpgradeCost() {
 		return archerUpgradeCost;
@@ -432,6 +438,10 @@ public class GameOptions implements Serializable {
 
 	public void setAoeRange(Number aoeRange) {
 		this.aoeRange = aoeRange.doubleValue();
+	}
+
+	public void setMusicVolume(Number musicVolume) {
+		this.musicVolume = musicVolume.doubleValue();
 	}
 
 	public void setMaxGroupPerWave(int maxGroupPerWave) {

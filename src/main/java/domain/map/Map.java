@@ -384,6 +384,10 @@ public class Map implements Serializable {
 		return new int[]{y, x};
 	}
 
+	public String getMapName() {
+		return mapName;
+	}
+
 	public int getLotCount() {
 		return lotCount;
 	}

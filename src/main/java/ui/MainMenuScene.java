@@ -35,7 +35,6 @@ public class MainMenuScene {
 	private List<String> snapshotNames = new ArrayList<>();
 	private int currentSnapshotIndex = 0;
 	private ImageView mapPreview;
-	private Image buttonBlue3v2 = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb3.png"));
 	private Label mapNameLabel;
 
 	private class MenuButton extends Button {
@@ -52,47 +51,50 @@ public class MainMenuScene {
     private Button quitGameButton;
     private Scene scene;
     
-    private StackPane createButtonStackPane(Image image, Image hoverImage, Image clickedImage, Label label, int fontSize, int width) {
+    private StackPane createButtonStackPane(Image image, Image hoverImage, Image clickedImage, Label label, int fontSize, int width, int height, int textOffset) {
 		ImageView view = new ImageView(image);
-		view.setFitHeight(50);
-	    view.setFitWidth(width);
-	    
-	    Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
-	    label.setFont(font);
-	    
-	    StackPane pane = new StackPane();
-	    pane.getChildren().addAll(view, label);
-	    
-	    label.setTranslateY(-5);
-	    
-	    pane.setOnMouseEntered(e -> { view.setImage(hoverImage); });
-	    pane.setOnMouseExited(e -> { view.setImage(image); });
-	    
-	    pane.setOnMousePressed(e -> { view.setImage(clickedImage); });
-	    pane.setOnMouseReleased(e -> { 
-	    	if (pane.isHover()) {
-	    		view.setImage(hoverImage); 
-	    	} else {
-	    		view.setImage(image); 
-	    	}
-	    });
-	    
-	    return pane;
+		view.setFitHeight(height);
+		view.setFitWidth(width);
+
+		Font font = Font.font("Comic Sans MS", FontWeight.BOLD, fontSize);
+		label.setFont(font);
+		label.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
+
+		StackPane pane = new StackPane();
+		pane.getChildren().addAll(view, label);
+
+		label.setTranslateY(-textOffset);
+
+		pane.setOnMouseEntered(e -> { view.setImage(hoverImage); });
+		pane.setOnMouseExited(e -> { view.setImage(image); });
+
+		pane.setOnMousePressed(e -> { view.setImage(clickedImage); });
+		pane.setOnMouseReleased(e -> {
+			if (pane.isHover()) {
+				view.setImage(hoverImage);
+			} else {
+				view.setImage(image);
+			}
+		});
+
+		pane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+
+		return pane;
 	}
 
     public MainMenuScene(KuTowerDefenseApp app, StackPane root) {
 		this.app = app;
 		this.root = root;
 		newGameButton = new MenuButton(this);
-		newGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("New Game"), 20, 150));
+		newGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("New Game"), 20, 150, 50, 5));
 		mapEditorButton = new MenuButton(this);
-		mapEditorButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Map Editor"), 20, 150));
+		mapEditorButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Map Editor"), 20, 150, 50, 5));
 		mapEditorButton.setTranslateY(50);
 		optionsButton = new MenuButton(this);
-		optionsButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Options"), 20, 150));
+		optionsButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Options"), 20, 150, 50, 5));
 		optionsButton.setTranslateY(100);
 		quitGameButton = new MenuButton(this);
-		quitGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Quit Game"), 20, 150));
+		quitGameButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3, new Label("Quit Game"), 20, 150, 50, 5));
 		quitGameButton.setTranslateY(150);
 		this.scene = initScene(root);
 	}
@@ -130,20 +132,13 @@ public class MainMenuScene {
 		title.setLayoutX((500 - 150) / 2.0);
 		title.setLayoutY(5);
 
-		Group group = new Group();
-		ImageView confirmButton = new ImageView(buttonBlue3v2);
-		confirmButton.setFitWidth(200);
-		confirmButton.setFitHeight(70);
-		confirmButton.setLayoutX(((350 - 120) / 2.0) + 40);
-		confirmButton.setLayoutY(230);
+		Button confirmButton = new Button();
+		confirmButton.setBackground(null);
+		confirmButton.setGraphic(createButtonStackPane(buttonBlue3, buttonHover3, buttonBlue3,
+				new Label("Confirm"), 35, 200, 80, 10));
+		confirmButton.setLayoutX(155);
+		confirmButton.setLayoutY(215);
 
-		Label confirm = new Label("Confirm");
-		confirm.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 28));
-		confirm.setTextFill(Color.WHITE);
-		confirm.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
-		confirm.setLayoutX(((350 - 120) / 2.0) + 85);
-		confirm.setLayoutY(235);
-		group.getChildren().addAll(confirmButton, confirm);
 		ImageView blueBView = new ImageView(buttonBlue);
 		blueBView.setFitWidth(350);
 		blueBView.setFitHeight(200);
@@ -205,11 +200,11 @@ public class MainMenuScene {
 		cancel.setLayoutX(450);
 		cancel.setLayoutY(1);
 
-		mapSelectionOverlay.getChildren().addAll(title, cancel, blueBView, mapPreview, mapNameLabel, rightView, leftView, group);
-		DynamicPopup dynamicPopup = new DynamicPopup(mapSelectionOverlay, root, DynamicPopupAlignment.CENTER);
+		mapSelectionOverlay.getChildren().addAll(title, cancel, blueBView, mapPreview, mapNameLabel, rightView, leftView, confirmButton);
+		DynamicPopup dynamicPopup = new DynamicPopup(mapSelectionOverlay, root, DynamicPopupAlignment.CENTER, 3);
 
 		cancel.setOnMouseClicked(e -> dynamicPopup.cleanupPopup());
-		group.setOnMouseClicked(e -> {
+		confirmButton.setOnAction(e -> {
 			if (!snapshotNames.isEmpty()) {
 				String selectedMap = snapshotNames.get(currentSnapshotIndex);
 				MainMenuController.startNewGame(selectedMap);

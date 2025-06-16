@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -158,7 +159,7 @@ public class MapEditorScene {
 		cancelButton.setLayoutY(0);
 
 		promptBox.getChildren().addAll(nameLabel, nameField, saveBtn, cancelButton);
-		DynamicPopup dynamicPopup = new DynamicPopup(promptBox, root, DynamicPopupAlignment.TOPCENTER);
+		DynamicPopup dynamicPopup = new DynamicPopup(promptBox, root, DynamicPopupAlignment.TOPCENTER, 1);
 
 		cancelButton.setOnMouseClicked(e -> {
 			dynamicPopup.cleanupPopup();
@@ -475,6 +476,7 @@ public class MapEditorScene {
 
 		sideBar = new ScrollPane(bar);
 		sideBar.setPrefSize(262, 505);
+		sideBar.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
 		sideBar.setLayoutX(4);
 		sideBar.setLayoutY(127);
 		sideBar.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -572,6 +574,11 @@ public class MapEditorScene {
 				//creating our tile's cell coordinate to store
 				Point2D cell = new Point2D(cellX, cellY);
 				String tileName = (String) draggingClone.getUserData();
+
+				if (!tileName.equals("castle")) {
+					//removing our group
+					removeGroupedTileAt(cell);
+				}
 
 				if (tileName.equals("castle")) {
 					//updating at backend

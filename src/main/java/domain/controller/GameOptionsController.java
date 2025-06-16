@@ -70,6 +70,7 @@ public class GameOptionsController {
 		consumerMap.put("Mage Upgrade Cost", options::setMageUpgradeCost);
 		consumerMap.put("Mage Range", options::setMageRange);
 		consumerMap.put("Mage Fire Rate", options::setMageFireRate);
+		consumerMap.put("Music Volume", options::setMusicVolume);
 
 		supplierMap = new HashMap<>();
 		supplierMap.put("Wave Number", options::getNumberOfWaves);
@@ -107,6 +108,7 @@ public class GameOptionsController {
 		supplierMap.put("Mage Upgrade Cost", options::getMageUpgradeCost);
 		supplierMap.put("Mage Range", options::getMageRange);
 		supplierMap.put("Mage Fire Rate", options::getMageFireRate);
+		supplierMap.put("Music Volume", options::getMusicVolume);
 
 		optionRanges = new HashMap<>();
 		optionRanges.put("Wave Number", new Number[]{1, 20, 1});
@@ -144,6 +146,7 @@ public class GameOptionsController {
 		optionRanges.put("Mage Upgrade Cost", new Number[]{100, 600, 10});
 		optionRanges.put("Mage Range", new Number[]{5.0, 15.0, 0.1});
 		optionRanges.put("Mage Fire Rate", new Number[]{1.0, 10.0, 0.1});
+		optionRanges.put("Music Volume", new Number[]{0.0, 1.0, 0.01});
  	}
 
 	public static Consumer<Number> getConsumer(String name) {
@@ -192,5 +195,6 @@ public class GameOptionsController {
 
 	public static void nullifyOptions() {
 		GameOptions.nullifyOptions();
+		options = null;
 	}
 }

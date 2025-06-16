@@ -141,6 +141,14 @@ public class EntityController {
         if (moveTimer == null) moveTimer = new MovementTimer();
         moveTimer.start();
     }
+
+    public static void addRemovedEnemyListener(Consumer<Boolean> consumer) {
+        Enemy.addEnemyRemovedListener(consumer);
+    }
+
+    public static void removeEnemyRemovedListener(Consumer<Boolean> consumer) {
+        Enemy.removeEnemyRemovedListener(consumer);
+    }
     
     public static boolean spawningEnemies() {
     	return gameLoop.isRunning();

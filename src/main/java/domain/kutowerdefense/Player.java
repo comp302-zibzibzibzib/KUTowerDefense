@@ -17,12 +17,12 @@ public class Player {
 
 	public void setGold(int gold) {
 		this.gold = gold;
-		goldListener.invoke();
+		goldListener.invoke(gold);
 	}
 
 	public void updateGold(int updateAmount) {
 		this.gold += updateAmount;
-		goldListener.invoke();
+		goldListener.invoke(gold);
 	}
 
 	public int getLives() {
@@ -31,7 +31,7 @@ public class Player {
 
 	public void setLives(int lives) {
 		this.lives = lives;
-		livesListener.invoke();
+		livesListener.invoke(lives);
 	}
 
 	public int getWaveNumber() {
@@ -41,7 +41,7 @@ public class Player {
 
 	public void setWaveNumber(int waveNumber) {
 		this.waveNumber = waveNumber;
-		waveNumberListener.invoke();
+		waveNumberListener.invoke(waveNumber);
 	}
 
 	private Player() {
@@ -63,14 +63,14 @@ public class Player {
 		instance.gold = GameOptions.getInstance().getStartingPlayerGold();
 		instance.lives = GameOptions.getInstance().getStartingPlayerLives();
 		instance.waveNumber = 0;
-		instance.goldListener.invoke();
-		instance.livesListener.invoke();
-		instance.waveNumberListener.invoke();
+		instance.goldListener.invoke(GameOptions.getInstance().getStartingPlayerGold());
+		instance.livesListener.invoke(GameOptions.getInstance().getStartingPlayerLives());
+		instance.waveNumberListener.invoke(GameOptions.getInstance().getNumberOfWaves());
 	}
 
 	public void takeDamage() {
 		this.lives -= 1;
-		livesListener.invoke();
+		livesListener.invoke(lives);
 	}
 
 	public PlayerValueListener getGoldListener() {

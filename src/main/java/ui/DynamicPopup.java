@@ -15,13 +15,15 @@ public class DynamicPopup extends AnimationTimer {
     private Pane popupPane;
     private Pane parent;
     private Pane background;
+    private double speed;
     private double lastUpdate = 0.0;
     private double initialY;
     private DynamicPopupAlignment alignment;
 
-    public DynamicPopup(Pane popupPane, Pane parent, DynamicPopupAlignment alignment) {
+    public DynamicPopup(Pane popupPane, Pane parent, DynamicPopupAlignment alignment, double speed) {
         this.popupPane = popupPane;
         this.parent = parent;
+        this.speed = speed;
         background = new Pane();
         background.setStyle("-fx-background-color: rgba(0, 0, 0, 0.6);");
         parent.getChildren().add(background);
@@ -55,7 +57,7 @@ public class DynamicPopup extends AnimationTimer {
         double distance = destinationY - currentY;
         double halfLength = (destinationY + initialY) * 0.5;
         double easeInFactor = (distance < halfLength) ? distance / halfLength : 1.0;
-        double displacement = easeInFactor * deltaTime * POPUP_ANIMATION_SPEED;
+        double displacement = easeInFactor * deltaTime * POPUP_ANIMATION_SPEED * speed;
 
         double newY = currentY + displacement;
         popupPane.setLayoutY(newY);

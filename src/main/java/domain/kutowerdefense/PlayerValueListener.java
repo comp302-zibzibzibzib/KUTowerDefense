@@ -15,9 +15,9 @@ public class PlayerValueListener<T extends Number> {
         listenerList.remove(consumer);
 	}
 	
-	public void invoke() {
+	public void invoke(Number value) {
 		for (Consumer<T> consumer : listenerList) {
-			consumer.accept(null);
+			consumer.accept((T) value);
 		}
 	}
 }

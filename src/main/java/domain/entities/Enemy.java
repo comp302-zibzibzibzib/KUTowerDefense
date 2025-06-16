@@ -1,9 +1,8 @@
 package domain.entities;
 
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
-import domain.controller.PlayModeController;
 import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
@@ -19,6 +18,7 @@ public abstract class Enemy {
 	private static final double GAUSSIAN_MEAN = 0.0;
 	private static final double GAUSSIAN_STANDARD_DEVIATION = 3.0;
 
+	public static List<Consumer<Boolean>> removedEnemyListener = new ArrayList<>();
 	public static ArrayList<Enemy> enemies = new ArrayList<>();
 	public static ArrayList<Enemy> activeEnemies = new ArrayList<>();
 	public List<PathTile> path;
@@ -75,6 +75,7 @@ public abstract class Enemy {
 		Player.getInstance().takeDamage();
 		initialized = false;
 		cleanupEnemy();
+		publishEnemyRemoved();
 	}
 
 	public void hitEnemy(double damage, AttackType attackType) {
@@ -97,6 +98,7 @@ public abstract class Enemy {
 		}
 		// Adding gold reward is overriden in Knight and Goblin
 		cleanupEnemy();
+		publishEnemyRemoved();
 	}
 
 	public void slowDown() { // Slow down by 20% when hit by lvl2 mage tower
@@ -323,5 +325,19 @@ public abstract class Enemy {
 
 	public List<PathTile> getPath() {
 		return path;
+	}
+
+	private static void publishEnemyRemoved() {
+		for (Consumer<Boolean> consumer : removedEnemyListener) {
+			consumer.accept(enemies.isEmpty());
+		}
+	}
+
+	public static void addEnemyRemovedListener(Consumer<Boolean> consumer) {
+		removedEnemyListener.add(consumer);
+	}
+
+	public static void removeEnemyRemovedListener(Consumer<Boolean> consumer) {
+		removedEnemyListener.remove(consumer);
 	}
 }

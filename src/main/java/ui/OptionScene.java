@@ -83,8 +83,12 @@ public class OptionScene {
 			slider.setShowTickMarks(true);
 
 			slider.valueProperty().addListener((obs, oldVal, newVal) -> {
-				if (isResetting) return; // JavaFX hates me and I hate her back
 				double roundedValue = Math.round(newVal.doubleValue() / step.doubleValue()) * step.doubleValue();
+				if (name.equals("Music Volume")) {
+					MusicPlayer.setVolume(roundedValue);
+				}
+
+				if (isResetting) return; // JavaFX hates me and I hate her back
 				if (step instanceof Integer) {
 					setter.accept((T) Integer.valueOf((int) roundedValue));
 					valueLabel.setText(String.valueOf((int) roundedValue));
@@ -264,6 +268,14 @@ public class OptionScene {
 				optionMap.put(name, option);
 			}
 		}
+
+		StackPane musicTitle = createLabelStackPane(blueRibbon, new Label("Music"), 20, 150);
+		pane.getChildren().add(musicTitle);
+
+		OptionSlider musicOption = new OptionSlider("Music Volume", GameOptionsController.getSupplier("Music Volume"),
+				GameOptionsController.getConsumer("Music Volume"), 0, 1, 0.01);
+
+		pane.getChildren().add(musicOption);
 	}
 
 	private void initializeScene(StackPane root) {
@@ -325,6 +337,8 @@ public class OptionScene {
 								new Label("Main Menu"), 20, 150));
 		mainMenuButton.setOnAction(e -> {
 			GameOptionsController.nullifyOptions();
+			GameOptionsController.initializeGameOptions();
+			MusicPlayer.setVolume(GameOptionsController.getSupplier("Music Volume").get().doubleValue());
 			app.showMainMenu(new StackPane());
 		});
 		configureButton(mainMenuButton);
