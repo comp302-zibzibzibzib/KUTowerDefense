@@ -3,6 +3,8 @@ package domain.map;
 import java.io.Serializable;
 
 public class Tile implements Serializable {
+	// A cell inside the tilemap of a Map
+	// This is a base class which gets extended by many other mre complex classes
 	private static final long serialVersionUID = 1L;
 	public static final double tileLength = 5;
 	

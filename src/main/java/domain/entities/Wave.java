@@ -5,39 +5,9 @@ import java.util.List;
 import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 
-/*class GroupSpawner implements Runnable { //Deprecated Class, left just in case
-	//NOT THREAD SAFE, MIGHT NEED TO CHANGE EVERY LIST IN ENTITIES TO THREAD SAFE VERS.
-	//MIGHT NEED TO ADD VOLATILE KEYWORD TO VARIABLES IN GROUP AND ENEMY
-	//WHEN GAME IS PAUSED MUST PAUSE THIS TOO
-	private int numberOfGroups;
-	private List<Group> groups;
-	private List<Double> groupSpawnDelays;
-	
-	protected GroupSpawner(int numberOfGroups, List<Group> groups, List<Double> groupSpawnDelays) {
-		this.numberOfGroups = numberOfGroups;
-		this.groupSpawnDelays = groupSpawnDelays;
-		this.groups = groups;
-	}
-
-	@Override
-	public void run() {
-		for(int i = 0; i < numberOfGroups; i++) {
-			groups.get(i).initializeEnemies();
-			
-			try {
-				Thread.sleep((long) (groupSpawnDelays.get(i)*1000)); //does not really like casting Double to long
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		
-	}
-	
-}*/
-
-
 public class Wave {
+	// Responsible for the management and spawning of group objects
+	// Tells group objects to start spawning enemies after a delay when the previous group is done spawning
 	private int index;
 	private int numberOfGroups;
 	private double timeAfterGroup;
@@ -57,6 +27,7 @@ public class Wave {
 	}
 	
 	public void spawnGroups(double deltaTime) {
+		// Command group instances to start spawning their enemies when the amount of time elapsed since last spawn is enough
 		if (!startSpawning || spawnedAllGroups()) return;
 		timeAfterGroup += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 		

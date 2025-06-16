@@ -11,15 +11,7 @@ public class KUTowerDefense {
 		Map map = Utilities.readMap(mapName);
 		PlayModeManager.getInstance().setCurrentMap(map);
 	}
-	
-	public static void enterMapEditor() {
-	}
-	
-	public static void openOptions() {
-		
-	}
 
-	
 	public static void quitGame() {
 		System.exit(0);
 	}

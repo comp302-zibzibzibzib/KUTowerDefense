@@ -1,13 +1,14 @@
 package domain.entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import domain.kutowerdefense.PlayModeManager;
 import domain.map.Location;
 import domain.tower.AttackType;
 
 public class Effect {
+	// Effect class associated with the effect animations that get drawn on the ui
+	// Pretty basic implementation, gets instantiated when a projectile hits an enemy
+	// that if there is no other effect of the same type within the vicinity
 	private Location location;
 	private final AttackType attackType;
 	private final int id;

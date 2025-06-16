@@ -15,7 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -92,8 +91,6 @@ public class MapEditorScene {
 	private boolean isSetStart = false;
 	private boolean isSetEnd = false;
 	private Image saveExitButton = new Image(getClass().getResourceAsStream("/Images/exit.png"));
-
-
 
 	public MapEditorScene(KuTowerDefenseApp app) {
 		File dir = new File("/Data/Snapshots");

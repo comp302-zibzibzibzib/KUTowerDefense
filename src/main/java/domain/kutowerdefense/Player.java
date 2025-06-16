@@ -1,8 +1,11 @@
 package domain.kutowerdefense;
 
 public class Player {
+	// Player singleton which stores data related to the player while in play mode
 	private static Player instance;
 
+	// These listeners are for any update behavior to happen when there is a change in their corresponding fields
+	// Invoked in setters
 	private PlayerValueListener<Integer> goldListener = new PlayerValueListener<Integer>();
 	private PlayerValueListener<Integer> livesListener = new PlayerValueListener<Integer>();
 	private PlayerValueListener<Integer> waveNumberListener = new PlayerValueListener<Integer>();

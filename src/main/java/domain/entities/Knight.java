@@ -8,9 +8,6 @@ import domain.services.Utilities;
 import domain.tower.AttackType;
 
 public class Knight extends Enemy {
-	private static final double SYNERGY_CHECK_INTERVAL = 1;
-
-
 	private double arrowDamageReduction;
     private boolean spedUp;
 
@@ -47,6 +44,7 @@ public class Knight extends Enemy {
 	@Override
 	public void hitEnemy(double damage, AttackType attackType) {
 		double reducedDamage = damage;
+		// knights take reduced damage from arrows
 		if (attackType == AttackType.ARROW) reducedDamage = (1 - arrowDamageReduction) * reducedDamage;
 		super.hitEnemy(reducedDamage, attackType);
 	}

@@ -7,10 +7,10 @@ import domain.map.Map;
 import domain.map.PathTile;
 import domain.map.Tile;
 import domain.map.TileType;
-import domain.tower.MageTower;
-import domain.tower.Tower;
 
 public class PlayModeController {
+	// Retrieves information from the current play session for the ui to use, transforms domain data to primitive and
+	// built-in types before sending to ui
 
 	private PlayModeController() {}
 	
@@ -61,6 +61,7 @@ public class PlayModeController {
 	}
 	
 	public static String getAssetName(int x, int y) {
+		// Get the asset name for the tile image to get from the disk
 		String name = null;
 		try {
 			Tile tile = PlayModeManager.getInstance().getCurrentMap().tileMap[y][x];

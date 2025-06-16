@@ -11,6 +11,9 @@ import domain.map.Tile;
 import domain.services.Utilities;
 
 public class GoldBag {
+	// Gold bag has the potential to be picked up by the player by clicking on it
+	// It can have a random amount of gold inside between 2 and half the cost of an archer tower
+	// Despawns after 10 seconds
 	private static int maxGold = (int) ( (0.5 * GameOptions.getInstance().getArcherCost() ) - 1); //temp
 	private static double duration = 10.0;
 	private static double bagGravity = 9.81; // yes actually, no kidding, right?
@@ -67,6 +70,8 @@ public class GoldBag {
 			}
 
 			// Run 2D projectile motion if above initial height
+			// This is to match movement with the gold bag animation
+			// Creates a flying effect for the bag
 			if (bag.location.yCoord <= bag.initY) {
 				bag.yVelocity += deltaTime * bagGravity;
 				bag.location.yCoord += bag.yVelocity * deltaTime;

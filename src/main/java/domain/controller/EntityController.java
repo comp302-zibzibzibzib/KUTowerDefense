@@ -2,14 +2,12 @@ package domain.controller;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import domain.entities.*;
 import domain.kutowerdefense.PlayModeManager;
-import domain.map.PathTile;
 import javafx.animation.AnimationTimer;
 
 class SpawnerLoopTimer extends AnimationTimer {
@@ -35,6 +33,8 @@ class SpawnerLoopTimer extends AnimationTimer {
 
     @Override
     public void handle(long now) {
+        // Handle method that sequentially spawns enemies
+        // Gets inserted into the JavaFX main application loop
     	if (PlayModeManager.getInstance().getGameSpeed() == 0.0) {
 			lastUpdate = now;
 			return;
@@ -50,6 +50,7 @@ class SpawnerLoopTimer extends AnimationTimer {
         
         totalElapsed += deltaTime * PlayModeManager.getInstance().getGameSpeed();
 
+        // Update elapsed time for all spawner objects
         updateManager(deltaTime);
         updateWaves(deltaTime);
         updateGroups(deltaTime);
@@ -65,12 +66,14 @@ class SpawnerLoopTimer extends AnimationTimer {
     }
 
     private void updateManager(double deltaTime) {
+        // Updates manager state which in turn updates wave states
         if (totalElapsed > PlayModeManager.GRACE_PERIOD_SECONDS) {
             PlayModeManager.getInstance().initializeWaves(deltaTime);
         }
     }
 
     private void updateWaves(double deltaTime) {
+        // Update wave states to spawn groups
         List<Wave> waves = PlayModeManager.getInstance().getWaves();
         for (Wave wave : waves) {
             if (wave.isSpawning()) {
@@ -80,6 +83,7 @@ class SpawnerLoopTimer extends AnimationTimer {
     }
 
     private void updateGroups(double deltaTime) {
+        // Update elapsed time in active group objects
         List<Wave> waves = PlayModeManager.getInstance().getWaves();
         for (Wave wave : waves) {
             List<Group> groups = wave.getGroups();
@@ -93,6 +97,8 @@ class SpawnerLoopTimer extends AnimationTimer {
 }
 
 class MovementTimer extends AnimationTimer {
+    // Tasked with calling every active enemy's update method with a fixed delta time
+    // Also updates the projectile motion for gold bag entities
 	private long lastUpdate = 0;
 	private int s = 0;
 	private double totalTimeElapsed = 0;
@@ -128,12 +134,14 @@ class MovementTimer extends AnimationTimer {
 }
 
 public class EntityController {
+    // Controller class responsible for ui and entities package communication
     private static SpawnerLoopTimer gameLoop;
     private static MovementTimer moveTimer;
 
     private EntityController() {} // private constructor
 
     public static void startEntityLogic() {
+        // Start the spawner and movement animation timers at the start of the game
         if (gameLoop == null) {
             gameLoop = new SpawnerLoopTimer();
         }
@@ -143,6 +151,7 @@ public class EntityController {
     }
 
     public static void addRemovedEnemyListener(Consumer<Boolean> consumer) {
+        // Add a listener for every enemy death, to check if the player won or not
         Enemy.addEnemyRemovedListener(consumer);
     }
 
@@ -181,6 +190,8 @@ public class EntityController {
     }
 
     public static List<Integer> getEnemyIDsRenderSort() {
+        // This sorts the enemies from the furthest up to down so that we can change their
+        // ordering on the ui so they don't overlap each other
         Comparator<Enemy> comparator = new Comparator<Enemy>() {
             @Override
             public int compare(Enemy o1, Enemy o2) {
@@ -211,6 +222,7 @@ public class EntityController {
     }
     
     public static int getXScale(int i) {
+        // Helps turn the enemy sprite to the direction the enemy is moving
     	double[] direction = Enemy.getActiveEnemies().get(i).getDirection();
     	return (int) Math.signum(direction[0]);
     }
@@ -228,17 +240,20 @@ public class EntityController {
     }
 
     public static void resetEnemies() {
+        // Clear all static enemy lists
         Enemy.enemies = new ArrayList<Enemy>();
         Enemy.activeEnemies = new ArrayList<Enemy>();
     }
 
     public static boolean isKnightFast(int i) {
+        // Check if an active knight is fast
         Enemy enemy = Enemy.getActiveEnemies().get(i);
         if (!(enemy instanceof Knight)) return false;
         return ((Knight) enemy).isFast();
     }
 
     public static boolean isEnemySlowedDown(int i) {
+        // Check if an active enemy is slowed down
         Enemy enemy = Enemy.getActiveEnemies().get(i);
         return enemy.isSlowedDown();
     }
@@ -276,6 +291,7 @@ public class EntityController {
     }
 
     public static List<Integer> getGoldBagsIDsRenderSort() {
+        // Same reason with getting the render sort of enemies
         Comparator<GoldBag> comparator = new Comparator<GoldBag>() {
             @Override
             public int compare(GoldBag o1, GoldBag o2) {
@@ -302,6 +318,7 @@ public class EntityController {
     }
 
     public static String getEffectName(int id) {
+        // Get the name (effectively the type) of an active effect with its ID
         Effect effect = Effect.getEffects().get(id);
         return switch (effect.getAttackType()) {
             case ARTILLERY -> "explosion";

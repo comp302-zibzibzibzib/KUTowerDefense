@@ -6,6 +6,9 @@ import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 
 public class PlayerController {
+	// Controller responsible for ui and player singleton communication
+	// Retrieves information from the player or adds listeners to player listener fields in Player.java
+	// Helps with observer pattern
 	
 	private static Player player = Player.getInstance();
 	private static PlayModeManager playModeManager = PlayModeManager.getInstance();

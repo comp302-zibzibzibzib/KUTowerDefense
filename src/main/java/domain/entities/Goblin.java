@@ -24,6 +24,7 @@ public class Goblin extends Enemy {
 
 	@Override
 	public void hitEnemy(double damage, AttackType attackType) {
+		// Add special behaviour to damage taking that is special to goblin
 		double reducedDamage = damage;
 		if (attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) reducedDamage = (1 - spellDamageReduction) * reducedDamage;
 		super.hitEnemy(reducedDamage, attackType);

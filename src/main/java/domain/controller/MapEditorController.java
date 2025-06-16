@@ -1,7 +1,6 @@
 package domain.controller;
 
 import java.util.HashMap;
-import java.util.Set;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -9,11 +8,9 @@ import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
 import domain.map.DecorativeType;
-import domain.map.Location;
 import domain.map.Lot;
 import domain.map.Map;
 import domain.map.MapEditor;
-import domain.map.PathTile;
 import domain.map.PathType;
 import domain.map.Tile;
 import domain.map.TileType;
@@ -22,6 +19,8 @@ import domain.services.Utilities;
 import domain.tower.*;
 
 public class MapEditorController {
+	// Controller that is responsible for handling the communication for map editing
+	// (either for tower placement during play mode or for map editor) between ui and backend
 	private Map forcedMap;
 	private List<Consumer<Integer>> highlightListenerList = new ArrayList<>();
 	private static MapEditor mapEditor;
@@ -83,18 +82,8 @@ public class MapEditorController {
 		return instance;
 	}
 
-	public void createArcherTower(int x, int y) {
-		if (player.getGold() < GameOptions.getInstance().getArcherCost()) return;
-		
-		mapEditor.removeTile(y, x);
-		mapEditor.placeTile(TileType.TOWER, TowerType.ARCHER, y, x);
-		player.updateGold(-GameOptions.getInstance().getArcherCost());
-	}
-
 	public void upgradeTower(int x, int y){
-
-
-
+		// Upgrades the selected tower to level 2
 		Tile tile = PlayModeManager.getInstance().getCurrentMap().tileMap[y][x];
 		Tower tower  = ((Lot) tile).getTower();
 		System.out.println(tower.getClass().getName());
@@ -112,9 +101,17 @@ public class MapEditorController {
 		if (tower.getClass().getName().equals("domain.tower.MageTower") && player.getGold() >= GameOptions.getInstance().getMageUpgradeCost()) {
 			player.updateGold(-GameOptions.getInstance().getMageUpgradeCost());
 			tower.upgradeTower();
-			return;
 		}
+	}
 
+	public void createArcherTower(int x, int y) {
+		// Create an archer tower at specified coordinates
+		// if the player has enough gold that is
+		if (player.getGold() < GameOptions.getInstance().getArcherCost()) return;
+
+		mapEditor.removeTile(y, x);
+		mapEditor.placeTile(TileType.TOWER, TowerType.ARCHER, y, x);
+		player.updateGold(-GameOptions.getInstance().getArcherCost());
 	}
 
 	public void createMageTower(int x, int y) {
@@ -133,6 +130,7 @@ public class MapEditorController {
 	}
 	
 	public void removeTower(int x, int y) {
+		// Remove tower at specified coordinates
 		Tile tileToRemove = playModeManager.getCurrentMap().tileMap[y][x];
 		if (tileToRemove.getType() != TileType.TOWER) return;
 		player.updateGold((int) (((Lot)tileToRemove).getTower().getCost() * 0.6));
@@ -141,6 +139,10 @@ public class MapEditorController {
 
 	
 	public void forcePlaceTile(String name, int x, int y) {
+		// Forcefully place a tile at specified coordinates
+		// Used for map editor scene
+		// "Forcefully" place because placement logic where you can't put tiles on top of each other
+		// doesn't apply to map editor scene
 		Tile tileToRemove = mapEditor.map.tileMap[y][x];
 		if (tileToRemove.getType() == TileType.TOWER) mapEditor.removeTile(y, x);
 		mapEditor.removeTile(y, x);
@@ -164,6 +166,7 @@ public class MapEditorController {
 	}
 	
 	public boolean forcePlaceCastle(int x, int y) {
+		// Special logic for placing a castle, since it takes up 4 tiles
 		Map map = mapEditor.map;
 		if (x == map.getWidth() - 1 || y == map.getHeight() - 1) return false;
 		mapEditor.removeTile(y, x);
@@ -182,24 +185,31 @@ public class MapEditorController {
 	}
 
 	public Boolean addStartingTile(int x, int y) {
+		// Choose specified tile as one of the starting tiles
+		// if it is a path tile
 		if (mapEditor.map.tileMap[y][x].getType() != TileType.PATH) return false;
 		return mapEditor.addStartingTile(y, x);
 	}
 
 	public Boolean addEndingTile(int x, int y) {
+		// Choose specified tile as one of the ending tiles
+		// if it is a path tile
 		if (mapEditor.map.tileMap[y][x].getType() != TileType.PATH) return false;
 		return mapEditor.addEndingTile(y, x);
 	}
 
 	public int getMapWidth() {
+		// returns map width in terms of matrix index
 		return mapEditor.map.getWidth();
 	}
 
 	public int getMapHeight() {
+		// returns map height in terms of matrix index
 		return mapEditor.map.getHeight();
 	}
 
 	public void removeTile(int x, int y) {
+		// remove tile at specified coords
 		mapEditor.removeTile(y, x);
 		publishHighlight(x, y);
 	}

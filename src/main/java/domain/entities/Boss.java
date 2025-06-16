@@ -9,6 +9,7 @@ import domain.tower.AttackType;
 import domain.tower.Tower;
 
 public class Boss extends Enemy{
+    // We didn't implement this, ignore it
 
     private double spellDamageReduction;
     private double arrowDamageReduction;

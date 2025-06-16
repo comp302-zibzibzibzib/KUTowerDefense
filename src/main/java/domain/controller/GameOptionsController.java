@@ -10,6 +10,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class GameOptionsController {
+	// Uses ugly functional programming tools to create a dynamic GameOptions update mechanism
 
 	public static final List<String> optionNames = Arrays.asList("Wave Number", "Max Group per Wave",
 			"Min Group per Wave", "Max Enemies per Group", "Min Enemies per Group", "Wave Delay", "Group Delay", "Enemy Delay",
@@ -165,7 +166,7 @@ public class GameOptionsController {
 		return optionNames;
 	}
 
-	// LOOKUP THE NAME OF THE OPTION YOU WANT TO SET IT'S ABOVE
+	// LOOKUP THE NAME OF THE OPTION YOU WANT TO SET, IT'S ABOVE
 	public static void setOption(String name, Number value) {
 		Consumer<Number> setter = consumerMap.get(name);
 		if (setter != null) {
@@ -173,7 +174,7 @@ public class GameOptionsController {
 		}
 	}
 
-	// LOOKUP THE NAME OF THE OPTION YOU WANT TO GET IT'S ABOVE
+	// LOOKUP THE NAME OF THE OPTION YOU WANT TO GET, IT'S ABOVE
 	public static Number getOption(String name) {
 		Supplier<Number> getter = supplierMap.get(name);
 		if (getter != null) {
@@ -194,6 +195,8 @@ public class GameOptionsController {
 	}
 
 	public static void nullifyOptions() {
+		// Set the GameOptions singleton instance to null
+		// Get rid of it, send it to valhalla IDK
 		GameOptions.nullifyOptions();
 		options = null;
 	}

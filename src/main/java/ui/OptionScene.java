@@ -75,7 +75,7 @@ public class OptionScene {
 			}
 
 			StackPane nameStack = createLabelStackPane(buttonBlue3, nameLabel, 15, 200);
-			StackPane valueStack = createLabelStackPane(buttonBlue3, valueLabel, 25, 100);
+			StackPane valueStack = createLabelStackPane(buttonBlue3, valueLabel, 22, 100);
 
 			slider = new Slider(min.doubleValue(), max.doubleValue(), getter.get().doubleValue());
 			slider.setMajorTickUnit(step.doubleValue());
@@ -202,9 +202,9 @@ public class OptionScene {
 		view.setFitHeight(50);
 		view.setFitWidth(width);
 
-		Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
+		Font font = Font.font("Comic Sans MS", FontWeight.BOLD, fontSize);
 		label.setFont(font);
-		label.setStyle("-fx-text-fill: black;");
+		label.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
 
 		StackPane pane = new StackPane();
 		pane.getChildren().addAll(view, label);
@@ -233,20 +233,21 @@ public class OptionScene {
 		view.setFitHeight(50);
 		view.setFitWidth(width);
 
-		Font font = Font.font("Calibri", FontWeight.BOLD, fontSize);
+		Font font = Font.font("Comic Sans MS", FontWeight.BOLD, fontSize);
 		label.setFont(font);
-		label.setStyle("-fx-text-fill: black;");
+		label.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
 
 		StackPane pane = new StackPane();
 		pane.getChildren().addAll(view, label);
 
-		label.setTranslateY(-5);
+		label.setTranslateY(-7);
 
 		return pane;
 	}
 
 	private void addDiscreteOptions(Pane pane) {
-		// temporarily unavailable
+		// I was at first planning to add the ability to use buttons to change game options
+		// But seeing that sliders are working magically, there is no need
 	}
 
 	private void addSliderOptions(Pane pane) {

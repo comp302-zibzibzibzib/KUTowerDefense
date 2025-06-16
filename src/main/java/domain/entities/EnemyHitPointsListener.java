@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class EnemyHitPointsListener {
+    // Enemy hit points listener listens to changes in the heath points of an enemy instance
+    // Used to update the ui health bars in real time
+    // Used pattern: Observer Pattern
     private List<Consumer<Double>> listenerList = new ArrayList<Consumer<Double>>();
 
     public void addListener(Consumer<Double> consumer) {

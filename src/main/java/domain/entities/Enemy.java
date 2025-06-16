@@ -15,6 +15,12 @@ import domain.tower.AttackType;
 import domain.tower.Projectile;
 
 public abstract class Enemy {
+	// Main enemy abstract class
+	// Knight and Goblin are concrete classes that implement this class
+	// Defines key attributes for an enemy object also important methods such as updateEnemy (responsible for movement)
+
+	// Gaussian random variable hyperparameters used for creating pseudorandom offsets on enemy destinations, so that
+	// all enemies don't move in a straight line (there is some variation in their movement)
 	private static final double GAUSSIAN_MEAN = 0.0;
 	private static final double GAUSSIAN_STANDARD_DEVIATION = 3.0;
 
@@ -56,6 +62,7 @@ public abstract class Enemy {
 	}
 
 	public void initialize() {
+		// Setup an enemy that is about to enter the map
 		initialized = true;
 		activeEnemies.add(this);
 		setPath();
@@ -66,12 +73,13 @@ public abstract class Enemy {
 		Location startLocation = getPath().getFirst().getLocation();
 		double startX = startLocation.xCoord + offset[0] * Tile.tileLength;	// Offset x
 		double startY = startLocation.yCoord + offset[1] * Tile.tileLength; // Offset y
-		Location actualStartLocation = new Location(startX, startY);
+		Location actualStartLocation = new Location(startX, startY); // Start from outside the map
 
 		setLocation(actualStartLocation);
 	}
 	
 	protected void hitPlayer() {
+		// Hits the player to deal a damage of 1 when it reaches the ending tile
 		Player.getInstance().takeDamage();
 		initialized = false;
 		cleanupEnemy();
@@ -79,6 +87,8 @@ public abstract class Enemy {
 	}
 
 	public void hitEnemy(double damage, AttackType attackType) {
+		// A projectile hits an enemy
+		// Apply appropriate effects to the enemy depending on the projectile
 		if (attackType == AttackType.SLOW_SPELL) slowDown();
 		if ((attackType == AttackType.SPELL || attackType == AttackType.SLOW_SPELL) && Utilities.globalRNG.nextDouble() <= 0.03) {
 			resetPosition();
@@ -148,9 +158,9 @@ public abstract class Enemy {
 		}
 
 		if (!initialized) return;
-		double displacement = this.speed * deltaTime; //get displacement
+		double displacement = this.speed * deltaTime; // displacement is speed times elapsed time since last frame
 		
-		PathTile nextTile = path.get(pathIndex+1); //get the location of next tile's centre
+		PathTile nextTile = path.get(pathIndex+1); // get the location of next tile's center
 		
 		double[] tileOffset = pathOffsets.get(pathIndex+1);
 		double[] offset = new double[] {tileOffset[0] + gaussianNoise[0], tileOffset[1] + gaussianNoise[1]};
@@ -192,7 +202,9 @@ public abstract class Enemy {
 		}
 		
 		if (pathIndex+2 >= path.size()) return;
-		
+
+		// if enemy is closer to the next path tile than the one which it is currently tracking
+		// tell it to move to the next one, otherwise it will wiggle in between
 		PathTile tile2 = path.get(pathIndex+2);
 		double[] offset2 = pathOffsets.get(pathIndex+2);
 		
@@ -207,6 +219,7 @@ public abstract class Enemy {
 	}
 
 	private void updateGaussianNoise() {
+		// Get the pseudorandom gaussian random variable to add an offset to the default
 		gaussianNoise = new double[] {0.0, 0.0};
 		int signX = Utilities.globalRNG.nextBoolean() ? 1 : -1;
 		int signY = Utilities.globalRNG.nextBoolean() ? 1 : -1;
@@ -264,6 +277,7 @@ public abstract class Enemy {
 	}
 	
 	public void setPath() {
+		// Enemy chooses a starting tile and a path corresponding to it, which must not be null
 		Map map = PlayModeManager.getInstance().getCurrentMap();
 		HashMap<PathTile, List<PathTile>> pathMap = map.getPathMap();
 		List<java.util.Map.Entry<PathTile, List<PathTile>>> nonNullPaths = pathMap.entrySet().stream().filter(
@@ -274,6 +288,7 @@ public abstract class Enemy {
 	}
 
 	public void setPathOffsets() {
+		// Get path offsets corresponding to the path the enemy has
 		pathOffsets = PlayModeManager.getInstance().getCurrentMap().getOffsetMap().get(path.getFirst());
 	}
 	
@@ -308,12 +323,14 @@ public abstract class Enemy {
 	}
 
 	private void cleanupEnemy() {
+		// Remove an enemy from everywhere
 		initialized = false;
 		enemies.remove(this);
 		activeEnemies.remove(this);
 	}
 
 	public static void cleanupAllEnemies() {
+		// Get rid of every enemy
 		for (Enemy enemy : enemies) enemy.setInitialized(false);
 		activeEnemies.clear();
 		enemies.clear();

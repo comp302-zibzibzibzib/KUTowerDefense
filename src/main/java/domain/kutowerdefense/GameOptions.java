@@ -8,6 +8,8 @@ import domain.services.Utilities;
 
 
 public class GameOptions implements Serializable {
+	// No complex logic here
+	// Just a house for game options variables
     private static final long serialVersionUID = 1L;
     private static GameOptions instance;
 

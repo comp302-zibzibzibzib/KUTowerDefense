@@ -4,6 +4,7 @@ import java.io.Serializable;
 import domain.tower.Tower;
 
 public class Lot extends Tile implements Serializable {
+    // Lot is type of a tile which houses a single tower instance
     private static final long serialVersionUID = 1L;
 
     private boolean isEmpty = true;

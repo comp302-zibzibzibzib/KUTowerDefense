@@ -9,6 +9,9 @@ import domain.entities.WaveFactory;
 import domain.map.Map;
 
 public class PlayModeManager {
+	// Manages game speed/pause
+	// Initializes waves sequentially with pre determined delays
+	// Gives access to the current map which is being played on
 	public static final double GRACE_PERIOD_SECONDS = 4;
 	
 	private static PlayModeManager instance;
@@ -88,13 +91,15 @@ public class PlayModeManager {
 		}
 		
 		timeSinceLastWave += deltaTime * gameSpeed;
+		// Change the wave number when it is almost time to spawn a new one
 		if (currentWaveIndex > 0 && timeSinceLastWave < 10) {
 			if (timeSinceLastWave > 8) Player.getInstance().setWaveNumber(currentWaveIndex+1);
 			else return;
 		}
 		
 		Wave currentWave = waves.get(currentWaveIndex);
-		
+
+		// If the current wave spawned all of its groups move on to the next one
 		if (currentWave.spawnedAllGroups()) {
 			currentWaveIndex++;
 			timeSinceLastWave = 0;

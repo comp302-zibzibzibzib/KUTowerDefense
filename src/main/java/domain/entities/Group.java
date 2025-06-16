@@ -5,24 +5,9 @@ import java.util.List;
 import domain.kutowerdefense.GameOptions;
 import domain.kutowerdefense.PlayModeManager;
 import domain.kutowerdefense.Player;
-import domain.map.Location;
-import domain.map.Tile;
-import domain.services.Utilities;
-
-/*class EnemyMover implements Runnable{ //deprecated class
-	private Enemy enemy;
-	
-	protected EnemyMover(Enemy enemy) {
-		this.enemy = enemy;
-	}
-	@Override
-	public void run() {
-		enemy.moveEnemy();
-	}
-	
-}*/
 
 public class Group {
+	// Group is responsible for spawning enemies with a delay that gets shorter as the game approaches the ending wave
 	private int numberOfEnemies;
 	private int index;
 	private double timeAfterEnemySpawn;
@@ -39,9 +24,12 @@ public class Group {
 		startSpawning = false;
 	}
 	
-	public void initializeEnemies(double deltaTime) {//MIGHT NOT WORK
+	public void initializeEnemies(double deltaTime) {
+		// Spawn enemies if given the command to start spawning
 		if (!startSpawning || spawnedAllEnemies()) return;
-		
+
+		// Enough time has to pass between enemy spawns to spawn a new one
+		// The delay gets cutoff more and more calculated as the percentage of the current wave to the end wave grows larger
 		double delay = 2;
 		double delayCutoff = (delay * 0.7) * (double) Player.getInstance().getWaveNumber() / (double) GameOptions.getInstance().getNumberOfWaves();
 		delay -= delayCutoff;
@@ -49,33 +37,13 @@ public class Group {
 		timeAfterEnemySpawn += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn
 		
 		if(timeAfterEnemySpawn >= delay) {
-			//set location of enemy at start and move
+			//set location of enemy at start
 			Enemy enemy = composition.get(index);
 			enemy.initialize();
-			//System.out.printf("Initializing enemy%o!%n", index + 1);
-			
-			//enemy.moveEnemy();
 			
 			timeAfterEnemySpawn = 0.0;
 			index++;
 		}
-		
-		//deprecated code
-		//for(int i = 0; i < numberOfEnemies; i++) {
-		//	Enemy enemy = composition.get(i);
-		//	enemy.getLocation().xCoord = startLocation.xCoord;
-		//	enemy.getLocation().yCoord = startLocation.yCoord;
-		//	EnemyMover mover = new EnemyMover(enemy); //Creating thread for every enemy might cause problems
-		//	Thread enemyMoverThread = new Thread(mover);
-		//	enemyMoverThread.start();
-		//	try {
-		//		Thread.sleep(delay); 
-		//should be executed on another thread(init by GroupSpawner thread) instead of main thread
-		//	} catch (InterruptedException e) {
-		//		e.printStackTrace();
-		//	}
-		//}
-		
 	}
 
 	public int getIndex() {

@@ -8,13 +8,14 @@ import domain.map.Map;
 import domain.map.Tile;
 import domain.tower.Projectile;
 import domain.tower.Tower;
-import domain.tower.TowerFactory;
 import javafx.animation.AnimationTimer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class TowerLoop extends AnimationTimer {
+	// Animation timer that handles projectile and tower targeting logic in real time
+	// Gets injected into the JavaFX application loop and gets executed every frame (handle method)
 	long lastUpdate = 0;
 
 	@Override
@@ -48,8 +49,10 @@ class TowerLoop extends AnimationTimer {
 }
 
 public class TowerController {
+	// Controller responsible for bridging ui and projectile logic as well as tower behaviour
 	private static final TowerLoop towerLoop = new TowerLoop();
 
+	// Check if the player can build a type of tower
 	public static boolean canBuildArcher() {
 		return Player.getInstance().getGold() >= GameOptions.getInstance().getArcherCost();
 	}
@@ -67,6 +70,7 @@ public class TowerController {
 		return Player.getInstance().getGold() >= tower.getUpgradeCost() && tower.getLevel() == 1;
 	}
 
+	// Projectile information retrieval methods
 	public static int getNumberOfProjectiles() {
 		return Projectile.getProjectiles().size();
 	}
@@ -88,12 +92,14 @@ public class TowerController {
 	}
 
 	public static void startTowerLogic() {
+		// Start tower targeting logic and projectile motion at the start of a play session
 		towerLoop.start();
 		Projectile.resetProjectiles();
 		PlayModeManager.getInstance().getCurrentMap().resetTowers();
 	}
 
 	public static boolean projectileDead(int id) {
+		// Check if a projectile has died
 		for (Projectile proj : Projectile.getProjectiles()) {
 			if (proj.getID() == id) return false;
 		}
@@ -101,6 +107,7 @@ public class TowerController {
 	}
 
 	public static String getProjectileName(int id) {
+		// Get projectile name (its type) with the ID associated with it
 		Projectile proj = getProjectile(id);
 		return switch (proj.getAttackType()) {
 			case ARROW -> "arrow";
@@ -117,6 +124,7 @@ public class TowerController {
 	}
 
 	public static void setTowerAttributes() {
+		// Load tower attributes from current tower game option variables
 		Map currentMap = PlayModeManager.getInstance().getCurrentMap();
 		for (Tower tower : currentMap.getTowerList()) {
 			double range = switch (tower.getAttackType()) {
