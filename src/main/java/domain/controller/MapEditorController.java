@@ -136,13 +136,16 @@ public class MapEditorController {
 		publishHighlight(x, y);
 	}
 	
-	public void forcePlaceCastle(int x, int y) {
+	public boolean forcePlaceCastle(int x, int y) {
+		Map map = mapEditor.map;
+		if (x == map.getWidth() - 1 || y == map.getHeight() - 1) return false;
 		mapEditor.removeTile(y, x);
 		mapEditor.placeTile(TileType.CASTLE,y,x);
 		publishHighlight(x, y);
 		publishHighlight(x + 1, y);
 		publishHighlight(x, y + 1);
 		publishHighlight(x + 1, y + 1);
+		return true;
 	}
 
 	public void forcePlaceLot(int x, int y) {

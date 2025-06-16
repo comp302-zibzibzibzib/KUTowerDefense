@@ -8,6 +8,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -26,7 +27,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class MapEditorScene {
-	private KuTowerDefenseA app;
+	private KuTowerDefenseApp app;
 	private MapEditorController mapEditorController = MapEditorController.getInstance(true);
 	private HashMap<Point2D, GroupedTile> placedTiles = new HashMap<>();
 	private HashMap<Integer, Rectangle> tileHighlights = new HashMap<>();
@@ -38,7 +39,7 @@ public class MapEditorScene {
 	private Pane biggerSideBar = new Pane();
 	private Pane exitBar = new Pane();
 	private Pane optionBar = new Pane();
-	private Pane sideBar = new Pane();
+	private ScrollPane sideBar;
 	private Rectangle highlightBox = new Rectangle(70, 70);
 	private ImageView draggingClone = null;
 	private AssetImage topmid = new AssetImage("top", this);
@@ -56,6 +57,11 @@ public class MapEditorScene {
 	private AssetImage verticalLeft = new AssetImage("horizontalendleft", this);
 	private AssetImage verticalMid = new AssetImage("horizontalmiddle", this);
 	private AssetImage verticalRight = new AssetImage("horizontalendright", this);
+	private AssetImage junctionNoBottom = new AssetImage("junctionnobottom", this);
+	private AssetImage junctionNoLeft = new AssetImage("junctionnoleft", this);
+	private AssetImage junctionNoRight = new AssetImage("junctionnoright", this);
+	private AssetImage junctionNoTop = new AssetImage("junctionnotop", this);
+	private AssetImage junctionCross = new AssetImage("junctioncross", this);
 	private AssetImage treeFirst = new AssetImage("tree1", this);
 	private AssetImage treeSecond = new AssetImage("tree2", this);
 	private AssetImage treeThird = new AssetImage("tree3", this);
@@ -84,12 +90,11 @@ public class MapEditorScene {
 	private Group editModeGroup = new Group();
 	private boolean isSetStart = false;
 	private boolean isSetEnd = false;
-	private Pane namePromptOverlay;
 	private Image saveExitButton = new Image(getClass().getResourceAsStream("/Images/exit.png"));
 
 
 
-	public MapEditorScene(KuTowerDefenseA app) {
+	public MapEditorScene(KuTowerDefenseApp app) {
 		File dir = new File("/Data/Snapshots");
 		if (!dir.exists()) dir.mkdirs();
 		System.out.println(getClass());
@@ -125,32 +130,25 @@ public class MapEditorScene {
 				highlightPane.getChildren().remove(highlight);
 			}
 		});
-		setupNamePromptOverlay();
 		return scene;
 	}
 	private void setupNamePromptOverlay() {
-		namePromptOverlay = new Pane();
-		namePromptOverlay.setPrefSize(1120, 630);
-		namePromptOverlay.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-
 		Pane promptBox = new Pane();
 		promptBox.setPrefSize(400, 220);
-		promptBox.setLayoutX((1120 - 400) / 2.0);
-		promptBox.setLayoutY((630 - 220) / 2.0);
 		promptBox.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2;");
 
 		Label nameLabel = new Label("Enter Map Name:");
 		nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-		nameLabel.setLayoutX((400 - 200) / 2.0);
+		nameLabel.setLayoutX(100);
 		nameLabel.setLayoutY(35);
 
 		TextField nameField = new javafx.scene.control.TextField();
-		nameField.setLayoutX((400 - 260) / 2.0);
+		nameField.setLayoutX(70);
 		nameField.setLayoutY(75);
 		nameField.setPrefWidth(260);
 
 		javafx.scene.control.Button saveBtn = new javafx.scene.control.Button("Save");
-		saveBtn.setLayoutX((400 - 80) / 2.0);
+		saveBtn.setLayoutX(160);
 		saveBtn.setLayoutY(125);
 
 		ImageView cancelButton = new ImageView(saveExitButton);
@@ -159,13 +157,20 @@ public class MapEditorScene {
 		cancelButton.setLayoutX(343);
 		cancelButton.setLayoutY(0);
 
+		promptBox.getChildren().addAll(nameLabel, nameField, saveBtn, cancelButton);
+		DynamicPopup dynamicPopup = new DynamicPopup(promptBox, root, DynamicPopupAlignment.TOPCENTER);
+
+		cancelButton.setOnMouseClicked(e -> {
+			dynamicPopup.cleanupPopup();
+		});
+
 		saveBtn.setOnAction(e -> {
 			String enteredName = nameField.getText();
 			if (!enteredName.isBlank()) {
 				mapEditorController.saveMap(enteredName);
-				namePromptOverlay.setVisible(false);
+				dynamicPopup.cleanupPopup();
 
-				String sanitized = enteredName.replaceAll("[^a-zA-Z0-9-_\\.]", "_");
+				String sanitized = enteredName.replaceAll("[^a-zA-Z0-9-_.]", "_");
 				File outputDir = new File("Data/Snapshots");
 				if (!outputDir.exists()) outputDir.mkdirs();
 				Pane snapshotPane = new Pane();
@@ -203,16 +208,6 @@ public class MapEditorScene {
 				}
 			}
 		});
-
-
-		cancelButton.setOnMouseClicked(e -> {
-			namePromptOverlay.setVisible(false);
-		});
-
-		promptBox.getChildren().addAll(nameLabel, nameField, saveBtn, cancelButton);
-		namePromptOverlay.getChildren().add(promptBox);
-		namePromptOverlay.setVisible(false);
-		root.getChildren().add(namePromptOverlay);
 	}
 
 	private Pane dashedLines(int inty, int intx, double height,double width) {
@@ -262,15 +257,15 @@ public class MapEditorScene {
 	}
 
 	private Pane getSideBar() {
-		biggerSideBar.setPrefSize(255,630);
+		biggerSideBar.setPrefSize(265,630);
         biggerSideBar.setStyle("-fx-background-color: #434447;");
 
-		exitBar.setPrefSize(254,62.5);
+		exitBar.setPrefSize(265,62.5);
 		exitBar.setLayoutX(4);
 		exitBar.setLayoutY(0);
         exitBar.setStyle("-fx-background-color: #8FD393;");
 
-        optionBar.setPrefSize(254, 62.5);
+        optionBar.setPrefSize(265, 62.5);
         optionBar.setLayoutX(4);
 		optionBar.setLayoutY(63.5);
         optionBar.setStyle("-fx-background-color: #8FD393;");
@@ -363,7 +358,7 @@ public class MapEditorScene {
 
 		saveView.setOnMouseClicked(e -> {
 			if (mapEditorController.validateMap()) {
-				namePromptOverlay.setVisible(true);
+				setupNamePromptOverlay();
 			} else {
 
 			}
@@ -426,11 +421,6 @@ public class MapEditorScene {
         optionBar.getChildren().addAll(saveView,eraserView,setStartView,setEndView);
         exitBar.getChildren().addAll(exitView,editModeGroup);
 
-		sideBar.setPrefSize(250, 630);
-        sideBar.setStyle(" -fx-background-color: #8FD393;");
-        sideBar.setLayoutX(4);
-		sideBar.setLayoutY(127);
-
 		ImageView topBot = createTileImageView(topbottom, 0, 0);
 		ImageView topMid = createTileImageView(topmid, 62.5, 0);
 		ImageView topRight = createTileImageView(topright, 125, 0);
@@ -447,34 +437,48 @@ public class MapEditorScene {
 		ImageView verticalMidView = createTileImageView(verticalMid, 62.5, 187.5);
 		ImageView verticalRightView = createTileImageView(verticalRight, 125, 187.5);
 		ImageView lotView = createTileImageView(lot, 187.5, 187.5);
-		ImageView treeFirstView = createTileImageView(treeFirst, 0, 250);
-		ImageView treeSecondView = createTileImageView(treeSecond, 62.5, 250);
-		ImageView treeThirdView = createTileImageView(treeThird, 125, 250);
-		ImageView rockFirstView = createTileImageView(rockFirst, 187.5, 250);
-		ImageView artilleryTowerView = createTileImageView(artilleryTower, 0, 312.5);
-		ImageView mageTowerView = createTileImageView(mageTower, 62.5, 312.5);
-		ImageView houseView = createTileImageView(house, 125, 312.5);
-		ImageView rockSecondView = createTileImageView(rockSecond, 187.5, 312.5);
-		ImageView castleView = createTileImageView(castle, 0, 375);
+		ImageView junctionNoLeftView = createTileImageView(junctionNoLeft, 0, 250);
+		ImageView junctionNoBottomView = createTileImageView(junctionNoBottom, 62.5, 250);
+		ImageView junctionNoTopView = createTileImageView(junctionNoTop, 125, 250);
+		ImageView junctionNoRightView = createTileImageView(junctionNoRight, 187.5, 250);
+		ImageView junctionCrossView = createTileImageView(junctionCross, 0, 312.5);
+		ImageView treeFirstView = createTileImageView(treeFirst, 62.5, 312.5);
+		ImageView treeSecondView = createTileImageView(treeSecond, 125, 312.5);
+		ImageView treeThirdView = createTileImageView(treeThird, 187.5, 312.5);
+		ImageView archerTowerView = createTileImageView(archerTower, 0, 375);
+		ImageView artilleryTowerView = createTileImageView(artilleryTower, 62.5, 375);
+		ImageView mageTowerView = createTileImageView(mageTower, 125, 375);
+		ImageView houseView = createTileImageView(house, 187.5, 375);
+		ImageView wellView = createTileImageView(well, 125, 437.5);
+		ImageView houseSecondView = createTileImageView(houseSecond, 187.5, 437.5);
+		ImageView castleView = createTileImageView(castle, 0, 437.5);
 		castleView.setFitHeight(125);
 		castleView.setFitWidth(125);
-		ImageView archerTowerView = createTileImageView(archerTower, 125, 375);
-		ImageView wellView = createTileImageView(well, 187.5, 375);
-		ImageView houseSecondView = createTileImageView(houseSecond, 125, 437.5);
-		ImageView woodView = createTileImageView(wood, 187.5, 437.5);
+		ImageView woodView = createTileImageView(wood, 125, 500);
+		ImageView rockFirstView = createTileImageView(rockFirst, 187.5, 500);
+		ImageView rockSecondView = createTileImageView(rockSecond, 0, 562.5);
 
-		sideBar.getChildren().addAll(topBot,topMid, topRight,horizontalTop,midL,
+		Pane bar = new Pane();
+		bar.getChildren().addAll(topBot,topMid, topRight,horizontalTop,midL,
 				grassView,midRightView,horizontalMidView,leftBotomView,midBottomView,midBottomRightView,
 				horizontalBottomView,verticalLeftView,verticalMidView,verticalRightView,lotView,treeFirstView,treeSecondView,
 				treeThirdView,rockFirstView, artilleryTowerView,mageTowerView,houseView,rockSecondView,
-				castleView, archerTowerView,wellView,houseSecondView,woodView);
+				castleView, archerTowerView,wellView,houseSecondView,woodView,junctionCrossView,junctionNoBottomView,junctionNoLeftView,
+				junctionNoRightView,junctionNoTopView);
 
-		Pane dashedLineSide = dashedLines(20,4,62.5,62.5);
+		Pane dashedLineSide = dashedLines(10,4,62.5,62.5);
 		dashedLineSide.setPickOnBounds(false);
 		dashedLineSide.setMouseTransparent(true);
-		sideBar.getChildren().add(dashedLineSide);
+		bar.getChildren().add(dashedLineSide);
 
-		highlightEffect();
+		highlightEffect(bar);
+
+		sideBar = new ScrollPane(bar);
+		sideBar.setPrefSize(262, 505);
+		sideBar.setLayoutX(4);
+		sideBar.setLayoutY(127);
+		sideBar.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		sideBar.getStylesheets().add(getClass().getResource("/styles/scrollPaneStyleWithFill.css").toExternalForm());
 
         biggerSideBar.getChildren().addAll(exitBar,optionBar,sideBar);
 
@@ -568,10 +572,20 @@ public class MapEditorScene {
 				//creating our tile's cell coordinate to store
 				Point2D cell = new Point2D(cellX, cellY);
 				String tileName = (String) draggingClone.getUserData();
-				//removing our group
-				removeGroupedTileAt(cell);
 
 				if (tileName.equals("castle")) {
+					//updating at backend
+					boolean success = mapEditorController.forcePlaceCastle(cellX, cellY);
+					if (!success) {
+						draggingLayer.getChildren().remove(draggingClone);
+						draggingClone = null;
+						highlightBox.setVisible(false);
+						return;
+					}
+
+					//removing our group
+					removeGroupedTileAt(cell);
+
 					//getting where our castle will be placed
 					Set<Point2D> cells = Set.of(
 							new Point2D(cellX, cellY),
@@ -583,8 +597,7 @@ public class MapEditorScene {
 					for (Point2D pt : cells) {
 						removeGroupedTileAt(pt);
 					}
-					//updating at backend
-					mapEditorController.forcePlaceCastle(cellX, cellY);
+
 					//fixing the image
 					draggingClone.setFitWidth(140);
 					draggingClone.setFitHeight(140);
@@ -686,8 +699,8 @@ public class MapEditorScene {
 		return highlight;
 	}
 
-	private void highlightEffect() {
-		for(Node node : sideBar.getChildren()) {
+	private void highlightEffect(Pane pane) {
+		for(Node node : pane.getChildren()) {
 			if(node instanceof ImageView) {
 				ImageView tile = (ImageView) node;
 				String tileName = (String) tile.getUserData();
@@ -833,10 +846,9 @@ public class MapEditorScene {
 		private String name;
 
 		public AssetImage(String name, Object source) {
-			super(source.getClass().getResourceAsStream("/Images/"+name+ ".png"));
+			super(source.getClass().getResourceAsStream("/Images/"+name+".png"));
 			System.out.println(source.getClass());
 			this.name = name;
-
 		}
 
 		public String getName() {

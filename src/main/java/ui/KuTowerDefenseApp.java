@@ -6,7 +6,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class KuTowerDefenseA  extends Application{
+public class KuTowerDefenseApp extends Application{
 	private Image cursorImage;
 	private ImageCursor cursor;
 	private Stage primaryStage = new Stage();

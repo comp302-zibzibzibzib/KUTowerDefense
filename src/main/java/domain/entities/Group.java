@@ -43,7 +43,7 @@ public class Group {
 		if (!startSpawning || spawnedAllEnemies()) return;
 		
 		double delay = 2;
-		double delayCutoff = (delay * 1.2) * (double) Player.getInstance().getWaveNumber() / (double) GameOptions.getInstance().getNumberOfWaves();
+		double delayCutoff = (delay * 0.7) * (double) Player.getInstance().getWaveNumber() / (double) GameOptions.getInstance().getNumberOfWaves();
 		delay -= delayCutoff;
 		
 		timeAfterEnemySpawn += deltaTime * PlayModeManager.getInstance().getGameSpeed(); //amount of time passed since first spawn

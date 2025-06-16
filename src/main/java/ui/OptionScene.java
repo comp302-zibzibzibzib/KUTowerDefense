@@ -27,7 +27,7 @@ public class OptionScene {
 	private final List<String> optionCategories = Arrays.asList("Spawning", "Player", "Enemies", "Projectile", "Towers");
 	private final List<Integer> titleIndicies = Arrays.asList(0, 10, 12, 19, 23);
 
-	private KuTowerDefenseA app;
+	private KuTowerDefenseApp app;
 	private VBox vbox;
 	private Scene scene;
 
@@ -171,7 +171,7 @@ public class OptionScene {
 		}
 	}
 
-	public OptionScene(KuTowerDefenseA app, StackPane root) {
+	public OptionScene(KuTowerDefenseApp app, StackPane root) {
 		this.app = app;
 		initializeScene(root);
 	}
@@ -357,6 +357,6 @@ public class OptionScene {
 		root.getChildren().addAll(backgroundView, fullLayout);
 
 		scene = new Scene(root, app.getPrimaryStage().getWidth(), app.getPrimaryStage().getHeight());
-		scene.getStylesheets().add(getClass().getResource("/styles/optionsStyle.css").toExternalForm());
+		scene.getStylesheets().add(getClass().getResource("/styles/scrollPaneStyle.css").toExternalForm());
 	}
 }

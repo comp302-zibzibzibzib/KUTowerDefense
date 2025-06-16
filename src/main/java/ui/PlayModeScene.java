@@ -5,7 +5,6 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import domain.controller.*;
-import domain.entities.Effect;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -23,13 +22,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 
 public class PlayModeScene extends AnimationTimer {
-	private KuTowerDefenseA app;
+	private KuTowerDefenseApp app;
 	private Group towerSelection = null;
 	private TileView selectedLot = null;
 	private TileView selectedTower = null;
@@ -62,6 +60,9 @@ public class PlayModeScene extends AnimationTimer {
     private Image resumeHover = new Image(getClass().getResourceAsStream("/Images/resumehover.png"));
     private Image accelerateHover = new Image(getClass().getResourceAsStream("/Images/acceleratehover.png"));
     private Image pauseHover = new Image(getClass().getResourceAsStream("/Images/pausehover.png"));
+	private Image redRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_red.png"));
+	private Image blueRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_blue.png"));
+	private Image yellowRibbon = new Image(getClass().getResourceAsStream("/Images/HUD/ribbon_yellow.png"));
 
 	private HBox hbox;
 	
@@ -139,7 +140,7 @@ public class PlayModeScene extends AnimationTimer {
 	}
 	
 	private class EnemyStack extends StackPane {
-		private final Image snowflake = new Image(getClass().getResourceAsStream("/Images/HUD/snowflake_icon.png"));;
+		private final Image snowflake = new Image(getClass().getResourceAsStream("/Images/HUD/snowflake_icon.png"));
 		private final Image thunder = new Image(getClass().getResourceAsStream("/Images/HUD/thunder_icon.png"));
 
 		private ImageView snowflakeView;
@@ -340,7 +341,7 @@ public class PlayModeScene extends AnimationTimer {
 	}
 	
 
-	public PlayModeScene(KuTowerDefenseA app) {
+	public PlayModeScene(KuTowerDefenseApp app) {
 		this.app = app;
 
 		GoldBagView.frames.clear();
@@ -449,10 +450,10 @@ public class PlayModeScene extends AnimationTimer {
 
 						if (r.equals("castle") && d.equals("castle") && dr.equals("castle")) {
 							castleMaker(map, i, j);
-							continue; 
+							continue;
 						}
 					}
-					continue; 
+					continue;
 			}
 				
 				Image tileImage = new Image(getClass().getResourceAsStream("/Images/"+assetName+".png"));
@@ -810,7 +811,7 @@ public class PlayModeScene extends AnimationTimer {
 		if (circle != null && circle.getParent() != null) {
 	        ((Pane) circle.getParent()).getChildren().remove(circle);
 	        circle = null;
-	    }	
+	    }
 	}
 	private void playerStatsPutter() {
 		Image coinImage  = new Image(getClass().getResourceAsStream("/Images/HUD/coin.png"));
@@ -876,8 +877,8 @@ public class PlayModeScene extends AnimationTimer {
         
         Consumer<Integer> goldAction = (val) -> coin.setText(String.format("%d", PlayerController.getPlayerGold()));
         Consumer<Integer> livesAction = (val) -> lives.setText(String.format("%d/%d", PlayerController.getPlayerLives(),
-        																		GameOptionsController.getOption("Player Lives")));
-        Consumer<Integer> wavesAction = (val) -> waves.setText(String.format("%d/%d", PlayerController.getWaveNumber(), 
+																				GameOptionsController.getOption("Player Lives")));
+        Consumer<Integer> wavesAction = (val) -> waves.setText(String.format("%d/%d", PlayerController.getWaveNumber(),
         																		GameOptionsController.getOption("Wave Number")));
         
         PlayerController.addGoldListener(goldAction);
@@ -917,6 +918,18 @@ public class PlayModeScene extends AnimationTimer {
 			enemyAnimations.put("warrior", warriorFrames);
 			enemyAnimations.put("goblin", goblinFrames);
 		}
+	}
+
+	private Pane getGameOverPane() {
+		Pane gameOverPane = new Pane();
+		gameOverPane.setPrefSize(600, 400);
+		ImageView gameOverBanner = new ImageView(redRibbon);
+		Label gameOverLabel = new Label("Game Over");
+		gameOverBanner.setLayoutX(300);
+		gameOverLabel.setLayoutX(300);
+
+		gameOverPane.getChildren().addAll(gameOverBanner, gameOverLabel);
+		return gameOverPane;
 	}
 
 	@Override
