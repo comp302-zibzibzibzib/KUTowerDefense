@@ -153,8 +153,9 @@ public class MapEditorScene {
 		promptBox.setPrefSize(400, 220);
 		promptBox.setStyle("-fx-background-color: lightblue; -fx-border-color: black; -fx-border-width: 2;");
 
-		Label nameLabel = new Label("Enter Map Name:");
+		Label nameLabel = new Label("SAVE MENU");
 		nameLabel.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 20));
+		nameLabel.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
 		nameLabel.setLayoutX(100);
 		nameLabel.setLayoutY(35);
 
