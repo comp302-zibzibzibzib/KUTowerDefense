@@ -101,6 +101,11 @@ public abstract class Tower implements Serializable {
 		target = lastTarget;
     }
 
+	//@Requires: time difference between each update call in seconds (a nanosecond value must be divided by 10^9)
+	//@Modifies: this tower's timeSinceLastShot and the enemy it targets if there is change from targetEnemy()
+	// and increases timeSinceFrozen if tower is frozen
+	//@Effects: Increases timeSinceLastShot by dt and resets it if its above firePeriod and Increases timeSinceFrozen by dt and resets it if its above FREEZE_DURATION
+	// if there is an enemy the tower can target and timeSinceLastShot >= firePeriod creates the projectile the tower will fire unless the tower is not frozen
 	public void update(double dt) {
 		dt = dt * PlayModeManager.getInstance().getGameSpeed();
 		targetEnemy();
