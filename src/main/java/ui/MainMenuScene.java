@@ -31,6 +31,9 @@ public class MainMenuScene {
 	private Image buttonBlue = new Image(getClass().getResourceAsStream(SPRITE_PATH + "blueb5.png"));
 	private Image rightButton = new Image(getClass().getResourceAsStream(SPRITE_PATH + "rightbutton.png"));
 	private Image leftButton = new Image(getClass().getResourceAsStream(SPRITE_PATH + "leftbutton.png"));
+	private Image rightHover = new Image(getClass().getResourceAsStream(SPRITE_PATH + "righHover.png"));
+	private Image leftHover = new Image(getClass().getResourceAsStream(SPRITE_PATH + "leftHover.png"));
+
 	private List<Image> snapshotImages = new ArrayList<>();
 	private List<String> snapshotNames = new ArrayList<>();
 	private int currentSnapshotIndex = 0;
@@ -194,11 +197,18 @@ public class MainMenuScene {
 			}
 		});
 
+		rightView.setOnMouseEntered(e->{rightView.setImage(rightHover);});
+		rightView.setOnMouseExited(e->{rightView.setImage(rightButton);});
+		leftView.setOnMouseEntered(e->{leftView.setImage(leftHover);});
+		leftView.setOnMouseExited(e->{leftView.setImage(leftButton);});
+
 		ImageView cancel = new ImageView(new Image(getClass().getResourceAsStream("/Images/exit.png")));
 		cancel.setFitWidth(50);
 		cancel.setFitHeight(50);
 		cancel.setLayoutX(450);
 		cancel.setLayoutY(1);
+		cancel.setOnMouseEntered(e->{cancel.setImage(new Image(getClass().getResourceAsStream("/Images/exithover.png")));});
+		cancel.setOnMouseExited(e->{cancel.setImage(new Image(getClass().getResourceAsStream("/Images/exit.png")));});
 
 		mapSelectionOverlay.getChildren().addAll(title, cancel, blueBView, mapPreview, mapNameLabel, rightView, leftView, confirmButton);
 		DynamicPopup dynamicPopup = new DynamicPopup(mapSelectionOverlay, root, DynamicPopupAlignment.CENTER, 3);

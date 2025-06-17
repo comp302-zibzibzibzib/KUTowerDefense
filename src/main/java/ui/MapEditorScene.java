@@ -5,6 +5,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -98,6 +99,9 @@ public class MapEditorScene {
 	private Image saveExitButton = new Image(getClass().getResourceAsStream("/Images/exit.png"));
 	private AssetImage deleteButton = new AssetImage("delete", this);
 	private AssetImage clickButton = new AssetImage("clickbutton", this);
+	private Image save = new Image(getClass().getResourceAsStream("/Images/HUD/blueb3.png"));
+	private Image saveHover = new Image(getClass().getResourceAsStream("/Images/HUD/hoverb3.png"));
+	private Image cancelHover = new Image(getClass().getResourceAsStream("/Images/exithover.png"));
 	private String selectedClickTileName;
 
 	public MapEditorScene(KuTowerDefenseApp app) {
@@ -139,23 +143,51 @@ public class MapEditorScene {
 		return scene;
 	}
 	private void setupNamePromptOverlay() {
+		ImageView nameView = new ImageView(save);
+		nameView.setFitHeight(50);
+		nameView.setFitWidth(300);
+		ImageView saveBView = new ImageView(save);
+		saveBView.setFitWidth(150);
+		saveBView.setFitHeight(50);
 		Pane promptBox = new Pane();
 		promptBox.setPrefSize(400, 220);
 		promptBox.setStyle("-fx-background-color: lightblue; -fx-border-color: black; -fx-border-width: 2;");
 
 		Label nameLabel = new Label("Enter Map Name:");
-		nameLabel.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+		nameLabel.setFont(Font.font("Comic Sans MS", FontWeight.BOLD, 20));
 		nameLabel.setLayoutX(100);
 		nameLabel.setLayoutY(35);
 
 		TextField nameField = new javafx.scene.control.TextField();
-		nameField.setLayoutX(70);
-		nameField.setLayoutY(75);
-		nameField.setPrefWidth(260);
+		nameField.setFont(Font.font("Comic Sans MS", FontWeight.NORMAL, 20));
+		nameField.setTranslateX(20);
+		nameField.setTranslateY(-5);
+		nameField.setPromptText("Enter map name...");
+		nameField.setStyle("-fx-text-fill: white; -fx-background-color: transparent; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
 
-		javafx.scene.control.Button saveBtn = new javafx.scene.control.Button("Save");
-		saveBtn.setLayoutX(160);
-		saveBtn.setLayoutY(125);
+		StackPane nameInputPane = new StackPane();
+		nameInputPane.setLayoutX(50);
+		nameInputPane.setLayoutY(75);
+		nameInputPane.setPrefWidth(300);
+		nameInputPane.setPrefHeight(50);
+		nameInputPane.getChildren().addAll(nameView, nameField);
+		StackPane.setAlignment(nameField, Pos.CENTER);
+
+		Label saveLabel = new Label("Save");
+		Font font = Font.font("Comic Sans MS", FontWeight.BOLD, 20);
+		saveLabel.setFont(font);
+		saveLabel.setStyle("-fx-text-fill: white; -fx-effect: dropshadow(one-pass-box, black, 5, 0.5, 0, 0);");
+		saveLabel.setTranslateY(-8);
+		StackPane.setAlignment(saveLabel, Pos.CENTER);
+		StackPane.setAlignment(saveBView, Pos.CENTER);
+
+		StackPane pane = new StackPane();
+		pane.setLayoutX(95);
+		pane.setLayoutY(130);
+		pane.setPrefSize(150, 50);
+		StackPane.setAlignment(saveLabel, Pos.CENTER);
+		pane.getChildren().addAll(saveBView,saveLabel);
+
 
 		ImageView cancelButton = new ImageView(saveExitButton);
 		cancelButton.setFitWidth(57);
@@ -163,20 +195,26 @@ public class MapEditorScene {
 		cancelButton.setLayoutX(343);
 		cancelButton.setLayoutY(0);
 
-		promptBox.getChildren().addAll(nameLabel, nameField, saveBtn, cancelButton);
+		promptBox.getChildren().addAll(nameLabel, nameInputPane, pane, cancelButton);
 		DynamicPopup dynamicPopup = new DynamicPopup(promptBox, root, DynamicPopupAlignment.TOPCENTER, 1);
+
+		pane.setOnMouseEntered(e -> { saveBView.setImage(saveHover); });
+		pane.setOnMouseExited(e -> { saveBView.setImage(save); });
 
 		cancelButton.setOnMouseClicked(e -> {
 			dynamicPopup.cleanupPopup();
 		});
 
-		saveBtn.setOnAction(e -> {
+		cancelButton.setOnMouseEntered(e->{cancelButton.setImage(cancelHover);});
+		cancelButton.setOnMouseExited(e->{cancelButton.setImage(saveExitButton);});
+
+		pane.setOnMouseClicked(e -> {
 			String enteredName = nameField.getText();
 			if (!enteredName.isBlank()) {
-				mapEditorController.saveMap(enteredName);
+				String sanitized = enteredName.replaceAll("[^a-zA-Z0-9-_.]", "_");
+				mapEditorController.saveMap(sanitized);
 				dynamicPopup.cleanupPopup();
 
-				String sanitized = enteredName.replaceAll("[^a-zA-Z0-9-_.]", "_");
 				File outputDir = new File("Data/Snapshots");
 				if (!outputDir.exists()) outputDir.mkdirs();
 				Pane snapshotPane = new Pane();
