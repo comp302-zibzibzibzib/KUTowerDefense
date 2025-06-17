@@ -953,6 +953,11 @@ public class MapEditorScene {
 			return;
 		}
 
+		if (!selectedClickTileName.equals("castle")) {
+			//removing our group
+			removeGroupedTileAt(cell);
+		}
+
 		if (selectedClickTileName.equals("castle")) {
 			boolean success = mapEditorController.forcePlaceCastle(cellX, cellY);
 			if (!success) return;
