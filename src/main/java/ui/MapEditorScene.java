@@ -936,6 +936,8 @@ public class MapEditorScene {
 		editedMap.getChildren().clear();
 		MapEditorController.resetMap();
 		mapEditorController =  MapEditorController.getInstance(true);
+		tileHighlights.clear();
+		highlightPane.getChildren().clear();
 	}
 	private void placeTileForClick(MouseEvent e){
 		System.out.println("clicked");
