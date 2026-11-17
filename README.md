@@ -19,6 +19,8 @@ The release packages are self-contained application images and include the Java 
 
 The goal is to defend the castle from incoming enemy waves. Enemies follow paths across the map, and towers placed on available lots automatically target enemies within range and fire projectiles. Defeated enemies reward gold, enemies that reach the end of the path cost the player a life.
 
+https://github.com/user-attachments/assets/4befd8a6-be74-4ab7-862a-0f0872060dbe
+
 ### Towers
 
 There are three tower types, each with its own attack and upgrade behavior:
